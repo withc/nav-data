@@ -33,7 +33,7 @@ class CStartProcess(object):
     def attach_db(self, database):
         self.db = database
     def do(self):
-        fp = open(r'D:\work\workspace\search\config\mid_db.sql','r')
+        fp = open(r'.\config\mid_db.sql','r')
         self.db.execute( fp.read() )
         fp.close()
 
@@ -50,7 +50,7 @@ class CEndProcess(object):
     def _gen_nameid(self):
         print 'generate name id'
         sqlcmd = '''
-                   insert into temp_feature_name_gen_id( key, type, nametype, langcode, name, nameid )
+                   insert into temp_feat_name_gen_id( key, type, nametype, langcode, name, nameid )
                    select *, dense_rank() over (order by name, langcode ) 
                      from temp_feature_name
                  '''
@@ -75,7 +75,7 @@ class CEndProcess(object):
     def _gen_geomid(self):
         print 'generate geometry id'
         sqlcmd = '''
-                   insert into temp_feature_geometry_gen_id( key, type, code, geotype, geom, geomid )
+                   insert into temp_feat_geom_gen_id( key, type, code, geotype, geom, geomid )
                    select *, dense_rank() over (order by geotype, geom ) 
                      from temp_feature_geometry
                  '''

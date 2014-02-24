@@ -20,11 +20,11 @@ DROP TABLE IF EXISTS mid_geometry_xyz         CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_name      CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_geometry  CASCADE;
 
-DROP TABLE IF EXISTS temp_feature_name             CASCADE;
-DROP TABLE IF EXISTS temp_feature_name_gen_id      CASCADE;
-DROP TABLE IF EXISTS temp_feature_geometry         CASCADE;
-DROP TABLE IF EXISTS temp_feature_geometry_gen_id  CASCADE;
-DROP TABLE IF EXISTS temp_feature_class            CASCADE;
+DROP TABLE IF EXISTS temp_feat_name            CASCADE;
+DROP TABLE IF EXISTS temp_feat_name_gen_id     CASCADE;
+DROP TABLE IF EXISTS temp_feat_geom            CASCADE;
+DROP TABLE IF EXISTS temp_feat_geom_gen_id     CASCADE;
+DROP TABLE IF EXISTS temp_feat_class           CASCADE;
 --------------------------------------------------------------
 create table mid_feat_key
 (
@@ -164,7 +164,7 @@ create table mid_feature_to_geometry
 );
 
 -- temp table
-create table temp_feature_name
+create table temp_feat_name
 (
     key       bigint   not null,
     type      smallint not null,
@@ -173,7 +173,7 @@ create table temp_feature_name
     name      varchar(256)
 );
 
-create table temp_feature_name_gen_id
+create table temp_feat_name_gen_id
 (
     key       bigint   not null,
     type      smallint not null,
@@ -183,7 +183,7 @@ create table temp_feature_name_gen_id
     nameid    int      not null
 );
 
-create table temp_feature_geometry
+create table temp_feat_geom
 (
     key      bigint   not null,
     type     smallint not null,
@@ -192,7 +192,7 @@ create table temp_feature_geometry
     geom     geometry not null
 );
 
-create table temp_feature_geometry_gen_id
+create table temp_feat_geom_gen_id
 (
     key      bigint   not null,
     type     smallint not null,
@@ -202,7 +202,7 @@ create table temp_feature_geometry_gen_id
     geomid   int      not null
 );
 
-create table temp_feature_class
+create table temp_feat_class
 (
     c1       int not null,
     c2       int not null,

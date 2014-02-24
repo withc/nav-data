@@ -10,6 +10,7 @@ def featureFactory( name, loader ):
         loader.add_process( load.feature.CEndProcess() )
         loader.add_feature( load.tomtom.feat_place.CPlace( ) )
         loader.add_feature( load.tomtom.feat_poi.CPoi( ) )
+        loader.add_feature( load.tomtom.feat_link.CLink( ) )
         
     elif name == 'rdf':
         import load.rdf
