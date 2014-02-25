@@ -53,6 +53,39 @@ class CPoi(load.feature.CFeature):
     
     def make_attribute(self):
         print ''
+        sqlcmd = '''
+                  insert into mid_poi_attr_value( key, attr_type, attr_value )
+                     select fe.feat_key, 'TL', pi.telnum
+                     from org_pi as pi
+                     join mid_feat_key as fe
+                       on pi.telnum is not null and pi.id = fe.org_id1
+                    union
+                     select fe.feat_key, 'TX', pi.faxnum
+                     from org_pi as pi
+                     join mid_feat_key as fe
+                       on pi.faxnum is not null and pi.id = fe.org_id1
+                    union
+                     select fe.feat_key, '8M', pi.email
+                     from org_pi as pi
+                     join mid_feat_key as fe
+                       on pi.email is not null and pi.id = fe.org_id1 
+                    union
+                     select fe.feat_key, '8L', pi.http
+                     from org_pi as pi
+                     join mid_feat_key as fe
+                       on pi.http is not null and pi.id = fe.org_id1 
+                 '''
+        self.db.execute( sqlcmd )
         
     def make_relation(self):
         print ''
+        sqlcmd = '''
+                  insert into mid_poi_to_place( key, placekey, placetype )
+                  select  fe.feat_key,   f1.feat_key, f1.feat_type
+                    from org_sa       as sa
+                    join mid_feat_key as fe
+                      on sa.aretyp in (1119,1120) and sa.id = fe.org_id1 
+                    join mid_feat_key as f1
+                      on sa.areid = f1.org_id1 and sa.aretyp = f1.org_id2
+                 '''
+        self.db.execute( sqlcmd )

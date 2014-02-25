@@ -74,8 +74,8 @@ create table mid_poi
 create table mid_poi_attr_value
 (
     key         bigint   not null,
-    attr_type   smallint not null,
-    attr_value  varchar(128)
+    attr_type   char(2)  not null,
+    attr_value  varchar(128) not null
 );
 
 create table mid_poi_category

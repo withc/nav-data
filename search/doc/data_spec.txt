@@ -21,3 +21,15 @@ releationship code:
 7000:geometry infor
 7379:center of settlement
 9920:entry point
+
+attribute code:
+ON:Official Name
+AN:Alternate Name
+RN:Route Number
+BU:Brunnel Name
+1Q:Acronym
+8Y:Company Name
+TL:Telephone Number
+TX:Fax Number
+8M:E-Mail Address
+8L:Internet Address
