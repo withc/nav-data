@@ -117,6 +117,7 @@ create table mid_link
 create table mid_link_to_place
 (
     key        bigint   not null,
+    type       smallint not null,
     placekey   bigint   not null,
     placetype  smallint not null
 );

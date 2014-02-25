@@ -52,14 +52,14 @@ class CEndProcess(object):
         sqlcmd = '''
                    insert into temp_feat_name_gen_id( key, type, nametype, langcode, name, nameid )
                    select *, dense_rank() over (order by name, langcode ) 
-                     from temp_feature_name
+                     from temp_feat_name
                  '''
         self.db.execute( sqlcmd )
         
         sqlcmd = '''
                    insert into mid_name( id, langcode, name)
                    select distinct nameid, langcode, name
-                     from temp_feature_name_gen_id
+                     from temp_feat_name_gen_id
                      order by nameid
                  '''
         self.db.execute( sqlcmd )
@@ -67,7 +67,7 @@ class CEndProcess(object):
         sqlcmd = '''
                    insert into mid_feature_to_name( key, type, nametype, nameid)
                    select  key, type, nametype, nameid
-                     from temp_feature_name_gen_id
+                     from temp_feat_name_gen_id
                      order by key
                  '''
         self.db.execute( sqlcmd )
@@ -77,13 +77,13 @@ class CEndProcess(object):
         sqlcmd = '''
                    insert into temp_feat_geom_gen_id( key, type, code, geotype, geom, geomid )
                    select *, dense_rank() over (order by geotype, geom ) 
-                     from temp_feature_geometry
+                     from temp_feat_geom
                  '''
         self.db.execute( sqlcmd )
         sqlcmd = '''
                    insert into mid_geometry( id, type, geom)
                    select distinct geomid, geotype, geom
-                     from temp_feature_geometry_gen_id
+                     from temp_feat_geom_gen_id
                      order by geomid
                  '''
         self.db.execute( sqlcmd )
@@ -91,7 +91,7 @@ class CEndProcess(object):
         sqlcmd = '''
                    insert into mid_feature_to_geometry( key, type, code, geomid)
                    select  key, type, code, geomid
-                     from temp_feature_geometry_gen_id
+                     from temp_feat_geom_gen_id
                      order by key
                  '''
         self.db.execute( sqlcmd )

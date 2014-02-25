@@ -30,6 +30,14 @@ class CLink(load.feature.CFeature):
     
     def make_geomtry(self):
         print ''
+        sqlcmd = '''
+                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    select fe.feat_key, fe.feat_type, 7000,'L', nw.the_geom
+                      from org_nw       as nw
+                      join mid_feat_key as fe
+                        on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
+                 '''
+        self.db.execute( sqlcmd )
         
     def make_name(self):
         print ''
@@ -54,3 +62,13 @@ class CLink(load.feature.CFeature):
         
     def make_relation(self):
         print ''
+        sqlcmd = '''
+                  insert into mid_link_to_place( key, type, placekey, placetype )
+                  select  fe.feat_key, fe.feat_type,  f1.feat_key, f1.feat_type
+                    from org_ta       as ta
+                    join mid_feat_key as fe
+                      on ta.aretyp in (1119,1120) and  ta.id = fe.org_id1 and ta.trpeltyp = fe.org_id2
+                    join mid_feat_key as f1
+                      on ta.areid = f1.org_id1 and ta.aretyp = f1.org_id2
+                 '''
+        self.db.execute( sqlcmd )
