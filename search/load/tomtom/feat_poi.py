@@ -38,6 +38,19 @@ class CPoi(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
         
+        sqlcmd = '''
+                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    select fe.feat_key, fe.feat_type, 9920,'P', p1.the_geom
+                    from org_pi as pi
+                    join mid_feat_key as fe
+                      on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
+                    join org_pr as pr
+                      on pi.id = pr.poiid
+                    join org_pi as p1
+                      on pr.belpoityp = 9920 and pr.belpoiid = p1.id 
+                 '''
+        self.db.execute( sqlcmd )
+        
     def make_name(self):
         print ''
         sqlcmd = '''
@@ -73,7 +86,17 @@ class CPoi(load.feature.CFeature):
                      select fe.feat_key, '8L', pi.http
                      from org_pi as pi
                      join mid_feat_key as fe
-                       on pi.http is not null and pi.id = fe.org_id1 
+                       on pi.http is not null and pi.id = fe.org_id1
+                    union
+                     select fe.feat_key, '6T', pi.stname
+                     from org_pi as pi
+                     join mid_feat_key as fe
+                       on pi.stname is not null and pi.id = fe.org_id1
+                    union
+                     select fe.feat_key, '9H', pi.hsnum
+                     from org_pi as pi
+                     join mid_feat_key as fe
+                       on pi.hsnum is not null and pi.id = fe.org_id1
                  '''
         self.db.execute( sqlcmd )
         

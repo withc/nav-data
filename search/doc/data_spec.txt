@@ -29,7 +29,10 @@ RN:Route Number
 BU:Brunnel Name
 1Q:Acronym
 8Y:Company Name
+BN:Brand Name
 TL:Telephone Number
 TX:Fax Number
 8M:E-Mail Address
 8L:Internet Address
+6T:Street Name
+9H:House Number
