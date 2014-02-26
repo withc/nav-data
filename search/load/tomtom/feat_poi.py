@@ -19,8 +19,8 @@ class CPoi(load.feature.CFeature):
     def make_feature(self):
         print ''
         sqlcmd = '''
-                    insert into mid_poi( key, cat_id, imp )
-                    select fe.feat_key, 0, pi.import
+                    insert into mid_poi( key, type, cat_id, imp )
+                    select fe.feat_key, fe.feat_type, 0, pi.import
                     from org_pi as pi
                     join mid_feat_key as fe
                       on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
@@ -67,33 +67,33 @@ class CPoi(load.feature.CFeature):
     def make_attribute(self):
         print ''
         sqlcmd = '''
-                  insert into mid_poi_attr_value( key, attr_type, attr_value )
-                     select fe.feat_key, 'TL', pi.telnum
+                  insert into mid_poi_attr_value( key, type, attr_type, attr_value )
+                     select fe.feat_key, fe.feat_type, 'TL', pi.telnum
                      from org_pi as pi
                      join mid_feat_key as fe
                        on pi.telnum is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                     union
-                     select fe.feat_key, 'TX', pi.faxnum
+                     select fe.feat_key, fe.feat_type, 'TX', pi.faxnum
                      from org_pi as pi
                      join mid_feat_key as fe
                        on pi.faxnum is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                     union
-                     select fe.feat_key, '8M', pi.email
+                     select fe.feat_key, fe.feat_type, '8M', pi.email
                      from org_pi as pi
                      join mid_feat_key as fe
                        on pi.email is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                     union
-                     select fe.feat_key, '8L', pi.http
+                     select fe.feat_key, fe.feat_type, '8L', pi.http
                      from org_pi as pi
                      join mid_feat_key as fe
                        on pi.http is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                     union
-                     select fe.feat_key, '6T', pi.stname
+                     select fe.feat_key, fe.feat_type, '6T', pi.stname
                      from org_pi as pi
                      join mid_feat_key as fe
                        on pi.stname is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                     union
-                     select fe.feat_key, '9H', pi.hsnum
+                     select fe.feat_key, fe.feat_type, '9H', pi.hsnum
                      from org_pi as pi
                      join mid_feat_key as fe
                        on pi.hsnum is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2

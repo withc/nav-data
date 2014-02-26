@@ -52,21 +52,7 @@ create table mid_place_admin
     a9     bigint not null
 );
 
--- poi
-create table mid_poi
-(
-    key     bigint   not null,
-    cat_id  int      not null,
-    imp     smallint not null
-);
-
-create table mid_poi_attr_value
-(
-    key         bigint       not null,
-    attr_type   char(2)      not null,
-    attr_value  varchar(128) not null
-);
-
+-- category
 create table mid_poi_category
 (
     cat_id        int not null,
@@ -74,6 +60,23 @@ create table mid_poi_category
     level         smallint not null,
     imp           smallint,
     cat_name      varchar(128) not null
+);
+
+-- poi
+create table mid_poi
+(
+    key     bigint   not null,
+    type    smallint not null,
+    cat_id  int      not null,
+    imp     smallint not null
+);
+
+create table mid_poi_attr_value
+(
+    key         bigint       not null,
+    type        smallint     not null,
+    attr_type   char(2)      not null,
+    attr_value  varchar(128) not null
 );
 
 create table mid_poi_children

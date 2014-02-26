@@ -24,6 +24,7 @@ class CPlace(load.feature.CFeature):
                     select distinct 3009, id, feattyp  from org_a8 where name is not null
                     union
                     select distinct 3010, id, feattyp  from org_a9 where name is not null
+                    order by feattyp, id
                  '''
         self.db.execute( sqlcmd )
         
@@ -61,27 +62,13 @@ class CPlace(load.feature.CFeature):
         
     def make_relation(self):
         print ''
-        sqlcmd = '''
-                 insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
-                   select mf.feat_key, mf.feat_type, mf.feat_key, 0, 0, 0, 0, 0 
-                   from org_a0 as a0
-                   join mid_feat_key mf
-                     on a0.id = mf.org_id1 and mf.org_id2 = 1111
-                 '''
-        self.db.execute( sqlcmd )
-        sqlcmd = '''
-                 insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
-                   select mf.feat_key, mf.feat_type, mf0.feat_key, mf.feat_key, 0, 0, 0, 0
-                   from org_a1 as a1
-                   join mid_feat_key mf
-                     on a1.id = mf.org_id1 and mf.org_id2 = 1112
-                   join org_a0 as a0
-                     on a1.order00 = a0.order00
-                   join mid_feat_key mf0
-                     on a0.id = mf0.org_id1 and mf.org_id2 = 1111
-                 '''
-        self.db.execute( sqlcmd )
-        
+        self.db.execute( self._gen_admin_sql(0) )
+        self.db.execute( self._gen_admin_sql(1) )
+        self.db.execute( self._gen_admin_sql(2) )
+        self.db.execute( self._gen_admin_sql(7) )
+        self.db.execute( self._gen_admin_sql(8) )
+        self.db.execute( self._gen_admin_sql(9) )
+      
     def _geomtry(self, tb):
         sqlcmd = '''
                     insert into temp_feat_geom( key, type, code, geotype, geom )
@@ -107,4 +94,69 @@ class CPlace(load.feature.CFeature):
                       on a.citycenter = sm.id
                     ''' % tb
             self.db.execute( sqlcmd )
+    def _gen_admin_sql(self, s):
+        if s == 0:
+            sqlcmd = self._select_admin(0)
+        elif s == 1:
+            sqlcmd = self._select_admin(1)+self._join_admin(1, 0)
+        elif s == 2:
+            sqlcmd = self._select_admin(2)+self._join_admin(2, 1)+self._join_admin(2, 0)
+        elif s == 7:
+            sqlcmd = self._select_admin(7)+self._join_admin(7, 2)+self._join_admin(7, 1)+self._join_admin(7, 0)
+        elif s == 8:
+            sqlcmd = self._select_admin(8)+self._join_admin(8, 7)+self._join_admin(8, 2)+self._join_admin(8, 1)+self._join_admin(8, 0)
+        elif s == 9:
+            sqlcmd = self._select_admin(9)+self._join_admin(9, 8)+self._join_admin(9, 7)+self._join_admin(9, 2)+self._join_admin(9, 1)+self._join_admin(9, 0)
+            
+        return sqlcmd.replace(' org_a0 ', ' ( select distinct id, order00 from org_a0 ) ' )
+    
+    def _join_admin(self, s, d):
+        sql ='''
+                left join org_a<d>     a<d>
+                       on a<s>.order0<d> = a<d>.order0<d>
+                left join mid_feat_key f<d>
+                       on a<d>.id = f<d>.org_id1 and f<d>.org_id2 = <c>
+            '''
+        sql = sql.replace('<s>', str(s))
+        sql = sql.replace('<d>', str(d))
+        sql = sql.replace('<c>', str(1111+d))
+        return sql
+    def _select_admin(self, s):
+        if s == 9:
+            field = '''f1.feat_key, 
+                       case when f2.feat_key is null then 0 else f2.feat_key end, 
+                       case when f7.feat_key is null then 0 else f7.feat_key end, 
+                       f8.feat_key, f9.feat_key'''
+        elif s == 8:
+            field = '''f1.feat_key, 
+                       case when f2.feat_key is null then 0 else f2.feat_key end, 
+                       case when f7.feat_key is null then 0 else f7.feat_key end, 
+                       f8.feat_key, 0'''
+        elif s == 7:
+            field = '''f1.feat_key, 
+                       case when f2.feat_key is null then 0 else f2.feat_key end, 
+                       f7.feat_key, 0, 0'''
+        elif s == 2:
+            field = '''f1.feat_key, f2.feat_key, 0, 0, 0'''
+        elif s == 1:
+            field = '''f1.feat_key, 0, 0, 0, 0'''
+        elif s == 0:
+            field = '0, 0, 0, 0, 0'
+        else:
+            field = ''
+         
+        sql = '''insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
+                select  f<s>.feat_key, f<s>.feat_type, f0.feat_key, ''' + field + '''
+                from org_a<s>     a<s>
+                join mid_feat_key f<s>
+                  on a<s>.id = f<s>.org_id1 and f<s>.org_id2 = <c>
+              '''
+        sql = sql.replace('<s>', str(s))
+        sql = sql.replace('<c>', str(s+1111))
+        return sql
+
+        
+        
+        
+        
         
