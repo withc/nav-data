@@ -1,30 +1,56 @@
+import common.logger
 
 class CFeature(object):
 
-    def __init__(self):
-        self.db   = None
-        self.name = ''
+    def __init__(self, name='feature'):
+        self.db     = None
+        self.name   = name
+        self.logger = common.logger.sub_log( self.name )
         
     def attach_db(self, database):
         self.db = database
          
     def make_key(self):
-        print ''
+        self.logger.info('make key')
+        self._domake_key()
         
     def make_feature(self):
-        print ''
+        self.logger.info('make feature')
+        self._domake_feature()
     
     def make_geomtry(self):
-        print ''
+        self.logger.info('make geomtry')
+        self._domake_geomtry()
         
     def make_name(self):
-        print ''
+        self.logger.info('make name')
+        self._domake_name()
     
     def make_attribute(self):
-        print ''
+        self.logger.info('make attribute')
+        self._domake_attribute()
         
     def make_relation(self):
-        print ''
+        self.logger.info('make relation')
+        self._domake_relation()
+        
+    def _domake_key(self):
+        pass
+        
+    def _domake_feature(self):
+        pass
+    
+    def _domake_geomtry(self):
+        pass
+        
+    def _domake_name(self):
+        pass
+    
+    def _domake_attribute(self):
+        pass
+        
+    def _domake_relation(self):
+        pass
         
 class CStartProcess(object):
     

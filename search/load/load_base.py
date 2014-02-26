@@ -1,9 +1,10 @@
-import time
 import common.database
+import common.logger
 import load.factory
 
 class CLoader(object):
     def __init__(self):
+        self.logger = common.logger.sub_log('load')
         self.vendor  = ''
         self.dbInfor = {}
         self.db = None
@@ -16,11 +17,11 @@ class CLoader(object):
         self.db.connect()
         
         self._make_feature_proce()
-        print " ---------- start -------------"
+        self.logger.info( " ----------- start -------------" )
         self._prepare()
         self._process()
         self._finish()
-        print " ----------- end  --------------"
+        self.logger.info( " ------------ end  --------------" )
         
         self.db.close()
     

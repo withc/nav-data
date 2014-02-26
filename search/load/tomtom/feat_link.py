@@ -3,11 +3,9 @@ import load.feature
 class CLink(load.feature.CFeature):
     def __init__(self ):
         print "tomtom's link feature"
-        load.feature.CFeature.__init__(self)
-        self.name = 'tomtom link'
-        
-    def make_key(self):
-        print ''
+        load.feature.CFeature.__init__(self,'link')
+
+    def _domake_key(self):
         # copy all link, even it has no name.
         # some link that has no name is the closest road poi was located.
         sqlcmd = '''
@@ -18,8 +16,7 @@ class CLink(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
         
-    def make_feature(self):
-        print ''
+    def _domake_feature(self):
         sqlcmd = '''
                     insert into mid_link( key, type )
                     select fe.feat_key, fe.feat_type
@@ -29,8 +26,7 @@ class CLink(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
     
-    def make_geomtry(self):
-        print ''
+    def _domake_geomtry(self):
         sqlcmd = '''
                     insert into temp_feat_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7000,'L', nw.the_geom
@@ -40,8 +36,7 @@ class CLink(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
         
-    def make_name(self):
-        print ''
+    def _domake_name(self):
         sqlcmd = '''
                     insert into temp_feat_name( key, type, nametype, langcode, name )
                     select fe.feat_key, fe.feat_type,  
@@ -58,11 +53,10 @@ class CLink(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
     
-    def make_attribute(self):
-        print ''
+    def _domake_attribute(self):
+        pass
         
-    def make_relation(self):
-        print ''
+    def _domake_relation(self):
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select  fe.feat_key, fe.feat_type, 7001, f1.feat_key, f1.feat_type
@@ -73,3 +67,4 @@ class CLink(load.feature.CFeature):
                       on ta.areid = f1.org_id1 and ta.aretyp = f1.org_id2
                  '''
         self.db.execute( sqlcmd )
+        

@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
 DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
-DROP TABLE IF EXISTS mid_link           CASCADE;
+DROP TABLE IF EXISTS mid_link            CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
 DROP TABLE IF EXISTS mid_geometry             CASCADE;

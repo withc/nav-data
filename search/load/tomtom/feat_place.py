@@ -3,11 +3,9 @@ import load.feature
 class CPlace(load.feature.CFeature):
     def __init__(self ):
         print "tomtom's place feature"
-        load.feature.CFeature.__init__(self)
-        self.name = 'tomtom place'
-        
-    def make_key(self):
-        print ''
+        load.feature.CFeature.__init__(self,'place')
+
+    def _domake_key(self):
         # delete the place which has no-name or is a dummy area
         # in usa/can, one state set to one a0 place,
         # but, we always insist that a0 is country. must do something...
@@ -28,8 +26,7 @@ class CPlace(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
         
-    def make_feature(self):
-        print ''
+    def _domake_feature(self):
         sqlcmd = '''
                  insert into mid_place( key, type )
                      select feat_key, feat_type 
@@ -40,14 +37,12 @@ class CPlace(load.feature.CFeature):
         self.db.execute( sqlcmd )
         
         
-    def make_geomtry(self):
-        print ''
+    def _domake_geomtry(self):
         tbs = ['org_a0','org_a1','org_a2','org_a8','org_a9']
         for tb in tbs:
             self._geomtry(tb)
         
-    def make_name(self):
-        print ''
+    def _domake_name(self):
         sqlcmd = '''
                     insert into temp_feat_name( key, type, nametype, langcode, name )
                     select fe.feat_key, fe.feat_type, an.nametyp, an.namelc, an.name
@@ -57,11 +52,10 @@ class CPlace(load.feature.CFeature):
                  '''
         self.db.execute( sqlcmd )
         
-    def make_attribute(self):
-        print ''
+    def _domake_attribute(self):
+        pass
         
-    def make_relation(self):
-        print ''
+    def _domake_relation(self):
         self.db.execute( self._gen_admin_sql(0) )
         self.db.execute( self._gen_admin_sql(1) )
         self.db.execute( self._gen_admin_sql(2) )

@@ -5,23 +5,22 @@ import load.feature
 class CPoiCategory(load.feature.CFeature):
     def __init__(self ):
         print "tomtom's poi category"
-        load.feature.CFeature.__init__(self)
-        self.name = 'tomtom category'
-          
-    def make_key(self):
-        print ''
+        load.feature.CFeature.__init__(self, 'category')
+ 
+    def _domake_key(self):
+        pass
         
-    def make_feature(self):
-        print ''
+    def _domake_feature(self):
+        pass
     
-    def make_geomtry(self):
-        print ''
+    def _domake_geomtry(self):
+        pass
         
-    def make_name(self):
-        print ''
+    def _domake_name(self):
+        pass
     
-    def make_attribute(self):
-        print ''
+    def _domake_attribute(self):
+        pass
         
-    def make_relation(self):
-        print ''
+    def _domake_relation(self):
+        pass
