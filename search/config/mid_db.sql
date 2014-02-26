@@ -2,23 +2,21 @@
 DROP TABLE IF EXISTS mid_feat_key         CASCADE;
 DROP TABLE IF EXISTS mid_place            CASCADE;
 DROP TABLE IF EXISTS mid_place_admin      CASCADE;
-DROP TABLE IF EXISTS mid_place_in_place   CASCADE;
 
 DROP TABLE IF EXISTS mid_poi             CASCADE;
 DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
 DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
-DROP TABLE IF EXISTS mid_poi_to_place    CASCADE;
-DROP TABLE IF EXISTS mid_poi_address     CASCADE;
 
 DROP TABLE IF EXISTS mid_link           CASCADE;
-DROP TABLE IF EXISTS mid_link_to_place  CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
 DROP TABLE IF EXISTS mid_geometry             CASCADE;
 DROP TABLE IF EXISTS mid_geometry_xyz         CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_name      CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_geometry  CASCADE;
+DROP TABLE IF EXISTS mid_feature_to_feature   CASCADE;
+
 
 DROP TABLE IF EXISTS temp_feat_name            CASCADE;
 DROP TABLE IF EXISTS temp_feat_name_gen_id     CASCADE;
@@ -54,15 +52,6 @@ create table mid_place_admin
     a9     bigint not null
 );
 
-create table mid_place_in_place
-(
-    k1      bigint not null,
-    type1   smallint not null,
-    k2      bigint not null,
-    type2   smallint not null,
-    code    smallint not null
-);
-
 -- poi
 create table mid_poi
 (
@@ -73,8 +62,8 @@ create table mid_poi
 
 create table mid_poi_attr_value
 (
-    key         bigint   not null,
-    attr_type   char(2)  not null,
+    key         bigint       not null,
+    attr_type   char(2)      not null,
     attr_value  varchar(128) not null
 );
 
@@ -89,22 +78,8 @@ create table mid_poi_category
 
 create table mid_poi_children
 (
-    f_k      bigint   not null,
-    c_k      bigint   not null
-);
-
-create table mid_poi_to_place
-(
-    key         bigint   not null,
-    placekey    bigint   not null,
-    placetype   smallint not null
-);
-
-create table mid_poi_address
-(
-    key         bigint       not null,
-    streetname  varchar(128) not null,
-    housenumber varchar(128)
+    c_k      bigint   not null,
+    f_k      bigint   not null
 );
 
 -- street
@@ -112,14 +87,6 @@ create table mid_link
 (
     key   bigint   not null,
     type  smallint not null
-);
-
-create table mid_link_to_place
-(
-    key        bigint   not null,
-    type       smallint not null,
-    placekey   bigint   not null,
-    placetype  smallint not null
 );
 
 -- name
@@ -148,6 +115,16 @@ create table mid_geometry_xyz
 );
 
 -- releationship
+
+create table mid_feature_to_feature
+(
+    fkey       bigint   not null,
+    ftype      smallint not null,
+    code      smallint not null,
+    tkey      bigint   not null,
+    ttype     smallint not null
+);
+
 create table mid_feature_to_name
 (
     key       bigint   not null,
@@ -161,7 +138,7 @@ create table mid_feature_to_geometry
     key       bigint   not null,
     type      smallint not null,
     code      smallint not null,
-    geomid     bigint   not null
+    geomid    bigint   not null
 );
 
 -- temp table

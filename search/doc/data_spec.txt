@@ -19,6 +19,9 @@ featury type:
 
 releationship code:
 7000:geometry infor
+7001:feature to place
+7002:poi to link
+7003:place in place
 7379:center of settlement
 9920:entry point
 

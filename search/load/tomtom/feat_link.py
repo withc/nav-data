@@ -8,12 +8,13 @@ class CLink(load.feature.CFeature):
         
     def make_key(self):
         print ''
+        # copy all link, even it has no name.
+        # some link that has no name is the closest road poi was located.
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
                     select 2000, id, feattyp 
                     from org_nw as nw
-                    where ( name is not null or shieldnum is not null ) 
-                          and feattyp in ( 4110, 4130 )
+                    where  feattyp in ( 4110, 4130 )
                  '''
         self.db.execute( sqlcmd )
         
@@ -63,8 +64,8 @@ class CLink(load.feature.CFeature):
     def make_relation(self):
         print ''
         sqlcmd = '''
-                  insert into mid_link_to_place( key, type, placekey, placetype )
-                  select  fe.feat_key, fe.feat_type,  f1.feat_key, f1.feat_type
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select  fe.feat_key, fe.feat_type, 7001, f1.feat_key, f1.feat_type
                     from org_ta       as ta
                     join mid_feat_key as fe
                       on ta.aretyp in (1119,1120) and  ta.id = fe.org_id1 and ta.trpeltyp = fe.org_id2

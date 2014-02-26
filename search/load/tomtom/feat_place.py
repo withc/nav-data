@@ -52,7 +52,7 @@ class CPlace(load.feature.CFeature):
                     select fe.feat_key, fe.feat_type, an.nametyp, an.namelc, an.name
                     from org_an as an
                     join mid_feat_key as fe
-                      on an.id = fe.org_id1 
+                      on an.id = fe.org_id1 and an.feattyp = fe.org_id2
                  '''
         self.db.execute( sqlcmd )
         
@@ -66,7 +66,7 @@ class CPlace(load.feature.CFeature):
                    select mf.feat_key, mf.feat_type, mf.feat_key, 0, 0, 0, 0, 0 
                    from org_a0 as a0
                    join mid_feat_key mf
-                     on a0.id = mf.org_id1
+                     on a0.id = mf.org_id1 and mf.org_id2 = 1111
                  '''
         self.db.execute( sqlcmd )
         sqlcmd = '''
@@ -74,11 +74,11 @@ class CPlace(load.feature.CFeature):
                    select mf.feat_key, mf.feat_type, mf0.feat_key, mf.feat_key, 0, 0, 0, 0
                    from org_a1 as a1
                    join mid_feat_key mf
-                     on a1.id = mf.org_id1
+                     on a1.id = mf.org_id1 and mf.org_id2 = 1112
                    join org_a0 as a0
                      on a1.order00 = a0.order00
                    join mid_feat_key mf0
-                     on a0.id = mf0.org_id1
+                     on a0.id = mf0.org_id1 and mf.org_id2 = 1111
                  '''
         self.db.execute( sqlcmd )
         
@@ -87,12 +87,12 @@ class CPlace(load.feature.CFeature):
                     insert into temp_feat_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7000,'A', a.geom
                     from (
-                        select id, st_multi (st_union(the_geom)) as geom
+                        select id, feattyp, st_multi (st_union(the_geom)) as geom
                         from  %s  
-                        group by id
+                        group by id, feattyp
                      ) as a
                     join mid_feat_key as fe
-                      on a.id = fe.org_id1 
+                      on a.id = fe.org_id1 and a.feattyp = fe.org_id2
                  ''' % tb
         self.db.execute( sqlcmd )
         
@@ -102,7 +102,7 @@ class CPlace(load.feature.CFeature):
                     select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
                     from %s as a
                     join mid_feat_key as fe
-                      on a.id = fe.org_id1
+                      on a.id = fe.org_id1 and a.feattyp = fe.org_id2
                     join org_sm as sm
                       on a.citycenter = sm.id
                     ''' % tb
