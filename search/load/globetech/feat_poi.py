@@ -1,10 +1,9 @@
 import load.feature
 
-
-class CPoiCategory(load.feature.CFeature):
+class CPoi(load.feature.CFeature):
     def __init__(self ):
-        print "tomtom's poi category"
-        load.feature.CFeature.__init__(self, 'category')
+        print "globe tech's poi"
+        load.feature.CFeature.__init__(self, 'poi')
  
     def _domake_key(self):
         pass

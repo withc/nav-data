@@ -1,11 +1,11 @@
 -- place
 create table rdb_place
 (
-    id      int     not null,
-    type    char(4) not null,
-    nmsetid int     not null,
-    x       int     not null,
-    y       int     not null,
+    id      int      not null,
+    type    smallint not null,
+    nmsetid int      not null,
+    x       int      not null,
+    y       int      not null,
     PRIMARY KEY( id )
 );
 
@@ -27,6 +27,18 @@ create table rdb_place_nameset
     FOREIGN KEY (nmid) references rdb_place_name(id)
 );
 
+create table rdb_place_admin
+(
+    id     bigint not null,
+    type   smallint not null,
+    a0     bigint not null,
+    a1     bigint not null,
+    a2     bigint not null,
+    a7     bigint not null,
+    a8     bigint not null,
+    a9     bigint not null
+);
+-- 
 create table rdb_place_in_place
 (
     cid    int not null,
@@ -40,11 +52,23 @@ create table rdb_placeset
     plid   int not null,
     PRIMARY KEY( id )
 );
+
+-- poi category
+create table rdb_category
+(
+    id         int not null,
+    parent_id  int not null,
+    name       varchar(70) not null,
+    PRIMARY KEY( id )
+);
+
 -- poi
 create table rdb_poi
 (
     id      int     not null,
+    catid   int     not null,
     nmsetid int     not null,
+    imp     int     not null,
     x       int     not null,
     y       int     not null,
     PRIMARY KEY( id )
