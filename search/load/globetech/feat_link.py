@@ -6,7 +6,12 @@ class CLink(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'link')
  
     def _domake_key(self):
-        pass
+        sqlcmd = '''
+                    insert into mid_feat_key( feat_type, org_id1, org_id2 )
+                    select 2000, routeid, 2000 
+                    from org_l_tran as tr
+                 '''
+        self.db.execute( sqlcmd )
         
     def _domake_feature(self):
         pass
