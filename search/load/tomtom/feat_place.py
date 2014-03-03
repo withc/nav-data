@@ -118,17 +118,17 @@ class CPlace(load.feature.CFeature):
     def _select_admin(self, s):
         if s == 9:
             field = '''f1.feat_key, 
-                       case when f2.feat_key is null then 0 else f2.feat_key end, 
-                       case when f7.feat_key is null then 0 else f7.feat_key end, 
+                       COALESCE( f2.feat_key, 0 ), 
+                       COALESCE( f7.feat_key, 0 ), 
                        f8.feat_key, f9.feat_key'''
         elif s == 8:
             field = '''f1.feat_key, 
-                       case when f2.feat_key is null then 0 else f2.feat_key end, 
-                       case when f7.feat_key is null then 0 else f7.feat_key end, 
+                       COALESCE( f2.feat_key, 0 ), 
+                       COALESCE( f7.feat_key, 0 ), 
                        f8.feat_key, 0'''
         elif s == 7:
             field = '''f1.feat_key, 
-                       case when f2.feat_key is null then 0 else f2.feat_key end, 
+                       COALESCE( f2.feat_key, 0 ), 
                        f7.feat_key, 0, 0'''
         elif s == 2:
             field = '''f1.feat_key, f2.feat_key, 0, 0, 0'''

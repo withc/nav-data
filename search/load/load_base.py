@@ -36,11 +36,11 @@ class CLoader(object):
     def _readConfig(self,path):
         fp = open(path,'r')
         self.dbInfor['host'] = 'localhost'
-        self.dbInfor['dbname'] = 'mydb'
+        self.dbInfor['dbname'] = 'globetech'
         self.dbInfor['user'] = 'postgres'
         self.dbInfor['password'] = ''
         
-        self.vendor = 'tomtom'
+        self.vendor = 'globetech'
         fp.close()
         
     def _getDBPath(self):

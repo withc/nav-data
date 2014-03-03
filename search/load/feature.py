@@ -55,18 +55,22 @@ class CFeature(object):
 class CStartProcess(object):
     
     def __init__(self):
-        print ''
+        pass
     def attach_db(self, database):
         self.db = database
     def do(self):
-        fp = open(r'.\config\mid_db.sql','r')
+        fp = open('.\config\mid_db.sql','r')
         self.db.execute( fp.read() )
         fp.close()
+        fp = open('.\load\globetech\my.sql','r')
+        self.db.execute( fp.read() )
+        fp.close()
+        
 
 class CEndProcess(object):
     
     def __init__(self):
-        print ''
+        pass
     def attach_db(self, database):
         self.db = database
     def do(self):

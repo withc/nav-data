@@ -28,8 +28,8 @@ create table mid_feat_key
 (
     feat_key    serial PRIMARY KEY,
     feat_type   smallint not null,
-    org_id1     bigint,
-    org_id2     bigint,
+    org_id1     bigint   not null,
+    org_id2     bigint   not null,
     CONSTRAINT  un_item UNIQUE(org_id1,org_id2)  
 );
 
