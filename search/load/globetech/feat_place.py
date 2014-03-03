@@ -85,4 +85,37 @@ class CPlace(load.feature.CFeature):
         pass
         
     def _domake_relation(self):
-        pass
+        sqlcmd = '''
+              insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
+              with ad ( f_key, f_type, type, prov_code, amp_code, tam_code )
+                as (
+                  select fe.feat_key, fe.feat_type, ta.type, ta.prov_code, ta.amp_code, ta.tam_code
+                    from temp_admincode  as ta
+                    join mid_feat_key     as fe
+                      on ta.org_id1 = fe.org_id1 and ta.org_id2 = fe.org_id2
+                    ) 
+                select a1.f_key, a1.f_type, 0, a1.f_key, 0, 0, 0, 0
+                  from ad as a1
+                 where a1.type = 1
+                union
+                select  a8.f_key, a8.f_type, 0, a1.f_key, 0, 0,a8.f_key, 0
+                from ad as a8
+                join ad as a1
+                  on a1.type      = 1            and 
+                     a1.prov_code = a8.prov_code
+               where a8.type      = 2
+                union
+                select  a9.f_key, a9.f_type, 0, a1.f_key, 0, 0,a8.f_key, a9.f_key
+                from ad as a9
+                join ad as a1
+                  on a1.type      = 1            and 
+                     a9.prov_code = a1.prov_code
+                join ad as a8
+                  on a8.type      = 2            and 
+                     a9.prov_code = a8.prov_code and
+                     a9.amp_code  = a8.amp_code
+               where a9.type      = 3
+           '''
+        self.db.execute( sqlcmd )
+        
+        

@@ -75,3 +75,4 @@ class CLink(load.feature.CFeature):
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
         self.db.execute( sqlcmd )
+        

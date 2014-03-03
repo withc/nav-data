@@ -55,10 +55,11 @@ class CFeature(object):
 class CStartProcess(object):
     
     def __init__(self):
-        pass
+        self.logger = common.logger.sub_log( 'start_pro' )
     def attach_db(self, database):
         self.db = database
     def do(self):
+        self.logger.info('create table and function') 
         fp = open('.\config\mid_db.sql','r')
         self.db.execute( fp.read() )
         fp.close()
@@ -70,7 +71,8 @@ class CStartProcess(object):
 class CEndProcess(object):
     
     def __init__(self):
-        pass
+        self.logger = common.logger.sub_log( 'end_pro' )
+        
     def attach_db(self, database):
         self.db = database
     def do(self):
@@ -78,7 +80,7 @@ class CEndProcess(object):
         self._gen_geomid()
         
     def _gen_nameid(self):
-        print 'generate name id'
+        self.logger.info('generate name id') 
         sqlcmd = '''
                    insert into temp_feat_name_gen_id( key, type, nametype, langcode, name, nameid )
                    select *, dense_rank() over (order by name, langcode ) 
@@ -103,7 +105,7 @@ class CEndProcess(object):
         self.db.execute( sqlcmd )
     
     def _gen_geomid(self):
-        print 'generate geometry id'
+        self.logger.info('generate geometry id')
         sqlcmd = '''
                    insert into temp_feat_geom_gen_id( key, type, code, geotype, geom, geomid )
                    select *, dense_rank() over (order by geotype, geom ) 

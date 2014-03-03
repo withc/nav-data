@@ -86,6 +86,7 @@ class CPoi(load.feature.CFeature):
                       join mid_feat_key as fe
                         on p.hno is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
                 '''
+        self.db.execute( sqlcmd )
         
     def _domake_relation(self):
         sqlcmd = '''
@@ -103,3 +104,4 @@ class CPoi(load.feature.CFeature):
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
         self.db.execute( sqlcmd )
+        
