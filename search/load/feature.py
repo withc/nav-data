@@ -56,14 +56,15 @@ class CStartProcess(object):
     
     def __init__(self):
         self.logger = common.logger.sub_log( 'start_pro' )
-    def attach_db(self, database):
-        self.db = database
+    def attach_db(self, database,vendor):
+        self.db   = database
+        self.name = vendor
     def do(self):
         self.logger.info('create table and function') 
         fp = open('.\config\mid_db.sql','r')
         self.db.execute( fp.read() )
         fp.close()
-        fp = open('.\load\globetech\my.sql','r')
+        fp = open('.\load\%s\my.sql' % self.name,'r')
         self.db.execute( fp.read() )
         fp.close()
         
@@ -73,8 +74,9 @@ class CEndProcess(object):
     def __init__(self):
         self.logger = common.logger.sub_log( 'end_pro' )
         
-    def attach_db(self, database):
+    def attach_db(self, database, vendor):
         self.db = database
+        self.name = vendor
     def do(self):
         self._gen_nameid()
         self._gen_geomid()

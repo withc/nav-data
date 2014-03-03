@@ -26,7 +26,7 @@ class CLoader(object):
         self.db.close()
     
     def add_process(self, proce):
-        proce.attach_db( self.db )
+        proce.attach_db( self.db, self.vendor )
         self.proces.append( proce )
         
     def add_feature(self, feat):
