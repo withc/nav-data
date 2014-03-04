@@ -1,4 +1,5 @@
 -- place
+-- 
 create table rdb_place
 (
     id      int      not null,
@@ -38,6 +39,7 @@ create table rdb_place_admin
     a8     bigint not null,
     a9     bigint not null
 );
+--
 -- 
 create table rdb_place_in_place
 (

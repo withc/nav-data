@@ -12,19 +12,36 @@ def featureFactory( name, loader ):
         loader.add_feature( load.tomtom.feat_link.CLink( ) )
         
     elif name == 'globetech':
-        import  load.globetech
-        
+        import  load.globetech 
         loader.add_process( load.feature.CStartProcess() )
         loader.add_process( load.feature.CEndProcess() )
         loader.add_feature( load.globetech.feat_place.CPlace( ) )
         loader.add_feature( load.globetech.feat_poi.CPoi( ) )
         loader.add_feature( load.globetech.feat_link.CLink( ) )
-        pass    
+         
     elif name == 'rdf':
         import load.rdf
-        pass
+        loader.add_process( load.feature.CStartProcess() )
+        loader.add_process( load.feature.CEndProcess() )
+        loader.add_feature( load.rdf.feat_place.CPlace( ) )
+        loader.add_feature( load.rdf.feat_poi.CPoi( ) )
+        loader.add_feature( load.rdf.feat_link.CLink( ) )
+        
     elif name == 'gaode':
         import load.gaode
-        pass
+        loader.add_process( load.feature.CStartProcess() )
+        loader.add_process( load.feature.CEndProcess() )
+        loader.add_feature( load.gaode.feat_place.CPlace( ) )
+        loader.add_feature( load.gaode.feat_poi.CPoi( ) )
+        loader.add_feature( load.gaode.feat_link.CLink( ) )
+    
+    elif name == 'mmi':
+        import load.mmi
+        loader.add_process( load.feature.CStartProcess() )
+        loader.add_process( load.feature.CEndProcess() )
+        loader.add_feature( load.mmi.feat_place.CPlace( ) )
+        loader.add_feature( load.mmi.feat_poi.CPoi( ) )
+        loader.add_feature( load.mmi.feat_link.CLink( ) )  
     else:
-        print '-- unkonw vendor %s' % name
+        print '---- unkonw vendor %s' % name
+        
