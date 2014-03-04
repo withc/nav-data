@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS mid_feat_key         CASCADE;
 DROP TABLE IF EXISTS mid_place            CASCADE;
 DROP TABLE IF EXISTS mid_place_admin      CASCADE;
+DROP TABLE IF EXISTS mid_postcode         CASCADE;
 
 DROP TABLE IF EXISTS mid_poi             CASCADE;
 DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
@@ -36,7 +37,7 @@ create table mid_feat_key
 -- place
 create table mid_place
 (
-    key   bigint not null,
+    key   bigint   not null,
     type  smallint not null
 );
 
@@ -50,6 +51,15 @@ create table mid_place_admin
     a7     bigint not null,
     a8     bigint not null,
     a9     bigint not null
+);
+
+-- postcode
+create table mid_postcode
+(
+    key    bigint      not null,
+    type   smallint    not null,
+    sub    smallint    not null,
+    pocode varchar(16) not null
 );
 
 -- category

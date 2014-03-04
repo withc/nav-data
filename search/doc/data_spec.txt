@@ -13,6 +13,7 @@ featury type:
 3009:order8
 3010:order9
 3100:build-up area
+3200:postcode
 
 --complex
 4000:intersection

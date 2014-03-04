@@ -95,6 +95,8 @@ class CPoi(load.feature.CFeature):
         self.db.execute( sqlcmd )
         
     def _domake_relation(self):
+        
+        # poi to a8,a9
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select fe.feat_key, fe.feat_type, 7001, f1.feat_key, f1.feat_type
@@ -105,6 +107,8 @@ class CPoi(load.feature.CFeature):
                       on sa.areid = f1.org_id1 and sa.aretyp = f1.org_id2
                  '''
         self.db.execute( sqlcmd )
+        
+        # poi to link
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select fe.feat_key, fe.feat_type, 7002, f1.feat_key, f1.feat_type
