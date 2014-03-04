@@ -29,14 +29,13 @@ class CPlace(load.feature.CFeature):
     def _domake_feature(self):
         sqlcmd = '''
                  insert into mid_place( key, type )
-                     select feat_key, feat_type 
-                     from mid_feat_key
-                     where  3001 <= feat_type and feat_type <= 3010
-                     order by feat_type, feat_key
+                 select feat_key, feat_type 
+                   from mid_feat_key
+                  where 3001 <= feat_type and feat_type <= 3010
+                  order by feat_type, feat_key
                  '''
         self.db.execute( sqlcmd )
-        
-        
+         
     def _domake_geomtry(self):
         tbs = ['org_a0','org_a1','org_a2','org_a8','org_a9']
         for tb in tbs:
@@ -46,9 +45,9 @@ class CPlace(load.feature.CFeature):
         sqlcmd = '''
                     insert into temp_feat_name( key, type, nametype, langcode, name )
                     select fe.feat_key, fe.feat_type, an.nametyp, an.namelc, an.name
-                    from org_an as an
-                    join mid_feat_key as fe
-                      on an.id = fe.org_id1 and an.feattyp = fe.org_id2
+                      from org_an       as an
+                      join mid_feat_key as fe
+                        on an.id = fe.org_id1 and an.feattyp = fe.org_id2
                  '''
         self.db.execute( sqlcmd )
         
@@ -67,13 +66,13 @@ class CPlace(load.feature.CFeature):
         sqlcmd = '''
                     insert into temp_feat_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7000,'A', a.geom
-                    from (
-                        select id, feattyp, st_multi (st_union(the_geom)) as geom
-                        from  %s  
-                        group by id, feattyp
-                     ) as a
-                    join mid_feat_key as fe
-                      on a.id = fe.org_id1 and a.feattyp = fe.org_id2
+                     from (
+                           select id, feattyp, st_multi (st_union(the_geom)) as geom
+                             from  %s  
+                            group by id, feattyp
+                          ) as a
+                     join mid_feat_key as fe
+                       on a.id = fe.org_id1 and a.feattyp = fe.org_id2
                  ''' % tb
         self.db.execute( sqlcmd )
         
@@ -81,11 +80,11 @@ class CPlace(load.feature.CFeature):
             sqlcmd = '''
                     insert into temp_feat_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
-                    from %s as a
-                    join mid_feat_key as fe
-                      on a.id = fe.org_id1 and a.feattyp = fe.org_id2
-                    join org_sm as sm
-                      on a.citycenter = sm.id
+                      from %s           as a
+                      join mid_feat_key as fe
+                        on a.id = fe.org_id1 and a.feattyp = fe.org_id2
+                      join org_sm       as sm
+                        on a.citycenter = sm.id
                     ''' % tb
             self.db.execute( sqlcmd )
     def _gen_admin_sql(self, s):
@@ -106,9 +105,9 @@ class CPlace(load.feature.CFeature):
     
     def _join_admin(self, s, d):
         sql ='''
-                left join org_a<d>     a<d>
+                left join org_a<d>      a<d>
                        on a<s>.order0<d> = a<d>.order0<d>
-                left join mid_feat_key f<d>
+                left join mid_feat_key  f<d>
                        on a<d>.id = f<d>.org_id1 and f<d>.org_id2 = <c>
             '''
         sql = sql.replace('<s>', str(s))
@@ -140,10 +139,10 @@ class CPlace(load.feature.CFeature):
             field = ''
          
         sql = '''insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
-                select  f<s>.feat_key, f<s>.feat_type, f0.feat_key, ''' + field + '''
-                from org_a<s>     a<s>
-                join mid_feat_key f<s>
-                  on a<s>.id = f<s>.org_id1 and f<s>.org_id2 = <c>
+                 select  f<s>.feat_key, f<s>.feat_type, f0.feat_key, ''' + field + '''
+                   from org_a<s>      a<s>
+                   join mid_feat_key  f<s>
+                     on a<s>.id = f<s>.org_id1 and f<s>.org_id2 = <c>
               '''
         sql = sql.replace('<s>', str(s))
         sql = sql.replace('<c>', str(s+1111))

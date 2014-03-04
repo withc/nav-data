@@ -11,8 +11,8 @@ class CLink(load.feature.CFeature):
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
                     select 2000, id, feattyp 
-                    from org_nw as nw
-                    where  feattyp in ( 4110, 4130 )
+                      from org_nw as nw
+                     where feattyp in ( 4110, 4130 )
                  '''
         self.db.execute( sqlcmd )
         
@@ -20,9 +20,9 @@ class CLink(load.feature.CFeature):
         sqlcmd = '''
                     insert into mid_link( key, type )
                     select fe.feat_key, fe.feat_type
-                    from org_nw as nw
-                    join mid_feat_key as fe
-                      on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
+                      from org_nw       as nw
+                      join mid_feat_key as fe
+                        on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
                  '''
         self.db.execute( sqlcmd )
     
@@ -47,7 +47,7 @@ class CLink(load.feature.CFeature):
                               ELSE 'AN'
                             END as nametype,
                            gc.namelc, gc.fullname
-                    from org_gc as gc
+                    from org_gc       as gc
                     join mid_feat_key as fe
                       on gc.id = fe.org_id1 and gc.feattyp = fe.org_id2
                  '''
@@ -62,7 +62,9 @@ class CLink(load.feature.CFeature):
                   select  fe.feat_key, fe.feat_type, 7001, f1.feat_key, f1.feat_type
                     from org_ta       as ta
                     join mid_feat_key as fe
-                      on ta.aretyp in (1119,1120) and  ta.id = fe.org_id1 and ta.trpeltyp = fe.org_id2
+                      on ta.aretyp   in (1119,1120) and
+                         ta.id       = fe.org_id1   and
+                         ta.trpeltyp = fe.org_id2
                     join mid_feat_key as f1
                       on ta.areid = f1.org_id1 and ta.aretyp = f1.org_id2
                  '''
