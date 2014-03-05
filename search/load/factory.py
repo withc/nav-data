@@ -40,6 +40,7 @@ def featureFactory( name, loader ):
         loader.add_process( load.feature.CStartProcess() )
         loader.add_process( load.feature.CEndProcess() )
         loader.add_feature( load.mmi.feat_place.CPlace( ) )
+        loader.add_feature( load.mmi.feat_postcode.CPostcode( ) )
         loader.add_feature( load.mmi.feat_poi.CPoi( ) )
         loader.add_feature( load.mmi.feat_link.CLink( ) )  
     else:

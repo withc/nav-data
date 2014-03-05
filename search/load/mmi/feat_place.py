@@ -13,7 +13,7 @@ class CPlace(load.feature.CFeature):
                      (
                        select distinct kind, id, parent_id
                          from org_area
-                         order by kind DESC,  parent_id, id
+                        order by kind DESC,  parent_id, id
                       ) as a
                  '''
         self.db.execute( sqlcmd )
@@ -50,7 +50,8 @@ class CPlace(load.feature.CFeature):
                  select f.feat_key, f.feat_type, 7379, 'P', c.geom
                    from temp_admincode        as t 
                    join mid_feat_key          as f
-                     on t.org_id1 = f.org_id1 and t.org_id2 = f.org_id2
+                     on t.org_id1   = f.org_id1 and 
+                        t.org_id2   = f.org_id2
                    join org_city_centre_point as c
                      on t.id        = c.id       and
                         t.parent_id = c.adminid

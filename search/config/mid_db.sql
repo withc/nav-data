@@ -99,7 +99,8 @@ create table mid_poi_children
 create table mid_link
 (
     key   bigint   not null,
-    type  smallint not null
+    type  smallint not null,
+    
 );
 
 -- name
