@@ -89,6 +89,7 @@ class CPoi(load.feature.CFeature):
         self.db.execute( sqlcmd )
         
     def _domake_relation(self):
+        # poi to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select  f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
