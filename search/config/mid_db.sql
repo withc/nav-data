@@ -65,11 +65,11 @@ create table mid_postcode
 -- category
 create table mid_poi_category
 (
-    cat_id        int not null,
-    parent_cat_id int not null,
-    level         smallint not null,
-    imp           smallint,
-    cat_name      varchar(128) not null
+    id         int      not null,
+    parent_id  int      not null,
+    level      smallint not null,
+    imp        smallint not null,
+    name       varchar(128) not null
 );
 
 -- poi
@@ -99,8 +99,7 @@ create table mid_poi_children
 create table mid_link
 (
     key   bigint   not null,
-    type  smallint not null,
-    
+    type  smallint not null
 );
 
 -- name

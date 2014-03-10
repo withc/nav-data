@@ -38,8 +38,9 @@ def featureFactory( name, loader ):
     elif name == 'mmi':
         import load.mmi
         loader.add_process( load.feature.CStartProcess() )
-        loader.add_process( load.feature.CEndProcess() )
-        loader.add_feature( load.mmi.feat_place.CPlace( ) )
+        loader.add_process( load.feature.CEndProcess() ) 
+        loader.add_feature( load.mmi.feat_category.CPoiCategory() )
+        loader.add_feature( load.mmi.feat_place.CPlace( ) ) 
         loader.add_feature( load.mmi.feat_postcode.CPostcode( ) )
         loader.add_feature( load.mmi.feat_poi.CPoi( ) )
         loader.add_feature( load.mmi.feat_link.CLink( ) )  

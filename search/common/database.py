@@ -23,6 +23,9 @@ class CDB(object):
         self.cur = self.conn.cursor()
         self.connected = True
         
+    def do_big_insert(self, sqlcmd ): 
+        self.execute( sqlcmd )
+       
     def execute(self, sqlcmd, parameters = []):
         '''execute commands '''
         try:

@@ -1,0 +1,173 @@
+#id;name1;name2;code;imp
+M073;Automotive Dealers & Repair;Automotive Dealers-Car;SHPAUT;9999
+M095;Automotive Dealers & Repair;Automotive Repair;SHPREP;9999
+M175;Automotive Dealers & Repair BMW;Automotive Dealers-Bike;BIKBMW;9999
+M173;Automotive Dealers & Repair BMW;Automotive Dealers-Car;AUTBMW;9999
+M174;Automotive Dealers & Repair BMW;Automotive Repair;REPBMW;9999
+M182;Automotive Pre Own Dealers;Automotive Pre Own Dealers;SHPPWN;9999
+M002;Commercial & Industrial;BPO;SHPBPO;9999
+M001;Commercial & Industrial;Commercial Complex & Building;SHPBLD;9999
+M005;Commercial & Industrial;Industrial Centres;SHPIND;9999
+M006;Commercial & Industrial;Media & Advertising;SHPMAD;9999
+M007;Commercial & Industrial;Oil & Petroleum;SHPOIL;9999
+M003;Commercial & Industrial;Other Commercial Centres;SHPCOM;9999
+M008;Commercial & Industrial;Telecom;SHPTEL;9999
+M171;Commercial & Industrial;Vineyards/Winery;SHPWIN;9999
+M120;Commercial & Industrial;Warehouse/ Godowns;SHPWRE;9999
+M009;Community Services;Banquet & Marriage Hall;COMBAN;9999
+M014;Community Services;Cooking Gas Stations & Services;COMGAS;9999
+M119;Community Services;Court House;COMCRT;9
+M010;Community Services;Crematorium, Burial Ground;COMCRM;9999
+M012;Community Services;Embassies & Consulates;COMEMB;9999
+M109;Community Services;Exhib or Confrnce/Culture Cntre, Fairs;COMEXB;9999
+M013;Community Services;Fire Station;COMFIR;9999
+M023;Community Services;General Parks and gardens;COMPRK;9999
+M015;Community Services;Government Office;COMGOV;9
+M016;Community Services;Institution;COMINS;9999
+M100;Community Services;Kindergarten, Play School, Day care;COMKND;9999
+M018;Community Services;Library;COMLIB;9
+M017;Community Services;Local Administrative Offices;COMLAO;9
+M111;Community Services;Motoring Organization Office;COMRTO;9999
+M020;Community Services;Other Community Services - catchall;COMOTH;9999
+M148;Community Services;Police Chowki;COMPCK;9999
+M141;Community Services;Police Other;COMPLO;9999
+M022;Community Services;Police Station;COMPOL;9
+M024;Community Services;Post and Telegraph Office;COMPTO;9
+M176;Community Services;Public Convenience;COMPUB;9999
+M011;Community Services;School;COMSCH;9999
+M170;Community Services;Town Hall;COMTWH;9
+M143;Community Services;University or College;COMCLG;9
+M134;Community Services;Vocational College/Edu others;COMEOT;9
+M025;Financial Services;ATM;FINATM;9999
+M026;Financial Services;Banks & Money Exchanger;FINBNK;9
+M184;Financial Services;Financial Other - Catch All;FINOTH;9999
+M027;Financial Services;Insurance & Financial;FININS;9999
+M178;General;Landmarks such as Gates, Pillars, statues etc;GENLMK;9999
+M168;General;Metro Pillar;METPLR;9999
+M028;Health & Wellness;Ambulance Service;HLTAMB;9999
+M029;Health & Wellness;Ayurveda & Yoga;HLTAUR;9999
+M030;Health & Wellness;Blood bank;HLTBLD;9999
+M031;Health & Wellness;Clinic, Dspnsry,health centres;HLTCLI;9
+M157;Health & Wellness;Dental hospital;HLTDNH;9
+M099;Health & Wellness;Eye bank;HLTEYE;9999
+M158;Health & Wellness;Eye hospital;HLTEYH;9
+M032;Health & Wellness;Gym;HLTGYM;9999
+M185;Health & Wellness;Health Other - Catch All;HLTOTH;9999
+M160;Health & Wellness;Heart hospital;HLTHRH;9
+M159;Health & Wellness;Homeopathic hospital;HLTHMH;9999
+M035;Health & Wellness;Major Hospitals & Nursing Homes;HLTMED;9
+M034;Health & Wellness;Medical Store;HLTMDS;9999
+M161;Health & Wellness;Mental hospital;HLTMNH;9
+M162;Health & Wellness;Optometrist;HLTOPT;9999
+M163;Health & Wellness;Orthopedic hospital;HLTORH;9
+M033;Health & Wellness;Pathological Labs;HLTLAB;9999
+M181;Health & Wellness;Spa;HLTSPA;9999
+M164;Health & Wellness;Vetinary hospital;HLTVTH;9999
+M036;Historical Places;Forts & Palaces;HISFRT;9999
+M037;Historical Places;Historical Monument;HISMON;9999
+M038;Historical Places;Museums;HISMUS;9
+M177;Historical Places;Other Historical Monument;HISOTH;9999
+M041;Hotels & Dining;Dharamshalas;HOTHST;9999
+M186;Hotels & Dining;Hotels - 3 Star;HOTNOP;9
+M040;Hotels & Dining;Hotels - Budget;HOTALL;9999
+M042;Hotels & Dining;Hotels - Premium;HOTPRE;9999
+M043;Hotels & Dining;Resorts;HOTRES;9999
+M044;Hotels & Dining;Youth Hostels;HOTYTH;9999
+M139;Nature;Animal and Bird Sighting;NTCABS;9999
+M124;Nature;Beach;NTCBCH;9999
+M131;Nature;Bird Sanctuary;NTCBDS;9999
+M048;Nature;Forest;NTCFST;9999
+M045;Nature;Hill Station;NTCHLS;9
+M046;Nature;Island;NTCISL;9999
+M125;Nature;Lake;NTCLAK;9999
+M149;Nature;Nature Other;NTCOTH;9999
+M129;Nature;Sunrise Point;NTCSRS;9999
+M128;Nature;Sunset Point;NTCSET;9999
+M106;Nature;Vantage Point;RCNVUE;9999
+M126;Nature;Water Fall;NTCFAL;9
+M140;Nature;Water Spring;NTCSPG;9999
+M130;Nature;Wildlife Sanctuary;NTCWLS;9
+M050;Pilgrim Places;Buddhist Sites;PLPBUD;9
+M051;Pilgrim Places;Church;PLPCHU;9
+M052;Pilgrim Places;Gurudwara;PLPGUR;9
+M053;Pilgrim Places;Hindu Temple;PLPHIN;9
+M054;Pilgrim Places;Islamic;PLPISL;9
+M055;Pilgrim Places;Jain Temple;PLPJAN;9
+M056;Pilgrim Places;Other Worship Places;PLPOTH;9
+M057;Recreation & Entertainment;Adventure Sports;RCNADV;9
+M060;Recreation & Entertainment;Amusement Park, Water Parks;RCNAUS;9
+M058;Recreation & Entertainment;Art Galleries;RCNART;9
+M059;Recreation & Entertainment;Auditoriums;RCNAUD;9999
+M151;Recreation & Entertainment;Bowling Centre;RCNBWL;9
+M108;Recreation & Entertainment;Camping;RCNCMP;9999
+M103;Recreation & Entertainment;Casino;RCNCSN;9
+M062;Recreation & Entertainment;Cinema;RCNCIN;9
+M063;Recreation & Entertainment;Club;RCNCLB;9
+M127;Recreation & Entertainment;Dam;RCNDAM;9999
+M064;Recreation & Entertainment;Farm Houses;RCNFRM;9999
+M153;Recreation & Entertainment;Golf Course;RCNGLF;9
+M169;Recreation & Entertainment;International Border Crossing;RCNCRS;9999
+M150;Recreation & Entertainment;Major Tourist Park/Garden;RCNPRK;9999
+M115;Recreation & Entertainment;Recreation Facility;RCNOTH;9999
+M105;Recreation & Entertainment;Ski Resort;RCNSKI;9
+M132;Recreation & Entertainment;Ski-lift Station;RCNSLF;9999
+M065;Recreation & Entertainment;Sporting Venues - Catchall;RCNSPT;9
+M145;Recreation & Entertainment;Sports Complex;RCNSCO;9
+M102;Recreation & Entertainment;Stadium;RCNSTA;9
+M104;Recreation & Entertainment;Swimming Pool;RCNSWM;9999
+M167;Recreation & Entertainment;Tea Garden;RCNTEA;9999
+M142;Recreation & Entertainment;Theatre;RCNTHT;9
+M066;Recreation & Entertainment;Tourist Attraction - Catchall;RCNTST;9
+M061;Recreation & Entertainment;Zoo;RCNZOO;9
+M092;Residential;Apartment;LCSAPT;9999
+M156;Residential;Individual House Not Famous;LCSIHS;9999
+M097;Residential;Individual Housing - Famous;LCSFHS;9999
+M180;Restaurants & Dining;Restaurant - Bakery & Desserts;FODBAK;9999
+M172;Restaurants & Dining;Restaurant - Coffee Shops;FODCOF;9999
+M067;Restaurants & Dining;Restaurant - Continental;FODCON;9999
+M068;Restaurants & Dining;Restaurant - Fast Food;FODFFD;9999
+M069;Restaurants & Dining;Restaurant - Indian/Multicuisine;FODIND;9999
+M071;Restaurants & Dining;Restaurant - Oriental;FODOTL;9999
+M070;Restaurants & Dining;Restaurant - Others;FODOTH;9999
+M072;Restaurants & Dining;Restaurant - Pubs & Bars;FODPUB;9999
+M117;Restaurants & Dining;Roadside Diner;FODRDS;9999
+M096;Shopping;Automotive Stores/Automotive Others;SHPSTR;9999
+M116;Shopping;Department Store;SHPDST;9999
+M098;Shopping;Mandi - Sabzi mandi, fish Mandi etc.;SHPMAN;9999
+M076;Shopping;Other Shopping Centers - Catchall;SHPOTH;9999
+M183;Shopping;Property Agents & Associates;SHPAGN;9999
+M074;Shopping;Shopping Malls;SHPMAL;9999
+M075;Shopping;Shopping Markets;SHPMKT;9999
+M155;Shopping;Shopping Plaza, Complex;SHPPLZ;9999
+M077;Shopping;Shopping Retail Chain;SHPRTC;9999
+M078;Shopping;Shopping Retail Shops;SHPRTS;9999
+M113;Transportation;Airline Access;TRNARL;9999
+M146;Transportation;Airport - Commercial;TRNARC;9
+M147;Transportation;Airport - Non Commercial;TRNARN;9
+M114;Transportation;Bus and Truck Parking;TRNPKB;9999
+M080;Transportation;Bus Stop;TRNBUS;9999
+M144;Transportation;Bus Terminal;TRNBST;9999
+M081;Transportation;Car Rental;TRNCAR;9999
+M082;Transportation;CNG Station;TRNCNG;9999
+M112;Transportation;Customs;TRNCTM;9999
+M179;Transportation;Electric Charge Station;TRNCGS;9999
+M122;Transportation;Ferry Terminal;TRNFRY;9999
+M133;Transportation;Helipad;TRNHPD;9999
+M154;Transportation;Local Railway Station;TRNLOC;9999
+M121;Transportation;Marina;TRNMRN;9999
+M087;Transportation;Metro Station;TRNMET;9999
+M086;Transportation;Metro/Local & Main Railway Station;TRNRAM;9999
+M110;Transportation;Open Parking Areas;TRNPKO;9999
+M091;Transportation;Other - Transportation Group Catchall;TRNOTH;9999
+M084;Transportation;Parking;TRNPRK;9999
+M118;Transportation;Parking Garage;TRNPKG;9999
+M083;Transportation;Petrol Pump;TRNPMP;9999
+M135;Transportation;Railway Bridge;TRNRWB;9999
+M085;Transportation;Railway Station;TRNRAL;9999
+M136;Transportation;Railway Tunnel;TRNRWT;9999
+M152;Transportation;Rest Area;TRNRST;9999
+M088;Transportation;Sea Port;TRNSEA;9999
+M090;Transportation;Tour Operator;TRNTRO;9999
+M089;Transportation;Tourist Information Centre;TRNTIC;9999
+M166;Transportation;Traffic Check Post;TRNCKP;9999
+M187;Automotive Dealers & Repair BMW;Automotive Pre Own Dealers;PWNBMW;9999
