@@ -11,7 +11,7 @@ class CLink(load.feature.CFeature):
                  select 2000, id, feattyp
                    from org_city_nw_gc_polyline
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -21,7 +21,7 @@ class CLink(load.feature.CFeature):
                       join mid_feat_key             as fe
                         on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         sqlcmd = '''
@@ -31,7 +31,7 @@ class CLink(load.feature.CFeature):
                       join mid_feat_key             as fe
                         on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
@@ -58,13 +58,30 @@ class CLink(load.feature.CFeature):
                  select key, type, 'RN', namelc, routenum 
                    from f where routenum is not null
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         pass
         
     def _domake_relation(self):
         sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
+                    from ( 
+                           select id, l_ladmin as adminid from org_city_nw_gc_polyline
+                           union
+                           select id, r_ladmin as adminid from org_city_nw_gc_polyline
+                          )  as nw
+                    join mid_feat_key             as f0
+                      on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
+                    join temp_admincode           as ta
+                      on nw.adminid = ta.id
+                    join mid_feat_key             as f1
+                      on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
+        
+        
+        
+        
         

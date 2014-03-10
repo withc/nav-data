@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS temp_feat_name_gen_id     CASCADE;
 DROP TABLE IF EXISTS temp_feat_geom            CASCADE;
 DROP TABLE IF EXISTS temp_feat_geom_gen_id     CASCADE;
 DROP TABLE IF EXISTS temp_feat_class           CASCADE;
+DROP TABLE IF EXISTS temp_postcode             CASCADE;
 --------------------------------------------------------------
 create table mid_feat_key
 (
@@ -201,6 +202,13 @@ create table temp_feat_class
     level    smallint     not null,
     imp      smallint     not null,
     name     varchar(128) not null
+);
+
+create table temp_postcode
+(
+    id       int         not null,
+    sub      smallint    not null,
+    org_code varchar(16) not null
 );
 
 
