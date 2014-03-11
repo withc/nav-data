@@ -14,7 +14,7 @@ create table temp_admincode
 
 create table temp_poi_uid
 (
-    uid        varchar(20) not null,
+    uid        varchar(20) not null PRIMARY KEY,
     org_id1    bigint      not null,
     org_id2    bigint      not null
 );

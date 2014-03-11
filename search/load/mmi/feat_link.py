@@ -78,12 +78,13 @@ class CLink(load.feature.CFeature):
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
                     from ( 
-                           select id, l_ladmin as adminid from org_city_nw_gc_polyline
+                           select id, feattyp, l_ladmin as adminid from org_city_nw_gc_polyline
                            union
-                           select id, r_ladmin as adminid from org_city_nw_gc_polyline
+                           select id, feattyp, r_ladmin as adminid from org_city_nw_gc_polyline
+                            where r_ladmin <> l_ladmin
                           )  as nw
                     join mid_feat_key             as f0
-                      on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
+                      on nw.id = f0.org_id1 and nw.feattyp = f0.org_id2
                     join temp_admincode           as ta
                       on nw.adminid = ta.id
                     join mid_feat_key             as f1

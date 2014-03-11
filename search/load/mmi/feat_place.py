@@ -16,7 +16,7 @@ class CPlace(load.feature.CFeature):
                         order by kind DESC,  parent_id, id
                       ) as a
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
@@ -31,7 +31,7 @@ class CPlace(load.feature.CFeature):
                             org_id2
                        from temp_admincode
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -41,9 +41,25 @@ class CPlace(load.feature.CFeature):
                        where  3001 <= feat_type and feat_type <= 3010
                     order by  feat_type, feat_key
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
+        # get the state and country point
+        sqlcmd = '''
+                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 select f.feat_key, f.feat_type, 7379, 'P', c.the_geom
+                   from org_capital_indicator as ca
+                   join temp_admincode        as t
+                     on ca.stt_id  = t.id and t.kind = 9 
+                   join mid_feat_key          as f
+                     on t.org_id1   = f.org_id1 and 
+                        t.org_id2   = f.org_id2
+                   join org_city_centre_point as c
+                     on ca.capital_id  = c.id      
+                        -- t.parent_id = c.adminid
+                 ''' 
+        self.db.do_big_insert( sqlcmd )
+        
         # get the city point
         sqlcmd = '''
                  insert into temp_feat_geom( key, type, code, geotype, geom ) 
@@ -56,10 +72,8 @@ class CPlace(load.feature.CFeature):
                      on t.id        = c.id       and
                         t.parent_id = c.adminid
                  ''' 
-        self.db.execute( sqlcmd )
-        # get the state and country point
-        # todo..
-        
+        self.db.do_big_insert( sqlcmd )
+           
     def _domake_name(self):
         
         sqlcmd = '''
@@ -79,16 +93,51 @@ class CPlace(load.feature.CFeature):
                  union
                  select key, type, 'AN', 'ENG', regexp_split_to_table(alt, ';') from ad  
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         pass
         
     def _domake_relation(self):
-        pass
         sqlcmd = '''
-                insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
+             insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
+               with ad ( f_key, f_type, kind, id, parent_id )
+                    as (
+                         select f.feat_key, f.feat_type, t.kind, t.id, t.parent_id
+                           from temp_admincode    as t 
+                           join mid_feat_key      as f
+                             on t.org_id1   = f.org_id1 and 
+                                t.org_id2   = f.org_id2
+                        )
+              select a0.f_key, a0.f_type, a0.f_key, 0, 0, 0, 0, 0
+                from ad       as a0
+               where a0.kind = 10
+              union
+              select a1.f_key, a1.f_type, a0.f_key, a1.f_key, 0, 0, 0, 0
+                from ad       as a1
+                join ad       as a0
+                  on a1.parent_id = a0.id 
+               where a1.kind = 9
+              union 
+              select a8.f_key, a8.f_type, a0.f_key, a1.f_key, 0, 0, a8.f_key, 0
+                from ad       as a8
+                join ad       as a1
+                  on a8.parent_id = a1.id
+                join ad       as a0
+                  on a1.parent_id = a0.id
+               where a8.kind = 2
+              union
+              select a9.f_key, a9.f_type, a0.f_key, a1.f_key, 0, 0, a8.f_key, a9.f_key
+                from ad       as a9 
+                join ad       as a8
+                  on a9.parent_id = a8.id
+                join ad       as a1
+                  on a8.parent_id = a1.id
+                join ad       as a0
+                  on a1.parent_id = a0.id
+               where a9.kind = 1
+               order by 1
                 '''
-        #self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         
