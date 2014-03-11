@@ -97,6 +97,21 @@ class CPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
+        # poi to zipcode
+        sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype ) 
+                  select f.feat_key, f.feat_type, 7001, fz.feat_key, fz.feat_type
+                    from org_poi_point as p
+                    join temp_poi_uid  as t
+                      on p.uid     = t.uid
+                    join mid_feat_key  as f
+                      on t.org_id1 = f.org_id1 and t.org_id2 = f.org_id2
+                    join temp_postcode as z
+                      on p.zipcode = z.org_code
+                    join mid_feat_key  as fz
+                      on z.id = fz.org_id1 and z.sub = fz.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
         # poi to place
         sqlcmd = '''
@@ -128,8 +143,6 @@ class CPoi(load.feature.CFeature):
                       on p.edge_id = l.org_id1 and l.org_id2 = 4110
                  '''
         self.db.do_big_insert( sqlcmd )
-        
-        
         
         
         
