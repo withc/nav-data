@@ -40,6 +40,9 @@ class CDB(object):
             print 'SQL execute error:' + sqlcmd 
             raise
         
+    def analyze(self, table):
+        self.cur.execute( 'ANALYZE %s' % table )
+           
     def close(self):
         if self.connected == True:
             self.cur.close()
