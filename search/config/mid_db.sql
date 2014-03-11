@@ -87,7 +87,7 @@ create table mid_poi_attr_value
     key         bigint       not null,
     type        smallint     not null,
     attr_type   char(2)      not null,
-    attr_value  varchar(128) not null
+    attr_value  varchar(256) not null
 );
 
 create table mid_poi_children

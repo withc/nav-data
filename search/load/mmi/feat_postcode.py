@@ -10,9 +10,9 @@ class CPostcode(load.feature.CFeature):
                     insert into temp_postcode( id, sub, org_code )
                     select row_number() over(), 0, zipcode
                       from (
-                            select zipcode from org_city_nw_gc_polyline
+                            select distinct zipcode from org_city_nw_gc_polyline
                              union
-                            select zipcode from org_poi_point
+                            select distinct zipcode from org_poi_point
                            ) as a
                     where a.zipcode is not null
                     order by zipcode
@@ -28,7 +28,7 @@ class CPostcode(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                 insert into mid_postcode( key, type, sub, org_code )
+                 insert into mid_postcode( key, type, sub, pocode )
                  select f.feat_key, f.feat_type, p.sub, p.org_code
                    from temp_postcode as p
                    join mid_feat_key  as f

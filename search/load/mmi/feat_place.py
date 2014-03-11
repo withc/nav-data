@@ -47,7 +47,7 @@ class CPlace(load.feature.CFeature):
         # get the city point
         sqlcmd = '''
                  insert into temp_feat_geom( key, type, code, geotype, geom ) 
-                 select f.feat_key, f.feat_type, 7379, 'P', c.geom
+                 select f.feat_key, f.feat_type, 7379, 'P', c.the_geom
                    from temp_admincode        as t 
                    join mid_feat_key          as f
                      on t.org_id1   = f.org_id1 and 
@@ -85,9 +85,10 @@ class CPlace(load.feature.CFeature):
         pass
         
     def _domake_relation(self):
+        pass
         sqlcmd = '''
                 insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
                 '''
-        self.db.execute( sqlcmd )
+        #self.db.execute( sqlcmd )
         
         
