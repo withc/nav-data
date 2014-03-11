@@ -4,7 +4,6 @@
 import common.logger
 import load.load_base
 
-
 if __name__ == "__main__":
     common.logger.init_log()
     

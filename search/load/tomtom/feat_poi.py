@@ -12,7 +12,7 @@ class CPoi(load.feature.CFeature):
                       from org_pi as pi
                      where feattyp <> 9920
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -22,7 +22,7 @@ class CPoi(load.feature.CFeature):
                       join mid_feat_key as fe
                         on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         sqlcmd = '''
@@ -32,7 +32,7 @@ class CPoi(load.feature.CFeature):
                       join mid_feat_key as fe
                         on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
                   insert into temp_feat_geom( key, type, code, geotype, geom )
@@ -45,7 +45,7 @@ class CPoi(load.feature.CFeature):
                     join org_pi       as p1
                       on pr.belpoityp = 9920 and pr.belpoiid = p1.id 
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
@@ -57,7 +57,7 @@ class CPoi(load.feature.CFeature):
                          p.id      = fe.org_id1                      and
                          p.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         sqlcmd = '''
@@ -92,7 +92,7 @@ class CPoi(load.feature.CFeature):
                      join mid_feat_key as fe
                        on pi.hsnum is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
         
@@ -106,7 +106,7 @@ class CPoi(load.feature.CFeature):
                     join mid_feat_key as f1
                       on sa.areid = f1.org_id1 and sa.aretyp = f1.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         # poi to link
         sqlcmd = '''
@@ -118,5 +118,5 @@ class CPoi(load.feature.CFeature):
                     join mid_feat_key as f1
                       on pi.cltrpelid = f1.org_id1 and f1.org_id2 in (4110,4130)
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         

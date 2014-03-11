@@ -8,23 +8,23 @@ class CLink(load.feature.CFeature):
     def _domake_key(self):
         sqlcmd = '''
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         sqlcmd = '''
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
   
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         pass
@@ -32,5 +32,5 @@ class CLink(load.feature.CFeature):
     def _domake_relation(self):
         sqlcmd = '''
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         

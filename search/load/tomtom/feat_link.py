@@ -14,7 +14,7 @@ class CLink(load.feature.CFeature):
                       from org_nw as nw
                      where feattyp in ( 4110, 4130 )
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -24,7 +24,7 @@ class CLink(load.feature.CFeature):
                       join mid_feat_key as fe
                         on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         sqlcmd = '''
@@ -34,7 +34,7 @@ class CLink(load.feature.CFeature):
                       join mid_feat_key as fe
                         on nw.id = fe.org_id1 and nw.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
@@ -51,7 +51,7 @@ class CLink(load.feature.CFeature):
                     join mid_feat_key as fe
                       on gc.id = fe.org_id1 and gc.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         pass
@@ -68,5 +68,5 @@ class CLink(load.feature.CFeature):
                     join mid_feat_key as f1
                       on ta.areid = f1.org_id1 and ta.aretyp = f1.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         

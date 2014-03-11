@@ -89,9 +89,13 @@ class CPlace(load.feature.CFeature):
                    join mid_feat_key   as f
                      on t.org_id1 = f.org_id1 and t.org_id2 = f.org_id2
                  )
-                 select key, type, 'ON', 'ENG', name from ad 
-                 union
-                 select key, type, 'AN', 'ENG', regexp_split_to_table(alt, ';') from ad  
+                 select * 
+                 from (
+                      select key, type, 'ON', 'ENG', name from ad 
+                       union
+                      select key, type, 'AN', 'ENG', regexp_split_to_table(alt, ';') as name from ad
+                      ) as aa
+                 where aa.name <> ''
                  '''
         self.db.do_big_insert( sqlcmd )
     

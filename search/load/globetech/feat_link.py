@@ -11,7 +11,7 @@ class CLink(load.feature.CFeature):
                     select 2000, routeid, 2000 
                     from org_l_tran as tr
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -21,7 +21,7 @@ class CLink(load.feature.CFeature):
                       join mid_feat_key as fe
                         on tr.routeid = fe.org_id1 and 2000 = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         sqlcmd = '''
@@ -31,7 +31,7 @@ class CLink(load.feature.CFeature):
                       join mid_feat_key as fe
                         on tr.routeid = fe.org_id1 and 2000 = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
@@ -54,7 +54,7 @@ class CLink(load.feature.CFeature):
                     union
                     select key, type, 'BU', 'ENG', brdname  from tr where brdname is not null
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         pass
@@ -74,5 +74,5 @@ class CLink(load.feature.CFeature):
                     join mid_feat_key     as f1
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         

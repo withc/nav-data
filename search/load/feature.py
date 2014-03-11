@@ -68,7 +68,6 @@ class CStartProcess(object):
         self.db.execute( fp.read() )
         fp.close()
         
-
 class CEndProcess(object):
     
     def __init__(self):
@@ -88,7 +87,7 @@ class CEndProcess(object):
                    select *, dense_rank() over (order by name, langcode ) 
                      from temp_feat_name
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
                    insert into mid_name( id, langcode, name)
@@ -96,7 +95,7 @@ class CEndProcess(object):
                      from temp_feat_name_gen_id
                      order by nameid
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
                    insert into mid_feature_to_name( key, type, nametype, nameid)
@@ -104,7 +103,7 @@ class CEndProcess(object):
                      from temp_feat_name_gen_id
                      order by key
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _gen_geomid(self):
         self.logger.info('generate geometry id')
@@ -113,14 +112,14 @@ class CEndProcess(object):
                    select *, dense_rank() over (order by geotype, geom ) 
                      from temp_feat_geom
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         sqlcmd = '''
                    insert into mid_geometry( id, type, geom)
                    select distinct geomid, geotype, geom
                      from temp_feat_geom_gen_id
                      order by geomid
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
                    insert into mid_feature_to_geometry( key, type, code, geomid)
@@ -128,7 +127,7 @@ class CEndProcess(object):
                      from temp_feat_geom_gen_id
                      order by key
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         
         

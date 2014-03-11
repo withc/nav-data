@@ -10,7 +10,7 @@ class CPlace(load.feature.CFeature):
         sqlcmd = ''' insert into mid_feat_key( feat_type, org_id1, org_id2 ) 
                      values( 3001, 0, 0 )
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         sqlcmd = '''
                     insert into temp_admincode( type, prov_code, amp_code, tam_code, org_id1, org_id2 )
                     select distinct 
@@ -19,7 +19,7 @@ class CPlace(load.feature.CFeature):
                       from org_admin_point
                      order by type, prov_code, amp_code, tam_code
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
@@ -34,7 +34,7 @@ class CPlace(load.feature.CFeature):
                        from temp_admincode
                       order by type, prov_code, amp_code, tam_code
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -44,11 +44,11 @@ class CPlace(load.feature.CFeature):
                        where  3001 <= feat_type and feat_type <= 3010
                     order by  feat_type, feat_key
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         # add the country point by myself
-        self.db.execute( ''' insert into temp_feat_geom( key, type, code, geotype, geom )
+        self.db.do_big_insert( ''' insert into temp_feat_geom( key, type, code, geotype, geom )
                              select key, type, 7379, 'P',  ST_SetSRID(st_makepoint(100.5018272, 13.7541276), 4326)
                                from mid_place where type = 3001
                          ''' )
@@ -64,11 +64,11 @@ class CPlace(load.feature.CFeature):
                     join mid_feat_key     as fe
                       on ta.org_id1 = fe.org_id1 and ta.org_id2 = fe.org_id2
                  ''' 
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         # add the country name by myself
-        self.db.execute( ''' insert into temp_feat_name( key, type, nametype, langcode, name )
+        self.db.do_big_insert( ''' insert into temp_feat_name( key, type, nametype, langcode, name )
                              select key, type, 'ON', 'THA', '\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2'
                                from mid_place where type = 3001
                               union
@@ -93,14 +93,14 @@ class CPlace(load.feature.CFeature):
                    union
                   select key, type, 'ON', 'ENG', name from ad
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         pass
         
     def _domake_relation(self):
         # add the country admin by myself
-        self.db.execute( ''' insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
+        self.db.do_big_insert( ''' insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
                              select key, type, key, 0,0,0,0,0
                                from mid_place where type = 3001
                          ''' )
@@ -135,6 +135,6 @@ class CPlace(load.feature.CFeature):
                      a9.amp_code  = a8.amp_code
                where a9.type      = 3
            '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         

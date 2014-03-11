@@ -42,7 +42,22 @@ class CDB(object):
         
     def analyze(self, table):
         self.cur.execute( 'ANALYZE %s' % table )
-           
+        
+    def getResultCount(self, sqlcmd):
+        self.execute(sqlcmd)
+        rows = self.cur.fetchone()
+        if rows:
+            return rows[0]
+        return 0
+    
+    def getOneResult(self, sqlcmd):
+        sqlcmd = sqlcmd + '  limit 1'
+        self.execute(sqlcmd)
+        rows = self.cur.fetchone()
+        if rows:
+            return rows
+        return 0
+        
     def close(self):
         if self.connected == True:
             self.cur.close()

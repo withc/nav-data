@@ -24,7 +24,7 @@ class CPlace(load.feature.CFeature):
                     select distinct 3010, id, feattyp  from org_a9 where name is not null
                     order by feattyp, id
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
@@ -34,7 +34,7 @@ class CPlace(load.feature.CFeature):
                   where 3001 <= feat_type and feat_type <= 3010
                   order by feat_type, feat_key
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
          
     def _domake_geomtry(self):
         tbs = ['org_a0','org_a1','org_a2','org_a8','org_a9']
@@ -49,18 +49,18 @@ class CPlace(load.feature.CFeature):
                       join mid_feat_key as fe
                         on an.id = fe.org_id1 and an.feattyp = fe.org_id2
                  '''
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_attribute(self):
         pass
         
     def _domake_relation(self):
-        self.db.execute( self._gen_admin_sql(0) )
-        self.db.execute( self._gen_admin_sql(1) )
-        self.db.execute( self._gen_admin_sql(2) )
-        self.db.execute( self._gen_admin_sql(7) )
-        self.db.execute( self._gen_admin_sql(8) )
-        self.db.execute( self._gen_admin_sql(9) )
+        self.db.do_big_insert( self._gen_admin_sql(0) )
+        self.db.do_big_insert( self._gen_admin_sql(1) )
+        self.db.do_big_insert( self._gen_admin_sql(2) )
+        self.db.do_big_insert( self._gen_admin_sql(7) )
+        self.db.do_big_insert( self._gen_admin_sql(8) )
+        self.db.do_big_insert( self._gen_admin_sql(9) )
       
     def _geomtry(self, tb):
         sqlcmd = '''
@@ -74,7 +74,7 @@ class CPlace(load.feature.CFeature):
                      join mid_feat_key as fe
                        on a.id = fe.org_id1 and a.feattyp = fe.org_id2
                  ''' % tb
-        self.db.execute( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         if tb.find('a8') >= 0 or tb.find('a9') >= 0:
             sqlcmd = '''
@@ -86,7 +86,7 @@ class CPlace(load.feature.CFeature):
                       join org_sm       as sm
                         on a.citycenter = sm.id
                     ''' % tb
-            self.db.execute( sqlcmd )
+            self.db.do_big_insert( sqlcmd )
     def _gen_admin_sql(self, s):
         if s == 0:
             sqlcmd = self._select_admin(0)

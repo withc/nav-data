@@ -1,6 +1,7 @@
 import common.database
 import common.logger
 import load.factory
+import check.mid_check
 
 class CLoader(object):
     def __init__(self):
@@ -16,13 +17,16 @@ class CLoader(object):
         self.db = common.database.CDB( "default", self._getDBPath() )
         self.db.connect()
         
-        self._make_feature_proce()
-        self.logger.info( " ----------- start -------------" )
-        self._prepare()
-        self._process()
-        self._finish()
-        self.logger.info( " ------------ end  --------------" )
+#         self._make_feature_proce()
+#         self.logger.info( " ----------- start -------------" )
+#         self._prepare()
+#         self._process()
+#         self._finish()
+#         self.logger.info( " ------------ end  --------------" )
         
+        checker = check.mid_check.CMid_check( self.db )
+        checker.run()
+    
         self.db.close()
     
     def add_process(self, proce):
@@ -35,8 +39,8 @@ class CLoader(object):
             
     def _readConfig(self,path):
         fp = open(path,'r')
-        self.dbInfor['host'] = 'localhost'
-        self.dbInfor['dbname'] = 'mmi'
+        self.dbInfor['host'] = '172.26.179.138'
+        self.dbInfor['dbname'] = '14tmap_india_MMI_201402_0062'
         self.dbInfor['user'] = 'postgres'
         self.dbInfor['password'] = ''
         
