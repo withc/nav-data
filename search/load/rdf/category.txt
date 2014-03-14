@@ -1,0 +1,97 @@
+code;name;imp
+2084;Winery;9999
+3578;ATM;9
+4013;Train Station;9
+4100;Commuter Rail Station;9999
+4170;Bus Station;9999
+4482;Ferry Terminal;9999
+4493;Marina;9999
+4580;Public Sports Airport;9999
+4581;Airport;9
+5000;Business Facility;9999
+5400;Grocery Store;9999
+5511;Auto Dealerships;9999
+5512;Auto Dealership-Used Cars;9999
+5540;Petrol/Gasoline Station;9999
+5571;Motorcycle Dealership;9999
+5800;Restaurant;9999
+5813;Nightlife;9999
+5999;Historical Monument;9999
+6000;Bank;9
+6512;Shopping;9999
+7011;Hotel;9
+7012;Ski Resort;9999
+7013;Other Accommodation;9999
+7014;Ski Lift;9999
+7389;Tourist Information;9999
+7510;Rental Car Agency;9999
+7520;Parking Lot;9999
+7521;Parking Garage/House;9999
+7522;Park & Ride;9999
+7538;Auto Service & Maintenance;9999
+7832;Cinema;9
+7897;Rest Area;9999
+7929;Performing Arts;9999
+7933;Bowling Centre;9999
+7940;Sports Complex;9999
+7947;Park/Recreation Area;9999
+7985;Casino;9999
+7990;Convention/Exhibition Centre;9999
+7992;Golf Course;9999
+7994;Civic/Community Centre;9999
+7996;Amusement Park;9999
+7997;Sports Centre;9999
+7998;Ice Skating Rink;9999
+7999;Tourist Attraction;9
+8060;Hospital;9
+8200;Higher Education;9
+8211;School;9999
+8231;Library;9999
+8410;Museum;9
+8699;Automobile Club;9999
+9121;City Hall;9999
+9211;Court House;9999
+9221;Police Station;9
+9517;Campground;9999
+9522;Truck Stop/Plaza;9999
+9525;Government Office;9
+9530;Post Office;9999
+9535;Convenience Store;9999
+9537;Clothing Store;9999
+9545;Department Store;9
+9560;Home Specialty Store;9999
+9565;Pharmacy;9999
+9567;Specialty Store;9999
+9568;Sporting Good Store;9999
+9573;Golf Practice Range;9999
+9583;Medical Service;9999
+9589;Public Restroom;9999
+9590;Residential Area/Building;9999
+9591;Cemetery;9999
+9592;Highway Exit;9999
+9593;Transportation Service;9999
+9595;Repair Services;9999
+9596;Training Centre/Institute;9999
+9707;Public Transit Stop1;9999
+9708;Public Transit Access1;9999
+9710;Weigh Station;9999
+9714;Cargo Centre;9999
+9715;Military Base;9999
+9717;Toll Booth;9999
+9718;Animal Park;9999
+9719;Truck Dealership;9999
+9722;Delivery Entrance;9999
+9723;Dock;9999
+9724;Loading Zone;9999
+9730;Named Intersection;9999
+9986;Home Improvement & Hardware Store;9999
+9987;Consumer Electronics Store;9999
+9988;Office Supply and Service Store;9999
+9989;Taxi Stand1;9999
+9991;Industrial Zone;9999
+9992;Place of Worship;9999
+9993;Embassy;9999
+9994;County Council;9999
+9995;Book Store;9999
+9996;Coffee Shop;9999
+9999;Border Crossing;9999

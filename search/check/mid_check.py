@@ -16,5 +16,6 @@ class CMid_check(object):
                where name = ''
               '''
         rows = self.db.getOneResult(sql )
-        self.logger.info( 'temp_feat_name have empty name:' + str(rows) )
+        if 0 != rows:
+            self.logger.info( 'temp_feat_name have empty name:' + str(rows) )
         

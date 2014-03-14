@@ -6,7 +6,17 @@ class CPoiCategory(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'category')
  
     def _domake_key(self):
-        pass
+        fp = open('.\load\rdf\category.txt','r')
+        for line in fp:
+            line = line.strip()
+            if line[0] == '#':
+                continue
+            fields = line.split(';')
+            sqlcmd = '''
+                      insert into temp_org_category values(%s,%s,%s)
+                     '''
+            self.db.execute( sqlcmd, fields )
+        fp.close()
         
     def _domake_feature(self):
         pass

@@ -17,12 +17,12 @@ class CLoader(object):
         self.db = common.database.CDB( "default", self._getDBPath() )
         self.db.connect()
         
-#         self._make_feature_proce()
-#         self.logger.info( " ----------- start -------------" )
-#         self._prepare()
-#         self._process()
-#         self._finish()
-#         self.logger.info( " ------------ end  --------------" )
+        self._make_feature_proce()
+        self.logger.info( " ----------- start -------------" )
+        self._prepare()
+        self._process()
+        self._finish()
+        self.logger.info( " ------------ end  --------------" )
         
         checker = check.mid_check.CMid_check( self.db )
         checker.run()
