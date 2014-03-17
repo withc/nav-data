@@ -1,6 +1,5 @@
 import load.feature
 
-
 class CPoiCategory(load.feature.CFeature):
     def __init__(self ):
         print "tomtom's poi category"

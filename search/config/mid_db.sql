@@ -10,7 +10,8 @@ DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
 DROP TABLE IF EXISTS mid_link            CASCADE;
-DROP TABLE IF EXISTS mid_house_number    CASCADE;
+DROP TABLE IF EXISTS mid_house_number_road    CASCADE;
+DROP TABLE IF EXISTS mid_address_range   CASCADE;
 DROP TABLE IF EXISTS mid_address_point   CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
@@ -103,11 +104,20 @@ create table mid_link
     key   bigint   not null,
     type  smallint not null
 );
+
 -- house number
-create table mid_house_number
+create table mid_house_number_road
 (
-     key      bigint       not null,
-     type     smallint     not null,
+    id         bigint       not null,
+    key        bigint       not null,
+    type       smallint     not null,
+    langcode   char(4)      not null,
+    name       varchar(255) not null
+);
+
+create table mid_address_range
+(
+     id       bigint       not null,
      side     smallint     not null CONSTRAINT valid_sol    CHECK (side IN (1,2)),
      scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E')),
      first    varchar(128) not null,
@@ -116,8 +126,7 @@ create table mid_house_number
 
 create table mid_address_point
 (
-     key      bigint       not null,
-     type     smallint     not null,
+     id       bigint       not null,
      side     smallint     not null CONSTRAINT valid_sol CHECK (side IN (1,2)),
      num      varchar(128) not null,
      x        int          not null,
