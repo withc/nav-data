@@ -138,7 +138,7 @@ create table mid_address_point
 -- name
 create table mid_name
 (
-    id       bigint       not null,
+    id       bigint       not null PRIMARY KEY,
     langcode char(4)      not null,
     name     varchar(255) not null
 );
@@ -146,7 +146,7 @@ create table mid_name
 -- geometry
 create table mid_geometry
 (
-    id    bigint   not null,
+    id    bigint   not null PRIMARY KEY,
     type  char     not null,
     geom  geometry not null
 );

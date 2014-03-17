@@ -12,9 +12,6 @@ DROP TABLE IF EXISTS rdb_poi_nameset       CASCADE;
 DROP TABLE IF EXISTS rdb_poi_to_content    CASCADE;
 DROP TABLE IF EXISTS rdb_poi_contentstring CASCADE;
 
-DROP TABLE IF EXISTS rdb_hno_range           CASCADE;
-DROP TABLE IF EXISTS rdb_hno_point           CASCADE;
-
 --------------------------------------------------
 -- place
 -------------------------------------------------
@@ -33,8 +30,8 @@ create table rdb_place_name
     id    int          not null,
     name  varchar(256) not null,
     lang  char(3)      not null,
-    PRIMARY KEY( id ),
-    CONSTRAINT unique_placeName UNIQUE ( name, lang )
+    PRIMARY KEY( id )
+    --CONSTRAINT unique_placeName UNIQUE ( name, lang )
 );
 
 create table rdb_place_nameset
@@ -121,13 +118,21 @@ create table rdb_poi_to_content
 
 create table rdb_poi_contentstring
 (
-    id      int          not null,
-    lang    char(3)      not null,
-    string  varchar(2048) not null,
+    id      int           not null,
+    lang    char(3)       not null,
+    string  varchar(2048) not null
 );
+-- for simply solution
+-----------------------------
 -- house number
 -----------------------------
-create table rdb_hno_range
+DROP TABLE IF EXISTS tbl_hno_range           CASCADE;
+DROP TABLE IF EXISTS tbl_hno_point           CASCADE;
+DROP TABLE IF EXISTS tbl_place               CASCADE;
+DROP TABLE IF EXISTS tmp_place_name          CASCADE;
+DROP TABLE IF EXISTS tmp_link_place_name     CASCADE;
+
+create table tbl_hno_range
 (
     id       bigint        not null,
     country  varchar(128)  not null,
@@ -140,7 +145,7 @@ create table rdb_hno_range
     last     varchar(128)  not null
 );
 
-create table rdb_hno_point
+create table tbl_hno_point
 (
     id       bigint       not null,
     country  varchar(128) not null,
@@ -149,4 +154,28 @@ create table rdb_hno_point
     district varchar(128) not null,
     street   varchar(128) not null,
     num      varchar(128) not null
+);
+
+create table tbl_place
+(
+    key      bigint       not null,
+    type     smallint     not null,
+    country  varchar(128) not null,
+    state    varchar(128) not null,
+    city     varchar(128) not null,
+    district varchar(128) not null
+);
+--
+create table tmp_place_name
+(
+    key   bigint       not null,
+    type  smallint     not null,
+    lang  char(3)      not null,
+    name  varchar(255) not null
+);
+---
+create table tmp_link_place_name
+(
+    key   bigint   not null,
+    type  smallint not null
 );

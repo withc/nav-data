@@ -80,6 +80,7 @@ class CEndProcess(object):
     def do(self):
         self._gen_nameid()
         self._gen_geomid()
+        self._create_index()
         
     def _gen_nameid(self):
         self.logger.info('generate name id') 
@@ -129,6 +130,12 @@ class CEndProcess(object):
                      order by key
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+    def _create_index(self):
+        self.logger.info('create index for mid table') 
+        fp = open(r'.\config\mid_index.sql','r')
+        self.db.execute( fp.read() )
+        fp.close()
         
         
         

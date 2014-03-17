@@ -1,5 +1,7 @@
 import common.logger
 import house_number
+import place
+import street
 
 class CCompiler(object):
     def __init__(self, database):
@@ -21,5 +23,7 @@ class CCompiler(object):
         fp.close()
         
     def _addEntity(self):
-        self.entity.append( house_number.CHouseNumber() )
+        self.entity.append( place.CPlace(self.db) )
+        self.entity.append( street.CLink(self.db) )
+        self.entity.append( house_number.CHouseNumber(self.db) )
         
