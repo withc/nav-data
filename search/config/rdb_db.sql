@@ -1,5 +1,23 @@
+DROP TABLE IF EXISTS rdb_place          CASCADE;
+DROP TABLE IF EXISTS rdb_place_name      CASCADE;
+DROP TABLE IF EXISTS rdb_place_nameset   CASCADE;
+DROP TABLE IF EXISTS rdb_place_admin     CASCADE;
+DROP TABLE IF EXISTS rdb_place_in_place  CASCADE;
+DROP TABLE IF EXISTS rdb_placeset        CASCADE;
+
+DROP TABLE IF EXISTS rdb_category          CASCADE;
+DROP TABLE IF EXISTS rdb_poi               CASCADE;
+DROP TABLE IF EXISTS rdb_poi_name          CASCADE;
+DROP TABLE IF EXISTS rdb_poi_nameset       CASCADE;
+DROP TABLE IF EXISTS rdb_poi_to_content    CASCADE;
+DROP TABLE IF EXISTS rdb_poi_contentstring CASCADE;
+
+DROP TABLE IF EXISTS rdb_hno_range           CASCADE;
+DROP TABLE IF EXISTS rdb_hno_point           CASCADE;
+
+--------------------------------------------------
 -- place
--- 
+-------------------------------------------------
 create table rdb_place
 (
     id      int      not null,
@@ -106,4 +124,29 @@ create table rdb_poi_contentstring
     id      int          not null,
     lang    char(3)      not null,
     string  varchar(2048) not null,
+);
+-- house number
+-----------------------------
+create table rdb_hno_range
+(
+    id       bigint        not null,
+    country  varchar(128)  not null,
+    state    varchar(128)  not null,
+    city     varchar(128)  not null,
+    district varchar(128)  not null,
+    street   varchar(128)  not null,
+    scheme   char(1)       not null,
+    first    varchar(128)  not null,
+    last     varchar(128)  not null
+);
+
+create table rdb_hno_point
+(
+    id       bigint       not null,
+    country  varchar(128) not null,
+    state    varchar(128) not null,
+    city     varchar(128) not null,
+    district varchar(128) not null,
+    street   varchar(128) not null,
+    num      varchar(128) not null
 );

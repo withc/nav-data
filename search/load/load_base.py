@@ -1,22 +1,17 @@
-import common.database
+
 import common.logger
 import load.factory
-import check.mid_check
 
 class CLoader(object):
-    def __init__(self):
+    def __init__(self, database, vendor ):
         self.logger = common.logger.sub_log('load')
-        self.vendor  = ''
-        self.dbInfor = {}
-        self.db = None
+        self.vendor = vendor
+        self.db = database
         self.proces = []
         self.feats  = []
         
-    def load(self, path ):
-        self._readConfig(path)
-        self.db = common.database.CDB( "default", self._getDBPath() )
-        self.db.connect()
-        
+    def load(self ):
+
         self._make_feature_proce()
         self.logger.info( " ----------- start -------------" )
         self._prepare()
@@ -24,11 +19,6 @@ class CLoader(object):
         self._finish()
         self.logger.info( " ------------ end  --------------" )
         
-        checker = check.mid_check.CMid_check( self.db )
-        checker.run()
-    
-        self.db.close()
-    
     def add_process(self, proce):
         proce.attach_db( self.db, self.vendor )
         self.proces.append( proce )
@@ -37,19 +27,6 @@ class CLoader(object):
         feat.attach_db( self.db )
         self.feats.append( feat )
             
-    def _readConfig(self,path):
-        fp = open(path,'r')
-        self.dbInfor['host'] = '172.26.179.138'
-        self.dbInfor['dbname'] = '14tmap_india_MMI_201402_0062'
-        self.dbInfor['user'] = 'postgres'
-        self.dbInfor['password'] = ''
-        
-        self.vendor = 'mmi'
-        fp.close()
-        
-    def _getDBPath(self):
-        return 'host=%s dbname=%s user=%s password=%s' % (self.dbInfor['host'],self.dbInfor['dbname'],self.dbInfor['user'],self.dbInfor['password'])
-    
     def _prepare(self):
         self.proces[0].do()
      

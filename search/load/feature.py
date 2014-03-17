@@ -60,10 +60,11 @@ class CStartProcess(object):
         self.db   = database
         self.name = vendor
     def do(self):
-        self.logger.info('create table and function') 
+        self.logger.info('create mid table and function') 
         fp = open(r'.\config\mid_db.sql','r')
         self.db.execute( fp.read() )
         fp.close()
+        
         fp = open(r'.\load\%s\my.sql' % self.name,'r')
         self.db.execute( fp.read() )
         fp.close()

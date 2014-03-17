@@ -9,6 +9,7 @@ class CEntity(object):
     def attach_db(self, database):
         self.db = database
         
-    def run(self):
+    def copy(self):
+        self.logger.info('copy entity')
         self._do()
         
