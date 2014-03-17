@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
 DROP TABLE IF EXISTS mid_link            CASCADE;
 DROP TABLE IF EXISTS mid_house_number    CASCADE;
+DROP TABLE IF EXISTS mid_address_point   CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
 DROP TABLE IF EXISTS mid_geometry             CASCADE;
@@ -107,10 +108,22 @@ create table mid_house_number
 (
      key      bigint       not null,
      type     smallint     not null,
-     sol      smallint     not null CONSTRAINT valid_sol CHECK (sol IN (1,2)) ,
-     scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E')) ,
-     first    varchar(255) not null,
-     last     varchar(255) not null
+     side     smallint     not null CONSTRAINT valid_sol    CHECK (side IN (1,2)),
+     scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E')),
+     first    varchar(128) not null,
+     last     varchar(128) not null
+);
+
+create table mid_address_point
+(
+     key      bigint       not null,
+     type     smallint     not null,
+     side     smallint     not null CONSTRAINT valid_sol CHECK (side IN (1,2)),
+     num      varchar(128) not null,
+     x        int          not null,
+     y        int          not null,
+     dis_x    int          not null,
+     dis_y    int          not null    
 );
 
 -- name
