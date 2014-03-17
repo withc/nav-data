@@ -6,7 +6,7 @@ class CPoiCategory(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'category')
  
     def _domake_key(self):
-        fp = open('.\load\mmi\category.txt','r')
+        fp = open(r'.\load\mmi\category.txt','r')
         for line in fp:
             line = line.strip()
             if line[0] == '#':

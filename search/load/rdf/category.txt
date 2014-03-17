@@ -1,4 +1,4 @@
-code;name;imp
+#code;name;imp
 2084;Winery;9999
 3578;ATM;9
 4013;Train Station;9
