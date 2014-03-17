@@ -11,14 +11,19 @@ class CCompiler(object):
         self.entity = []
     
     def run(self):
+        self.logger.info('------------ start -------------')
         self._prepare()
         self._addEntity()
         for en in self.entity:
             en.copy()
+        self.logger.info('------------ end -------------')
             
     def _prepare(self):
         self.logger.info('create rdb table and function') 
         fp = open(r'.\config\rdb_db.sql','r')
+        self.db.execute( fp.read() )
+        fp.close()
+        fp = open(r'.\config\rdb_function.sql','r')
         self.db.execute( fp.read() )
         fp.close()
         

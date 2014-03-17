@@ -12,7 +12,7 @@ class CPlace(entity.CEntity):
                    join mid_feature_to_name  as pn
                      on p.key = pn.key and p.type = pn.type
                    join mid_name             as n
-                     on pn.nameid = n.id and n.langcode = 'ENG'
+                     on pn.nameid = n.id and n.langcode = 'IND'
                  '''
         self.db.do_big_insert(sqlcmd)
         
