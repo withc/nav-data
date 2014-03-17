@@ -34,10 +34,22 @@ class CLink(load.feature.CFeature):
     def _domake_geomtry(self):
         sqlcmd = '''
                  '''
-        self.db.do_big_insert( sqlcmd )
+        #self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
+                    insert into temp_feat_name( key, type, nametype, langcode, name )
+                    select f.feat_key, f.feat_type, 
+                           case  
+                             when n.name_type = 'B' and n.is_exonym = 'N' then 'ON'
+                             else 'AN'
+                           end,
+                           n.language_code,n.street_name 
+                    from rdf_road_link  as r
+                    join mid_feat_key   as f
+                      on r.link_id = f.org_id1 and f.org_id2 = 2000
+                    join rdf_road_name  as n
+                      on r.road_name_id = n.road_name_id
                  '''
         self.db.do_big_insert( sqlcmd )
     
@@ -46,6 +58,14 @@ class CLink(load.feature.CFeature):
         
     def _domake_relation(self):
         sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select f.feat_key, f.feat_type, 7001, fp.feat_key, fp.feat_type
+                    from rdf_link      as l
+                    join mid_feat_key  as f
+                      on l.link_id = f.org_id1 and f.org_id2 = 2000
+                    join mid_feat_key  as fp
+                      on l.left_admin_place_id = fp.org_id1    and 
+                         ( fp.feat_type between 3001 and 3010)
                  '''
         self.db.do_big_insert( sqlcmd )
         

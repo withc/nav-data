@@ -9,7 +9,7 @@ class CPlace(load.feature.CFeature):
   
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
-                    select 1110+admin_order, admin_place_id, admin_order
+                    select 3001+admin_order, admin_place_id, admin_order
                       from rdf_admin_hierarchy
                  '''
         self.db.do_big_insert( sqlcmd )
@@ -29,7 +29,7 @@ class CPlace(load.feature.CFeature):
         sqlcmd = '''
              insert into temp_feat_geom( key, type, code, geotype, geom ) 
                  ''' 
-        self.db.do_big_insert( sqlcmd )
+        #self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         
@@ -58,12 +58,12 @@ class CPlace(load.feature.CFeature):
         sqlcmd = '''
                 insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
                 select fe.feat_key, fe.feat_type, 
-                       f0.f_key, 
+                       f0.feat_key, 
                        COALESCE( f1.feat_key, 0 ),
                        COALESCE( f2.feat_key, 0 ),
                        0,
                        COALESCE( f8.feat_key, 0 ),
-                       COALESCE( f8.feat_key, 0 )
+                       COALESCE( f9.feat_key, 0 )
                   from rdf_admin_hierarchy as a
              left join mid_feat_key        as fe
                     on a.admin_place_id = fe.org_id1

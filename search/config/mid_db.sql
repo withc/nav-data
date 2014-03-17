@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
 DROP TABLE IF EXISTS mid_link            CASCADE;
+DROP TABLE IF EXISTS mid_house_number    CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
 DROP TABLE IF EXISTS mid_geometry             CASCADE;
@@ -17,7 +18,6 @@ DROP TABLE IF EXISTS mid_geometry_xyz         CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_name      CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_geometry  CASCADE;
 DROP TABLE IF EXISTS mid_feature_to_feature   CASCADE;
-
 
 DROP TABLE IF EXISTS temp_feat_name            CASCADE;
 DROP TABLE IF EXISTS temp_feat_name_gen_id     CASCADE;
@@ -102,13 +102,23 @@ create table mid_link
     key   bigint   not null,
     type  smallint not null
 );
+-- house number
+create table mid_house_number
+(
+     key      bigint       not null,
+     type     smallint     not null,
+     sol      smallint     not null CONSTRAINT valid_sol CHECK (sol IN (1,2)) ,
+     scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E')) ,
+     first    varchar(255) not null,
+     last     varchar(255) not null
+);
 
 -- name
 create table mid_name
 (
     id       bigint       not null,
     langcode char(4)      not null,
-    name     varchar(256) not null
+    name     varchar(255) not null
 );
 
 -- geometry
@@ -162,7 +172,7 @@ create table temp_feat_name
     type      smallint not null,
     nametype  char(2)  not null,
     langcode  char(4)  not null,
-    name      varchar(256)
+    name      varchar(255)
 );
 
 create table temp_feat_name_gen_id
@@ -171,7 +181,7 @@ create table temp_feat_name_gen_id
     type      smallint not null,
     nametype  char(2)  not null,
     langcode  char(4)  not null,
-    name      varchar(256),
+    name      varchar(255),
     nameid    int      not null
 );
 

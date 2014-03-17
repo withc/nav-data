@@ -23,9 +23,11 @@ def featureFactory( name, loader ):
         import load.rdf
         loader.add_process( load.feature.CStartProcess() )
         loader.add_process( load.feature.CEndProcess() )
+        loader.add_feature( load.rdf.feat_category.CPoiCategory() )
         loader.add_feature( load.rdf.feat_place.CPlace( ) )
-        loader.add_feature( load.rdf.feat_poi.CPoi( ) )
+#         loader.add_feature( load.rdf.feat_poi.CPoi( ) )
         loader.add_feature( load.rdf.feat_link.CLink( ) )
+        loader.add_feature( load.rdf.feat_housenumber.CHouseNumber())
         
     elif name == 'gaode':
         import load.gaode
