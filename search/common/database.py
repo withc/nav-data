@@ -19,6 +19,9 @@ class CDB(object):
             
     def connect(self):
         '''connect to DB'''
+        if self.connected == True:
+            return -1
+        
         self.conn  = psycopg2.connect(self.srv_path) 
         self.cur = self.conn.cursor()
         self.connected = True
