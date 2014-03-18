@@ -16,8 +16,8 @@ if __name__ == "__main__":
     db_instance.connect()
     
     print " ---- start load search data ---- "
-    #loader = load.load_base.CLoader( db_instance, cfg.getVendor() )
-    #loader.load()
+    loader = load.load_base.CLoader( db_instance, cfg.getVendor() )
+    loader.load()
     
     print " ---- start check mid search data ---- "
     checker = check.mid_check.CMid_check( db_instance )

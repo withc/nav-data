@@ -101,7 +101,7 @@ class CEndProcess(object):
         
         sqlcmd = '''
                    insert into mid_feature_to_name( key, type, nametype, nameid)
-                   select  key, type, nametype, nameid
+                   select distinct key, type, nametype, nameid
                      from temp_feat_name_gen_id
                      order by key
                  '''
