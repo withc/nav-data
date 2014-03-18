@@ -1,9 +1,10 @@
 
 class Config( object ):
     __instance = None
-    _vendor  ='rdf'
+    _langcode='ENG'
+    _vendor  ='tomtom'
     _host    ='172.26.179.138'
-    _dbname  ='14tmap_idn_rdf_2014Q4'
+    _dbname  ='14tmap_sgp_rdf_2013Q4'
     _user    ='postgres'
     _password=''
 
@@ -15,6 +16,9 @@ class Config( object ):
     
     def __init__(self):
         pass
+    
+    def getLangCode(self):
+        return Config._langcode
     
     def getVendor(self):
         return Config._vendor

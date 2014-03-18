@@ -131,6 +131,7 @@ DROP TABLE IF EXISTS tbl_hno_point           CASCADE;
 DROP TABLE IF EXISTS tbl_place               CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
 DROP TABLE IF EXISTS tmp_link_place_name     CASCADE;
+DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
 
 create table tbl_hno_range
 (
@@ -166,6 +167,14 @@ create table tbl_place
     district varchar(128) not null
 );
 --
+create table tmp_feat_lowest_place
+(
+    key   bigint       not null,
+    type  smallint     not null,
+    pkey   bigint       not null,
+    ptype  smallint     not null
+);
+
 create table tmp_place_name
 (
     key   bigint       not null,
