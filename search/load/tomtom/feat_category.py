@@ -6,8 +6,31 @@ class CPoiCategory(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'category')
  
     def _domake_key(self):
-        pass
+        fp = open(r'.\load\tomtom\category.txt','r')
+        for line in fp:
+            line = line.strip()
+            if line[0] == '#':
+                continue
+            fields = line.split(';')
+            sqlcmd = '''
+                      insert into temp_org_category values(%s,%s,%s,%s,%s,%s,%s,%s)
+                     '''
+            self.db.execute( sqlcmd, fields )
+        fp.close()
         
+        sqlcmd = '''
+                 insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name)
+                 select per_code, gen1, gen2, gen3, level, imp, name
+                   from temp_org_category
+                   order by level, case level 
+                                      when 1 then  0
+                                      when 2 then  gen_1
+                                      else    gen_1<<8 + gen_2
+                                    end,
+                              name
+                 '''
+        self.db.do_big_insert( sqlcmd )
+                 
     def _domake_feature(self):
         pass
     

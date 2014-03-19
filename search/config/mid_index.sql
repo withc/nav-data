@@ -36,4 +36,4 @@ CREATE INDEX mid_address_range_id
 CREATE INDEX mid_address_point_id
   ON mid_address_point
   USING btree
-  (id);  
+  (id); 

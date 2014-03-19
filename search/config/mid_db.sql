@@ -10,10 +10,10 @@ DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
 DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
-DROP TABLE IF EXISTS mid_link            CASCADE;
-DROP TABLE IF EXISTS mid_house_number_road    CASCADE;
-DROP TABLE IF EXISTS mid_address_range   CASCADE;
-DROP TABLE IF EXISTS mid_address_point   CASCADE;
+DROP TABLE IF EXISTS mid_link               CASCADE;
+DROP TABLE IF EXISTS mid_house_number_road  CASCADE;
+DROP TABLE IF EXISTS mid_address_range      CASCADE;
+DROP TABLE IF EXISTS mid_address_point      CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
 DROP TABLE IF EXISTS mid_geometry             CASCADE;
@@ -49,13 +49,13 @@ create table mid_country_profile
 
 create table mid_place
 (
-    key   bigint   not null,
+    key   bigint   not null PRIMARY KEY,
     type  smallint not null
 );
 
 create table mid_place_admin
 (
-    key    bigint not null,
+    key    bigint not null PRIMARY KEY,
     type   smallint not null,
     a0     bigint not null,
     a1     bigint not null,
@@ -68,7 +68,7 @@ create table mid_place_admin
 -- postcode
 create table mid_postcode
 (
-    key    bigint      not null,
+    key    bigint      not null PRIMARY KEY,
     type   smallint    not null,
     sub    smallint    not null,
     pocode varchar(16) not null
@@ -77,17 +77,19 @@ create table mid_postcode
 -- category
 create table mid_poi_category
 (
-    id         int      not null,
-    parent_id  int      not null,
-    level      smallint not null,
-    imp        smallint not null,
+    per_code   bigint       not null,
+    gen1       int          not null,
+    gen2       int          not null,
+    gen3       int          not null,
+    level      smallint     not null,
+    imp        smallint     not null,
     name       varchar(128) not null
 );
 
 -- poi
 create table mid_poi
 (
-    key     bigint   not null,
+    key     bigint   not null PRIMARY KEY,
     type    smallint not null,
     cat_id  int      not null,
     imp     smallint not null
@@ -110,7 +112,7 @@ create table mid_poi_children
 -- street
 create table mid_link
 (
-    key   bigint   not null,
+    key   bigint   not null PRIMARY KEY,
     type  smallint not null
 );
 
