@@ -1,4 +1,3 @@
-import config.config
 import entity
 
 class CPlace(entity.CEntity):
@@ -19,6 +18,7 @@ class CPlace(entity.CEntity):
                      on pn.nameid = n.id and n.langcode = c.off_lang
                  ''' 
         self.db.do_big_insert(sqlcmd)
+        self.db.createIndex( 'tmp_place_name', 'key' )
         
         sqlcmd = '''
                  insert into tbl_place( key, type, country, state, city, district )
@@ -36,6 +36,7 @@ class CPlace(entity.CEntity):
                    where a.a8 <> 0 or a.a9 <> 0
                  '''
         self.db.do_big_insert(sqlcmd)
+        self.db.createIndex( 'tbl_place', 'key' )
         
     def _do_temp_table(self):
         ''' when a feature belong to a9, we also add a8( the a9's parent) to table mid_feature_to_feature,
@@ -66,6 +67,7 @@ class CPlace(entity.CEntity):
                          ff.ttype = t.ttype
                  '''
         self.db.do_big_insert(sqlcmd)
+        self.db.createIndex( 'tmp_feat_lowest_place', 'key' )
         
         
         

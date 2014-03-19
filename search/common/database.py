@@ -43,6 +43,16 @@ class CDB(object):
             print 'SQL execute error:' + sqlcmd 
             raise
         
+    def createIndex(self, table, column ):
+        sqlcmd = '''
+                  CREATE INDEX idx_%s_%s
+                  ON %s
+                  USING btree
+                  (%s);
+              ''' % (table, column, table, column )
+        self.execute(sqlcmd)
+        self.analyze( table )
+         
     def analyze(self, table):
         self.cur.execute( 'ANALYZE %s' % table )
         

@@ -146,11 +146,12 @@ class CPlace(load.feature.CFeature):
             field = ''
          
         sql = '''insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
-                 select  f<s>.feat_key, f<s>.feat_type, f0.feat_key, ''' + field + '''
+                 select distinct f<s>.feat_key, f<s>.feat_type, f0.feat_key, 
+               ''' + field + '''
                    from org_a<s>      a<s>
                    join mid_feat_key  f<s>
                      on a<s>.id = f<s>.org_id1 and f<s>.org_id2 = <c>
-              '''
+               '''
         sql = sql.replace('<s>', str(s))
         sql = sql.replace('<c>', str(s+1111))
         return sql
