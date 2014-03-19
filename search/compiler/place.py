@@ -9,14 +9,15 @@ class CPlace(entity.CEntity):
         self._do_temp_table()
         sqlcmd = '''
                  insert into tmp_place_name( key, type, lang, name)
-                 select p.key, p.type,  n.langcode, n.name
-                   from mid_place            as p
+                 select p.key, p.type, n.langcode, n.name
+                   from mid_place_admin      as p
+                   join mid_country_profile  as c
+                     on p.a0 = c.key
                    join mid_feature_to_name  as pn
                      on p.key = pn.key and p.type = pn.type
                    join mid_name             as n
-                     on pn.nameid = n.id and n.langcode = '%s'
-                 ''' % config.config.Config.get_instance().getLangCode()
-                 
+                     on pn.nameid = n.id and n.langcode = c.off_lang
+                 ''' 
         self.db.do_big_insert(sqlcmd)
         
         sqlcmd = '''

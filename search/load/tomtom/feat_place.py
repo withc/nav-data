@@ -52,7 +52,14 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
     def _domake_attribute(self):
-        pass
+        sqlcmd = '''
+                 insert into mid_country_profile( iso, off_lang, key, type )
+                 select distinct a0.order00, a0.namelc, f.feat_key, f.feat_type
+                   from mid_feat_key as f
+                   join org_a0       as a0
+                     on a0.id = f.org_id1 and a0.feattyp = f.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
         self.db.do_big_insert( self._gen_admin_sql(0) )
