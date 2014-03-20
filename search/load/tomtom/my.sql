@@ -8,8 +8,8 @@ create table temp_org_category
     gen2       int          not null,
     gen3       int          not null,
     level      smallint     not null,
-    imp        smallint     not null,
     name       varchar(128) not null,
+    imp        smallint     not null,
     org_code   bigint       not null
 );
 

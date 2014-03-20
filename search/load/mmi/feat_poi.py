@@ -23,7 +23,7 @@ class CPoi(load.feature.CFeature):
     def _domake_feature(self):
         sqlcmd = '''
                     insert into mid_poi( key, type, cat_id, imp )
-                    select f.feat_key, f.feat_type, c.id, p.priority
+                    select f.feat_key, f.feat_type, c.per_code, p.priority
                       from org_poi_point as p
                       join temp_poi_uid  as t
                         on p.uid     = t.uid

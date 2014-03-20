@@ -13,34 +13,26 @@ class CPoiCategory(load.feature.CFeature):
                 continue
             fields = line.split(';')
             sqlcmd = '''
-                      insert into temp_org_category values(%s,%s,%s,%s,%s)
+                      insert into temp_org_category values(%s,%s,%s,%s,%s,%s,%s,%s)
                      '''
             self.db.execute( sqlcmd, fields )
         fp.close()
-        sqlcmd = ''' 
-                 insert into temp_poi_category( level, org_code, name, imp )
-                 select distinct 1, '', name1, 9999
+        
+        sqlcmd = '''
+                 insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name)
+                 select per_code, gen1, gen2, gen3, level, imp, name
                    from temp_org_category
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        sqlcmd = ''' 
-                 insert into temp_poi_category( level, org_code, name, imp )
-                 select 2, org_code, name2, imp
-                   from temp_org_category
+                   order by level, case level 
+                                      when 1 then  0
+                                      when 2 then  gen1
+                                      else    gen1<<8 + gen2
+                                    end,
+                              name
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
-        sqlcmd = ''' 
-                 insert into mid_poi_category( id, parent_id, level, imp, name )
-                 select c.id, COALESCE( f.id, 0 ), c.level, c.imp, c.name
-                   from temp_poi_category as c
-              left join temp_org_category as o
-                     on c.org_code = o.org_code and c.level = 2
-              left join temp_poi_category as f
-                     on o.name1 = f.name and f.level = 1
-                 '''
-        self.db.do_big_insert( sqlcmd )
+        pass
     
     def _domake_geomtry(self):
         pass

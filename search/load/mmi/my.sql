@@ -21,19 +21,12 @@ create table temp_poi_uid
 
 create table temp_org_category
 (
-    org_id    varchar(10)  not null,
-    name1     varchar(128) not null,
-    name2     varchar(128) not null,
-    org_code  varchar(10)  not null,
-    imp       smallint     not null
+    per_code   bigint       not null,
+    gen1       int          not null,
+    gen2       int          not null,
+    gen3       int          not null,
+    level      smallint     not null,
+    name       varchar(128) not null,
+    imp        smallint     not null,
+    org_code   varchar(128) not null
 );
-
-create table temp_poi_category
-(
-    id        serial    PRIMARY KEY,
-    level     smallint     not null,
-    org_code  varchar(10)  not null,
-    name      varchar(128) not null,
-    imp       smallint     not null
-);
-
