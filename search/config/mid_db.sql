@@ -91,7 +91,7 @@ create table mid_poi
 (
     key     bigint   not null PRIMARY KEY,
     type    smallint not null,
-    cat_id  int      not null,
+    cat_id  bigint   not null,
     imp     smallint not null
 );
 
@@ -128,7 +128,7 @@ create table mid_house_number_road
 
 create table mid_address_range
 (
-     id       bigint       not null,
+     id     bigint       not null,
      side     smallint     not null CONSTRAINT valid_sol    CHECK (side IN (1,2)),
      scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E')),
      first    varchar(128) not null,
@@ -137,7 +137,7 @@ create table mid_address_range
 
 create table mid_address_point
 (
-     id       bigint       not null,
+     id     bigint       not null,
      side     smallint     not null CONSTRAINT valid_sol CHECK (side IN (1,2)),
      num      varchar(128) not null,
      x        int          not null,

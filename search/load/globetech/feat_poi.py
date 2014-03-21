@@ -15,11 +15,13 @@ class CPoi(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_poi( key, type, cat_id, imp )
-                    select  distinct fe.feat_key, fe.feat_type, 0, 0
+                    insert  into mid_poi( key, type, cat_id, imp )
+                    select  distinct fe.feat_key, fe.feat_type, c.per_code, 0
                       from  org_landmark  as p
                       join  mid_feat_key  as fe
                         on  p.objectid = fe.org_id1 and fe.org_id2 = 1000
+                      join  temp_org_category as c
+                        on  p.sub_code::int = c.org_code
                  '''
         self.db.do_big_insert( sqlcmd )
     

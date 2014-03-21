@@ -18,7 +18,11 @@ featury type:
 --complex
 4000:intersection
 
-releationship code:
+--other
+5001:name
+5002:geometry
+
+--releationship code:
 7000:geometry infor
 7001:feature to place
 7002:poi to link
@@ -26,7 +30,7 @@ releationship code:
 7379:center of settlement
 9920:entry point
 
-attribute code:
+--attribute code:
 ON:Official Name
 AN:Alternate Name
 RN:Route Number

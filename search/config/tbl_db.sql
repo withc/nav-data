@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS tbl_genre_info    CASCADE;
 DROP TABLE IF EXISTS tbl_city_info     CASCADE;
 DROP TABLE IF EXISTS tbl_street_info   CASCADE;
 DROP TABLE IF EXISTS tbl_poi_info      CASCADE;
+DROP TABLE IF EXISTS tbl_road          CASCADE;
 
 DROP TABLE IF EXISTS tbl_hno_range           CASCADE;
 DROP TABLE IF EXISTS tbl_hno_point           CASCADE;
@@ -23,7 +24,7 @@ CREATE TABLE tbl_search_meta
     min_lat  int  NOT NULL,
     max_lon  int  NOT NULL,
     max_lat  int  NOT NULL
-)
+);
 
 create table tbl_genre_info
 (
@@ -60,7 +61,7 @@ CREATE TABLE tbl_street_info
   type      char(2)      not null,
   lang      char(3)      not null,
   name      varchar(255) not null
-)
+);
 
 create table tbl_poi_info
 (
@@ -72,7 +73,7 @@ create table tbl_poi_info
   
   type      char(2)      not null,
   lang      char(3)      not null,
-  name      varchar(255) not null
+  name      varchar(255) not null,
   
   text_poi_name     varchar(255),
   text_phone_number varchar(255),
@@ -116,11 +117,25 @@ create table tbl_place
 (
     key      bigint       not null,
     type     smallint     not null,
+    lang     char(3)      not null,
     country  varchar(128) not null,
     state    varchar(128) not null,
     city     varchar(128) not null,
     district varchar(128) not null
 );
+
+CREATE TABLE tbl_road
+(
+  key      bigint   NOT NULL,
+  type     smallint NOT NULL,
+  lang     char(3)      NOT NULL,
+  country  varchar(128) not null,
+  state    varchar(128) not null,
+  city     varchar(128) not null,
+  district varchar(128) not null,
+  road     varchar(128) not null
+);
+
 --
 create table tmp_feat_lowest_place
 (

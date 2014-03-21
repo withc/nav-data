@@ -7,6 +7,7 @@ def featureFactory( name, loader ):
         import load.tomtom
         loader.add_process( load.feature.CStartProcess() )
         loader.add_process( load.feature.CEndProcess() )
+        loader.add_feature( load.tomtom.feat_category.CPoiCategory() )
         loader.add_feature( load.tomtom.feat_place.CPlace( ) )
         loader.add_feature( load.tomtom.feat_poi.CPoi( ) )
         loader.add_feature( load.tomtom.feat_link.CLink( ) )
@@ -16,6 +17,7 @@ def featureFactory( name, loader ):
         import  load.globetech 
         loader.add_process( load.feature.CStartProcess() )
         loader.add_process( load.feature.CEndProcess() )
+        loader.add_feature( load.globetech.feat_category.CPoiCategory() )
         loader.add_feature( load.globetech.feat_place.CPlace( ) )
         loader.add_feature( load.globetech.feat_poi.CPoi( ) )
         loader.add_feature( load.globetech.feat_link.CLink( ) )

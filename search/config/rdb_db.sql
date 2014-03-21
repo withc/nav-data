@@ -12,47 +12,51 @@ DROP TABLE IF EXISTS rdb_poi_nameset       CASCADE;
 DROP TABLE IF EXISTS rdb_poi_to_content    CASCADE;
 DROP TABLE IF EXISTS rdb_poi_contentstring CASCADE;
 
+DROP TABLE IF EXISTS rdb_link              CASCADE;
+DROP TABLE IF EXISTS rdb_link_name         CASCADE;
+DROP TABLE IF EXISTS rdb_link_nameset      CASCADE;
+
+DROP TABLE IF EXISTS rdb_road              CASCADE;
+DROP TABLE IF EXISTS rdb_road_link         CASCADE;
 --------------------------------------------------
 -- place
 -------------------------------------------------
 create table rdb_place
 (
-    id      int      not null,
+    id      int      not null PRIMARY KEY,
     type    smallint not null,
     nmsetid int      not null,
     x       int      not null,
-    y       int      not null,
-    PRIMARY KEY( id )
+    y       int      not null
 );
 
 create table rdb_place_name
 (
-    id    int          not null,
-    name  varchar(256) not null,
+    id    int          not null PRIMARY KEY,
     lang  char(3)      not null,
-    PRIMARY KEY( id )
-    --CONSTRAINT unique_placeName UNIQUE ( name, lang )
+    name  varchar(256) not null
 );
 
 create table rdb_place_nameset
 (
-    id    int     not null,
-    type  char(2) not null,
-    nmid  int     not null,
-    PRIMARY KEY( id ),
+    id    int      not null,
+    seq   smallint not null,
+    type  char(2)  not null,
+    nmid  int      not null,
+    
     FOREIGN KEY (nmid) references rdb_place_name(id)
 );
 
 create table rdb_place_admin
 (
-    id     bigint not null,
+    id     int not null PRIMARY KEY,
     type   smallint not null,
-    a0     bigint not null,
-    a1     bigint not null,
-    a2     bigint not null,
-    a7     bigint not null,
-    a8     bigint not null,
-    a9     bigint not null
+    a0     int not null,
+    a1     int not null,
+    a2     int not null,
+    a7     int not null,
+    a8     int not null,
+    a9     int not null
 );
 --
 -- 
@@ -79,32 +83,34 @@ create table rdb_category
     PRIMARY KEY( id )
 );
 
+--------------------------------------------------
 -- poi
+-------------------------------------------------
 create table rdb_poi
 (
-    id      int     not null,
-    catid   int     not null,
+    id      int     not null PRIMARY KEY,
+    catid   bigint  not null,
     nmsetid int     not null,
     imp     int     not null,
     x       int     not null,
-    y       int     not null,
-    PRIMARY KEY( id )
+    y       int     not null
 );
 create table rdb_poi_name
 (
-    id    int          not null,
+    id    int          not null PRIMARY KEY,
     name  varchar(256) not null,
     lang  char(3)      not null,
-    PRIMARY KEY( id ),
+    
     CONSTRAINT unique_placeName UNIQUE ( name, lang )
 );
 
 create table rdb_poi_nameset
 (
     id    int     not null,
+    seq   smallint not null,
     type  char(2) not null,
     nmid  int     not null,
-    PRIMARY KEY( id ),
+
     FOREIGN KEY (nmid) references rdb_poi_name(id)
 );
 -- poi content
@@ -122,69 +128,66 @@ create table rdb_poi_contentstring
     lang    char(3)       not null,
     string  varchar(2048) not null
 );
--- for simply solution
------------------------------
--- house number
------------------------------
-DROP TABLE IF EXISTS tbl_hno_range           CASCADE;
-DROP TABLE IF EXISTS tbl_hno_point           CASCADE;
-DROP TABLE IF EXISTS tbl_place               CASCADE;
-DROP TABLE IF EXISTS tmp_place_name          CASCADE;
-DROP TABLE IF EXISTS tmp_link_place_name     CASCADE;
-DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
-
-create table tbl_hno_range
+--------------------------------------------------
+-- link
+-------------------------------------------------
+create table rdb_link
 (
-    id       bigint        not null,
-    country  varchar(128)  not null,
-    state    varchar(128)  not null,
-    city     varchar(128)  not null,
-    district varchar(128)  not null,
-    street   varchar(128)  not null,
-    scheme   char(1)       not null,
-    first    varchar(128)  not null,
-    last     varchar(128)  not null
+    id         int not null PRIMARY KEY,
+    left_pid   int not null,
+    right_pid  int not null,
+    nmsetid    int not null
 );
 
-create table tbl_hno_point
+create table rdb_link_name
 (
-    id       bigint       not null,
-    country  varchar(128) not null,
-    state    varchar(128) not null,
-    city     varchar(128) not null,
-    district varchar(128) not null,
-    street   varchar(128) not null,
-    num      varchar(128) not null
+    id    int          not null PRIMARY KEY,
+    name  varchar(256) not null,
+    lang  char(3)      not null
 );
 
-create table tbl_place
+create table rdb_link_nameset
 (
-    key      bigint       not null,
-    type     smallint     not null,
-    country  varchar(128) not null,
-    state    varchar(128) not null,
-    city     varchar(128) not null,
-    district varchar(128) not null
-);
---
-create table tmp_feat_lowest_place
-(
-    key   bigint       not null,
-    type  smallint     not null,
-    pkey   bigint       not null,
-    ptype  smallint     not null
+    id    int     not null,
+    seq   smallint not null,
+    type  char(2) not null,
+    nmid  int     not null
 );
 
-create table tmp_place_name
+--------------------------------------------------
+-- road
+-------------------------------------------------
+create table rdb_road
 (
-    key   bigint       not null,
-    type  smallint     not null,
-    lang  char(3)      not null,
-    name  varchar(255) not null
+    id       int not null,
+    placeid  int not null,
+    nameid  int not null,
+    x        int not null,
+    y        int not null
 );
----
-create table tmp_link_place_name
+
+create table rdb_road_link
 (
-    key   bigint   not null,
-    type  smallint not null
+    id       int not null,
+    seq      int not null,
+    linkid   int not null
+);
+-------------------------------------
+-- temp table 
+------------------------------------
+DROP TABLE IF EXISTS tmp_place_name_id    CASCADE;
+DROP TABLE IF EXISTS tmp_place_id         CASCADE;
+
+create table tmp_place_name_id
+( 
+  name_id    int      not null,
+  key        bigint   not null,
+  type       smallint not null
+);
+
+create table tmp_place_id
+( 
+  place_id  int      not null,
+  key       bigint   not null,
+  type      smallint not null
 );
