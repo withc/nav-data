@@ -5,11 +5,19 @@ class CPlace(entity.CEntity):
         entity.CEntity.__init__(self, database, 'place')
           
     def _do(self):
-        self._do_temp_table()
-        self._do_table( )
+        self._do_lowest_place( )
+        self._do_gen_areaid( )
+        self._do_name( )
         
     def _do_table(self):
+        sqlcmd = '''
+                 insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat, type, lang, name )
+                 select 
+                   from 
+                 '''
         
+    
+    def _do_name(self):
         self.logger.info('  create place table')
         
         sqlcmd = '''
@@ -41,8 +49,45 @@ class CPlace(entity.CEntity):
                  '''
         self.db.do_big_insert(sqlcmd)
         self.db.createIndex( 'tbl_place', 'key' )
+    
+    def _do_gen_areaid(self):
+        #for a0
+        sqlcmd = '''
+                 insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
+                 select key, type, 0, row_number() over (), 0,0,0
+                   from mid_place_admin
+                  where type = 3001
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        #for a1
+        sqlcmd = '''
+                 insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
+                 select key, type, 1, t.area0, row_number() over (), 0,0
+                   from mid_place_admin  as pa
+                   join tmp_place_area   as t
+                     on pa.a0 = t.key and pa.type = 3002
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        #for a8
+        sqlcmd = '''
+                 insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
+                 select key, type, 2, t.area0, t.area1, row_number() over (), 0
+                   from mid_place_admin  as pa
+                   join tmp_place_area   as t
+                     on pa.a1 = t.key and pa.type = 3009
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        #for a9
+        sqlcmd = '''
+                 insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
+                 select key, type, 3, t.area0, t.area1, t.area2, row_number() over ()
+                   from mid_place_admin  as pa
+                   join tmp_place_area   as t
+                     on pa.a8 = t.key and pa.type = 3010
+                 '''
+        self.db.do_big_insert(sqlcmd)
         
-    def _do_temp_table(self):
+    def _do_lowest_place(self):
         ''' when a feature belong to a9, we also add a8( the a9's parent) to table mid_feature_to_feature,
             so, we must filter the a8 record if it is already refer to his a9.
             tmp_feat_lowest_place will contain the lowest admin place only.

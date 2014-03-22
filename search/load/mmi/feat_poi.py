@@ -143,6 +143,3 @@ class CPoi(load.feature.CFeature):
                       on p.edge_id = l.org_id1 and l.org_id2 = 4110
                  '''
         self.db.do_big_insert( sqlcmd )
-        
-        
-        

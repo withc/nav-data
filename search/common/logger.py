@@ -2,8 +2,11 @@ import logging
 
 PROJECT='search'
 
-def sub_log( name ):
-    return logging.getLogger( PROJECT+'.'+name )
+def sub_log( name='' ):
+    if name:
+        return logging.getLogger( PROJECT+'.'+name )
+    else:
+        return logging.getLogger( PROJECT )
     
 def init_log():
     logger = logging.getLogger(PROJECT)

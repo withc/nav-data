@@ -12,6 +12,8 @@ DROP TABLE IF EXISTS tbl_road          CASCADE;
 DROP TABLE IF EXISTS tbl_hno_range           CASCADE;
 DROP TABLE IF EXISTS tbl_hno_point           CASCADE;
 DROP TABLE IF EXISTS tbl_place               CASCADE;
+
+DROP TABLE IF EXISTS tmp_place_area          CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
 DROP TABLE IF EXISTS tmp_link_place_name     CASCADE;
 DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
@@ -40,6 +42,7 @@ create table tbl_genre_info
 create table tbl_city_info
 (
     level  int          not null,
+    area0  int          not null,
     area1  int          not null,
     area2  int          not null,
     area3  int          not null,
@@ -136,6 +139,24 @@ CREATE TABLE tbl_road
   road     varchar(128) not null
 );
 
+create table tmp_place_name
+(
+    key   bigint       not null,
+    type  smallint     not null,
+    lang  char(3)      not null,
+    name  varchar(255) not null
+);
+
+create table tmp_place_area
+(
+    key    bigint    not null,
+    type   smallint  not null,
+    level  smallint  not null,
+    area0  int       not null,
+    area1  int       not null,
+    area2  int       not null,
+    area3  int       not null
+);
 --
 create table tmp_feat_lowest_place
 (
@@ -145,13 +166,7 @@ create table tmp_feat_lowest_place
     ptype  smallint     not null
 );
 
-create table tmp_place_name
-(
-    key   bigint       not null,
-    type  smallint     not null,
-    lang  char(3)      not null,
-    name  varchar(255) not null
-);
+
 ---
 create table tmp_link_place_name
 (

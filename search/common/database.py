@@ -4,7 +4,7 @@ Created on 2014.2
 
 @author: zhangpeng
 '''
-
+import re
 import psycopg2
 
 class CDB(object):
@@ -28,6 +28,9 @@ class CDB(object):
         
     def do_big_insert(self, sqlcmd ): 
         self.execute( sqlcmd )
+        m=re.match( '\s*?(insert)\s*?(into)\s*?(.*?)\s*?\(', sqlcmd,  re.IGNORECASE )
+        if m:
+            self.analyze( m.group(3) )
        
     def execute(self, sqlcmd, parameters = []):
         '''execute commands '''

@@ -69,6 +69,25 @@ class CPlace(entity.CEntity):
                  '''
         self.db.do_big_insert(sqlcmd)
         
+    def _make_a2(self):
+        sqlcmd = '''
+                 insert into tmp_place_id( place_id, key, type )
+                 select ( select max(place_id) from tmp_place_id ) + row_number() over (order by nid), 
+                        key, type
+                   from (
+                       select p.key, p.type, a0.place_id,  min(n.name_id) as nid
+                         from mid_place_admin     as p
+                         join mid_feature_to_name as f
+                           on p.type = 3003 and p.key = f.key and f.nametype = 'ON'
+                         join tmp_place_name_id   as n
+                           on f.nameid = n.key
+                         join tmp_place_id        as a1
+                           on p.a1 = a1.key
+                        group by p.key, p.type, a0.place_id
+                        ) as t
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
         
         
         
