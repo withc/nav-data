@@ -89,10 +89,10 @@ create table mid_poi_category
 -- poi
 create table mid_poi
 (
-    key     bigint   not null PRIMARY KEY,
-    type    smallint not null,
-    cat_id  bigint   not null,
-    imp     smallint not null
+    key       bigint   not null PRIMARY KEY,
+    type      smallint not null,
+    gen_code  bigint   not null,
+    imp       smallint not null
 );
 
 create table mid_poi_attr_value

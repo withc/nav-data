@@ -12,9 +12,14 @@ class CPlace(entity.CEntity):
     def _do_table(self):
         sqlcmd = '''
                  insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat, type, lang, name )
-                 select 
-                   from 
+                 select p.level, p.area0, p.area1, p.area2, p.area3, st_x(g.geom), st_y(g.geom)
+                   from tmp_place_are            as p
+                   join mid_feature_to_geometry  as fg
+                     on p.key = fg.key and fg.code = 7379
+                   join mid_geometry             as g
+                     on fg.geomid = g.id
                  '''
+        self.db.do_big_insert(sqlcmd)
         
     
     def _do_name(self):

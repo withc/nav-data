@@ -71,8 +71,9 @@ create table tbl_poi_info
   id  int  NOT NULL,
   lon int  NOT NULL,
   lat int  NOT NULL,
-  int_entry_point_lon int,
-  int_entry_point_lat int,
+  
+  entry_lon int,
+  entry_lat int,
   
   type      char(2)      not null,
   lang      char(3)      not null,
@@ -156,6 +157,13 @@ create table tmp_place_area
     area1  int       not null,
     area2  int       not null,
     area3  int       not null
+);
+
+create table tmp_poi
+(
+    key    bigint    not null,
+    type   smallint  not null,
+    id     int       not null
 );
 --
 create table tmp_feat_lowest_place
