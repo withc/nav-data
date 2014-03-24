@@ -28,7 +28,7 @@ class CDB(object):
         
     def do_big_insert(self, sqlcmd ): 
         self.execute( sqlcmd )
-        m=re.match( '\s*?(insert)\s*?(into)\s*?(.*?)\s*?\(', sqlcmd,  re.IGNORECASE )
+        m=re.match( '\s*?(insert)\s+?(into)\s+?(.*?)\s*?\(', sqlcmd,  re.IGNORECASE )
         if m:
             self.analyze( m.group(3) )
        

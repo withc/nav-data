@@ -30,7 +30,7 @@ CREATE TABLE tbl_search_meta
 
 create table tbl_genre_info
 (
-    per_code   bigint       not null,
+    u_code     bigint       not null,
     gen1       int          not null,
     gen2       int          not null,
     gen3       int          not null,
@@ -47,7 +47,16 @@ create table tbl_city_info
     area2  int          not null,
     area3  int          not null,
     lon    int          not null,
-    lat    int          not null,
+    lat    int          not null
+);
+
+create table tbl_city_name
+(
+    level  int          not null,
+    area0  int          not null,
+    area1  int          not null,
+    area2  int          not null,
+    area3  int          not null,
     type   char(2)      not null,
     lang   char(3)      not null,
     name   varchar(255) not null
@@ -55,44 +64,69 @@ create table tbl_city_info
 
 CREATE TABLE tbl_street_info
 (
-  id        int not null,
-  area1     int not null,
-  area2     int not null,
-  area3     int not null,
-  lon       int not null,
-  lat       int not null,
+  id        int          not null,
+  level     int          not null,
+  area0     int          not null,
+  area1     int          not null,
+  area2     int          not null,
+  area3     int          not null,
+  lon       int          not null,
+  lat       int          not null,
   type      char(2)      not null,
   lang      char(3)      not null,
   name      varchar(255) not null
 );
 
+create table tbl_street_name
+(
+    id     int          not null,
+    type   char(2)      not null,
+    lang   char(3)      not null,
+    name   varchar(255) not null
+);
+
+--
 create table tbl_poi_info
 (
-  id  int  NOT NULL,
-  lon int  NOT NULL,
-  lat int  NOT NULL,
+  id        int  NOT NULL,
   
+  lon       int  NOT NULL,
+  lat       int  NOT NULL,
   entry_lon int,
   entry_lat int,
   
-  type      char(2)      not null,
-  lang      char(3)      not null,
-  name      varchar(255) not null,
-  
-  text_poi_name     varchar(255),
-  text_phone_number varchar(255),
-  text_address_text varchar(255),
-  
+  tel       varchar(255),
+  fax       varchar(255),
+  email     varchar(255),
+  internet  varchar(255),
+
   imp       int not null,
   gen1      int not null,
   gen2      int not null,
   gen3      int not null,
+  area0     int not null,
   area1     int not null,
   area2     int not null,
   area3     int not null,
   meshid    int not null
 );
 
+create table tbl_poi_address
+(
+    id      int          NOT NULL,
+    lang    char(3)      not null,
+    street  varchar(255) not null,
+    hno     varchar(32)  not null
+);
+
+create table tbl_poi_name
+(
+    id      int          NOT NULL,
+    type    char(2)      not null,
+    lang    char(3)      not null,
+    name    varchar(255) not null
+);
+---
 create table tbl_hno_range
 (
     id       bigint        not null,
@@ -165,6 +199,15 @@ create table tmp_poi
     type   smallint  not null,
     id     int       not null
 );
+
+create table tmp_street
+(
+    key    bigint    not null,
+    type   smallint  not null,
+    pkey   bigint    not null,
+    ptype  bigint    not null,
+    id     int       not null
+)
 --
 create table tmp_feat_lowest_place
 (
@@ -173,7 +216,6 @@ create table tmp_feat_lowest_place
     pkey   bigint       not null,
     ptype  smallint     not null
 );
-
 
 ---
 create table tmp_link_place_name

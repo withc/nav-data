@@ -2,7 +2,6 @@ import load.feature
 
 class CLink(load.feature.CFeature):
     def __init__(self ):
-        print "mmi's link"
         load.feature.CFeature.__init__(self, 'link')
  
     def _domake_key(self):
@@ -74,6 +73,7 @@ class CLink(load.feature.CFeature):
         pass
         
     def _domake_relation(self):
+        #link to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
@@ -91,6 +91,9 @@ class CLink(load.feature.CFeature):
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+        #link to post code
+        
         
         
         

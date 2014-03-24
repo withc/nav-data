@@ -6,6 +6,7 @@ class CFeature(object):
         self.db     = None
         self.name   = name
         self.logger = common.logger.sub_log( self.name )
+        self.logger.info('init')
         
     def attach_db(self, database):
         self.db = database
@@ -115,11 +116,16 @@ class CEndProcess(object):
                      from temp_feat_geom
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+        # when geom is so close,the geomid will be same, so ,we need select only one geom in that case.
         sqlcmd = '''
                    insert into mid_geometry( id, type, geom)
-                   select distinct geomid, geotype, geom
-                     from temp_feat_geom_gen_id
-                     order by geomid
+                   select geomid, geotype, geom
+                     from (
+                           select geomid, geotype, geom, row_number() over ( partition by geomid ) as seq
+                             from temp_feat_geom_gen_id
+                          ) as t
+                     where seq = 1
                  '''
         self.db.do_big_insert( sqlcmd )
         

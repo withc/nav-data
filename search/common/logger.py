@@ -8,10 +8,10 @@ def sub_log( name='' ):
     else:
         return logging.getLogger( PROJECT )
     
-def init_log():
+def init_log( file='' ):
     logger = logging.getLogger(PROJECT)
     logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler('test.log')
+    fh = logging.FileHandler('test_'+file+'.log')
     fh.setLevel(logging.DEBUG)
 
     ch = logging.StreamHandler()

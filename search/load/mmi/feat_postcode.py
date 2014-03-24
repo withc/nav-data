@@ -2,7 +2,6 @@ import load.feature
 
 class CPostcode(load.feature.CFeature):
     def __init__(self ):
-        print "mmi's postcode"
         load.feature.CFeature.__init__(self, 'postcode')
  
     def _domake_key(self):

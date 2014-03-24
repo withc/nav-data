@@ -45,28 +45,28 @@ class CLoader(object):
         load.factory.featureFactory( self.vendor, self )
      
     def _copy_feature_key(self):
-        print 'copy_feature_key'
+        self.logger.info( '--copy_feature_key' )
         for f in self.feats:
             f.make_key()
         
     def _copy_feature(self):
-        print 'copy_feature'
+        self.logger.info( '--copy_feature' )
         for f in self.feats:
             f.make_feature()
         
     def _copy_common_attribute(self):
-        print 'copy_geomtry'
+        self.logger.info( '--copy_geomtry' )
         for f in self.feats:
             f.make_geomtry()
             f.make_name()
     
     def _copy_attribute(self):
-        print 'copy_attribute'
+        self.logger.info( '--copy_attribute' )
         for f in self.feats:
             f.make_attribute()
         
     def _copy_relationship(self):
-        print 'copy_relationship'
+        self.logger.info( '--copy_relationship' )
         for f in self.feats:
             f.make_relation()
             

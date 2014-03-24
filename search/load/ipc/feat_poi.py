@@ -13,7 +13,7 @@ class CPoi(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_poi( key, type, cat_id, imp )
+                    insert into mid_poi( key, type, gen_code, imp )
                  '''
         self.db.do_big_insert( sqlcmd )
     

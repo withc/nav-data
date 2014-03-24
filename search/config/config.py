@@ -1,9 +1,9 @@
 
 class Config( object ):
     __instance = None
-    _vendor  ='globetech'
+    _vendor  ='mmi'
     _host    ='172.26.179.138'
-    _dbname  ='14tmap_thailand_globetech_201401_0061'
+    _dbname  ='14tmap_india_MMI_201402_0062'
     _user    ='postgres'
     _password=''
 
