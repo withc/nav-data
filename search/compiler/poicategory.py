@@ -2,7 +2,7 @@ import entity
 
 class CPoicategory(entity.CEntity):
     def __init__(self, database ):
-        entity.CEntity.__init__(self, database, 'Poicategory')
+        entity.CEntity.__init__(self, database, 'Poi_cat')
           
     def _do(self):
         sqlcmd = '''

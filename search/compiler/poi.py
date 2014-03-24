@@ -6,11 +6,12 @@ class CPoi(entity.CEntity):
           
     def _do(self):
         self._do_gen_poiid()
-        self._do_poi_info()
+        self._do_poi_infor()
         self._do_poi_address()
         self._do_poi_name()
 
     def _do_gen_poiid(self):
+        self.logger.info('  do gen id')
         sqlcmd = '''
                  insert into tmp_poi( key, type, id)
                  select p.key, p.type, row_number() over (order by pa.area0, pa.area1, p.key )
@@ -22,7 +23,8 @@ class CPoi(entity.CEntity):
                  '''
         self.db.do_big_insert(sqlcmd)
     
-    def _do_poi_info(self):
+    def _do_poi_infor(self):
+        self.logger.info('  do poi infor')
         sqlcmd = '''
                  insert into tbl_poi_info( id, lon, lat, entry_lon, entry_lat, 
                                            tel, fax, email, internet, postcode,
@@ -35,7 +37,7 @@ class CPoi(entity.CEntity):
                         COALESCE(it.attr_value, ''), 
                         po.pocode,
                         c.imp, c.gen1, c.gen2, c.gen3,
-                        pa.area0, pa.area1, pa.area2, pa.area3 
+                        pa.area0, pa.area1, pa.area2, pa.area3, 0
                    from tmp_poi                  as p
                    join mid_poi                  as mp
                      on p.key = mp.key
@@ -69,6 +71,7 @@ class CPoi(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
         
     def _do_poi_address(self):
+        self.logger.info('  do poi address')
         sqlcmd = '''
                  insert into tbl_poi_address( id, lang, street, hno )
                  select p.id, '', 
@@ -83,6 +86,7 @@ class CPoi(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
         
     def _do_poi_name(self):
+        self.logger.info('  do poi name')
         sqlcmd = '''
                  insert into tbl_poi_name( id, type, lang, name )
                  select p.id, fn.nametype, n.langcode, n.name
