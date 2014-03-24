@@ -6,7 +6,10 @@ class CPoi(entity.CEntity):
           
     def _do(self):
         self._do_gen_poiid()
-    
+        self._do_poi_info()
+        self._do_poi_address()
+        self._do_poi_name()
+
     def _do_gen_poiid(self):
         sqlcmd = '''
                  insert into tmp_poi( key, type, id)
@@ -22,14 +25,15 @@ class CPoi(entity.CEntity):
     def _do_poi_info(self):
         sqlcmd = '''
                  insert into tbl_poi_info( id, lon, lat, entry_lon, entry_lat, 
-                                           tel, fax, email, internet, 
+                                           tel, fax, email, internet, postcode,
                                            imp, gen1, gen2, gen3, 
                                            area0, area1, area2, area3, meshid )
-                 select p.id, st_x(g.geom), st_y(g.geom), st_x(g2.geom), st_y(g2.geom),
+                 select p.id, st_x(g.geom)*100000, st_y(g.geom)*100000, st_x(g2.geom)*100000, st_y(g2.geom)*100000,
                         COALESCE(te.attr_value, ''), 
                         COALESCE(fa.attr_value, ''),
                         COALESCE(em.attr_value, ''),
-                        COALESCE(in.attr_value, ''), 
+                        COALESCE(it.attr_value, ''), 
+                        po.pocode,
                         c.imp, c.gen1, c.gen2, c.gen3,
                         pa.area0, pa.area1, pa.area2, pa.area3 
                    from tmp_poi                  as p
@@ -38,17 +42,19 @@ class CPoi(entity.CEntity):
                    join mid_poi_category         as c
                      on mp.gen_code = c.per_code
                    join mid_feature_to_geometry  as fg
-                     on p.key   = fg.key and
-                        fg.code = 7000
+                     on p.key   = fg.key and fg.code = 7000
                    join mid_geometry             as g
                      on fg.geomid = g.id
                    join tmp_feat_lowest_place    as fp
                      on p.key   = fp.key
                    join tmp_place_area           as pa
                      on fp.pkey = pa.key
+              left join mid_feature_to_feature   as ff
+                     on p.key = ff.fkey and ff.code = 7004
+              left join mid_postcode             as po
+                     on ff.tkey = po.key
               left join mid_feature_to_geometry  as fg2
-                     on p.key   = fg.key and
-                        fg.code = 9920
+                     on p.key = fg.key and fg.code = 9920
               left join mid_geometry             as g2
                      on fg2.geomid = g2.id
               left join mid_poi_attr_value       as te
@@ -57,8 +63,8 @@ class CPoi(entity.CEntity):
                      on p.key = fa.key  and  fa.attr_type = 'TX'
               left join mid_poi_attr_value       as em
                      on p.key = em.key  and  em.attr_type = '8M'
-              left join mid_poi_attr_value       as in
-                     on p.key = in.key  and  in.attr_type = '8L'
+              left join mid_poi_attr_value       as it
+                     on p.key = it.key  and  it.attr_type = '8L'
                  '''
         self.db.do_big_insert(sqlcmd)
         
@@ -69,21 +75,20 @@ class CPoi(entity.CEntity):
                         COALESCE(st.attr_value, ''), 
                         COALESCE(hn.attr_value, '')
                    from tmp_poi            as p
-                   join mid_poi_attr_value as st
+              left join mid_poi_attr_value as st
                      on p.key = st.key and st.attr_type = '6T'
-                   join mid_poi_attr_value as hn
+              left join mid_poi_attr_value as hn
                      on p.key = hn.key and hn.attr_type = '9H'
-                 '''
-        
+                 ''' 
         self.db.do_big_insert(sqlcmd)
         
     def _do_poi_name(self):
         sqlcmd = '''
                  insert into tbl_poi_name( id, type, lang, name )
-                 select p.id, fn.nametype, n.lang, n.name
+                 select p.id, fn.nametype, n.langcode, n.name
                    from tmp_poi             as p
                    join mid_feature_to_name as fn
-                     on p.key = n.key
+                     on p.key = fn.key
                    join mid_name            as n
                      on fn.nameid = n.id
                  '''

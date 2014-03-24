@@ -18,7 +18,7 @@ class CLink(entity.CEntity):
                           from mid_link              as l
                           join tmp_feat_lowest_place as fp
                             on l.key = fp.key
-                          from mid_feature_to_name   as n
+                          join mid_feature_to_name   as n
                             on l.key = n.key
                         ) as t
                   group by t.pkey, t.ptype, t.key, t.type
@@ -28,7 +28,7 @@ class CLink(entity.CEntity):
         
     def _do_full_name(self):
         sqlcmd = '''
-                 insert into tbl_road( key, type, lang, country, state, city, district, road )
+                 insert into tbl_road_full( key, type, lang, country, state, city, district, road )
                  select 1, 0, f.langcode, p.country, p.state, p.city, p.district,  f.name
                    from (
                           select distinct ff.pkey, ln.langcode, ln.name
@@ -43,3 +43,4 @@ class CLink(entity.CEntity):
                    order by f.langcode, f.pkey
                  '''
         self.db.do_big_insert(sqlcmd)
+        

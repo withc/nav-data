@@ -2,6 +2,9 @@ import common.logger
 import house_number
 import place
 import street
+import poi
+import poicategory
+import postcode
 
 class CCompiler(object):
     def __init__(self, database):
@@ -29,6 +32,8 @@ class CCompiler(object):
         
     def _addEntity(self):
         self.entity.append( place.CPlace(self.db) )
+        self.entity.append( poicategory.CPoicategory(self.db) )
+        self.entity.append( poi.CPoi(self.db) )
         self.entity.append( street.CLink(self.db) )
-        self.entity.append( house_number.CHouseNumber(self.db) )
+        #self.entity.append( house_number.CHouseNumber(self.db) )
         

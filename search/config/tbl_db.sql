@@ -5,17 +5,25 @@
 DROP TABLE IF EXISTS tbl_search_meta   CASCADE;
 DROP TABLE IF EXISTS tbl_genre_info    CASCADE;
 DROP TABLE IF EXISTS tbl_city_info     CASCADE;
+DROP TABLE IF EXISTS tbl_city_name     CASCADE;
+
 DROP TABLE IF EXISTS tbl_street_info   CASCADE;
+DROP TABLE IF EXISTS tbl_street_name   CASCADE;
+
 DROP TABLE IF EXISTS tbl_poi_info      CASCADE;
-DROP TABLE IF EXISTS tbl_road          CASCADE;
+DROP TABLE IF EXISTS tbl_poi_address   CASCADE;
+DROP TABLE IF EXISTS tbl_poi_name      CASCADE;
+
 
 DROP TABLE IF EXISTS tbl_hno_range           CASCADE;
 DROP TABLE IF EXISTS tbl_hno_point           CASCADE;
-DROP TABLE IF EXISTS tbl_place               CASCADE;
-
+DROP TABLE IF EXISTS tbl_place_full          CASCADE;
+DROP TABLE IF EXISTS tbl_road_full           CASCADE;
 DROP TABLE IF EXISTS tmp_place_area          CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
-DROP TABLE IF EXISTS tmp_link_place_name     CASCADE;
+DROP TABLE IF EXISTS tmp_poi                 CASCADE;
+DROP TABLE IF EXISTS tmp_street              CASCADE;
+
 DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
 
 CREATE TABLE tbl_search_meta
@@ -99,7 +107,7 @@ create table tbl_poi_info
   fax       varchar(255),
   email     varchar(255),
   internet  varchar(255),
-
+  postcode  varchar(32),
   imp       int not null,
   gen1      int not null,
   gen2      int not null,
@@ -151,7 +159,7 @@ create table tbl_hno_point
     num      varchar(128) not null
 );
 
-create table tbl_place
+create table tbl_place_full
 (
     key      bigint       not null,
     type     smallint     not null,
@@ -162,7 +170,7 @@ create table tbl_place
     district varchar(128) not null
 );
 
-CREATE TABLE tbl_road
+CREATE TABLE tbl_road_full
 (
   key      bigint   NOT NULL,
   type     smallint NOT NULL,
@@ -176,10 +184,11 @@ CREATE TABLE tbl_road
 
 create table tmp_place_name
 (
-    key   bigint       not null,
-    type  smallint     not null,
-    lang  char(3)      not null,
-    name  varchar(255) not null
+    key      bigint       not null,
+    type     smallint     not null,
+    nametype char(2)      not null,
+    lang     char(3)      not null,
+    name     varchar(255) not null
 );
 
 create table tmp_place_area
@@ -207,7 +216,7 @@ create table tmp_street
     pkey   bigint    not null,
     ptype  bigint    not null,
     id     int       not null
-)
+);
 --
 create table tmp_feat_lowest_place
 (
@@ -217,9 +226,3 @@ create table tmp_feat_lowest_place
     ptype  smallint     not null
 );
 
----
-create table tmp_link_place_name
-(
-    key   bigint   not null,
-    type  smallint not null
-);

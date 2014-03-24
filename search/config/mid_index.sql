@@ -17,6 +17,11 @@ CREATE INDEX mid_feature_to_geometry_key
   ON mid_feature_to_geometry
   USING btree
   (key); 
+
+CREATE INDEX mid_poi_attr_value_key
+  ON mid_poi_attr_value
+  USING btree
+  (key); 
   
 CREATE INDEX mid_house_number_road_id
   ON mid_house_number_road

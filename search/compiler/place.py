@@ -11,7 +11,7 @@ class CPlace(entity.CEntity):
         
     def _do_table(self):
         sqlcmd = '''
-                 insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat, type, lang, name )
+                 insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat )
                  select p.level, p.area0, p.area1, p.area2, p.area3, st_x(g.geom), st_y(g.geom)
                    from tmp_place_are            as p
                    join mid_feature_to_geometry  as fg
@@ -21,13 +21,21 @@ class CPlace(entity.CEntity):
                  '''
         self.db.do_big_insert(sqlcmd)
         
-    
+        sqlcmd = '''
+                 insert into tbl_city_name( level, area0, area1, area2, area3, type, lang, name )
+                 select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, n.lang, n.name
+                   from tmp_place_are     as p
+                   join tmp_place_name    as pn
+                     on p.key = pn.key  
+                 '''
+        self.db.do_big_insert(sqlcmd)
+
     def _do_name(self):
-        self.logger.info('  create place table')
+        self.logger.info('  do place name')
         
         sqlcmd = '''
-                 insert into tmp_place_name( key, type, lang, name)
-                 select p.key, p.type, n.langcode, n.name
+                 insert into tmp_place_name( key, type, nametype, lang, name)
+                 select p.key, p.type, pn.nametype, n.langcode, n.name
                    from mid_place_admin      as p
                    join mid_feature_to_name  as pn
                      on p.key = pn.key and p.type = pn.type
@@ -38,7 +46,7 @@ class CPlace(entity.CEntity):
         self.db.createIndex( 'tmp_place_name', 'key' )
         
         sqlcmd = '''
-                 insert into tbl_place( key, type, lang, country, state, city, district )
+                 insert into tbl_place_full( key, type, lang, country, state, city, district )
                  select a.key, a.type, n0.lang, n0.name, n1.name, n8.name, 
                         COALESCE( n9.name, '' )
                    from mid_place_admin  as a
@@ -52,8 +60,8 @@ class CPlace(entity.CEntity):
                      on a.a9 = n9.key and n0.lang = n9.lang
                    where a.a8 <> 0 or a.a9 <> 0
                  '''
-        self.db.do_big_insert(sqlcmd)
-        self.db.createIndex( 'tbl_place', 'key' )
+        #self.db.do_big_insert(sqlcmd)
+        #self.db.createIndex( 'tbl_place_full', 'key' )
     
     def _do_gen_areaid(self):
         #for a0
@@ -67,7 +75,8 @@ class CPlace(entity.CEntity):
         #for a1
         sqlcmd = '''
                  insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
-                 select key, type, 1, t.area0, row_number() over (), 0,0
+                 select pa.key, pa.type, 1, t.area0, 
+                        row_number() over ( partition by t.area0 order by pa.key ), 0,0
                    from mid_place_admin  as pa
                    join tmp_place_area   as t
                      on pa.a0 = t.key and pa.type = 3002
@@ -76,7 +85,8 @@ class CPlace(entity.CEntity):
         #for a8
         sqlcmd = '''
                  insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
-                 select key, type, 2, t.area0, t.area1, row_number() over (), 0
+                 select pa.key, pa.type, 2, t.area0, t.area1, 
+                        row_number() over ( partition by t.area0, t.area1 order by pa.key ), 0
                    from mid_place_admin  as pa
                    join tmp_place_area   as t
                      on pa.a1 = t.key and pa.type = 3009
@@ -85,7 +95,8 @@ class CPlace(entity.CEntity):
         #for a9
         sqlcmd = '''
                  insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
-                 select key, type, 3, t.area0, t.area1, t.area2, row_number() over ()
+                 select pa.key, pa.type, 3, t.area0, t.area1, t.area2,
+                        row_number() over (partition by t.area0, t.area1,t.area2 order by pa.key )
                    from mid_place_admin  as pa
                    join tmp_place_area   as t
                      on pa.a8 = t.key and pa.type = 3010
@@ -97,7 +108,7 @@ class CPlace(entity.CEntity):
             so, we must filter the a8 record if it is already refer to his a9.
             tmp_feat_lowest_place will contain the lowest admin place only.
         '''
-        self.logger.info('  create feat to lowest place')
+        self.logger.info('  do feat to lowest place')
         sqlcmd = '''
                insert into tmp_feat_lowest_place( key, type, pkey, ptype )
                  with ff ( fkey, ftype, tkey, ttype, a8 ) as 
