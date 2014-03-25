@@ -2,7 +2,6 @@ import load.feature
 
 class CPlace(load.feature.CFeature):
     def __init__(self ):
-        print "globe tech's place"
         load.feature.CFeature.__init__(self, 'place')
  
     def _domake_key(self):

@@ -15,7 +15,7 @@ class CPlace(entity.CEntity):
         sqlcmd = '''
                  insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat )
                  select p.level, p.area0, p.area1, p.area2, p.area3, st_x(g.geom), st_y(g.geom)
-                   from tmp_place_are            as p
+                   from tmp_place_area           as p
                    join mid_feature_to_geometry  as fg
                      on p.key = fg.key and fg.code = 7379
                    join mid_geometry             as g
@@ -40,8 +40,8 @@ class CPlace(entity.CEntity):
         
         sqlcmd = '''
                  insert into tbl_city_name( level, area0, area1, area2, area3, type, lang, name )
-                 select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, n.lang, n.name
-                   from tmp_place_are     as p
+                 select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, pn.lang, pn.name
+                   from tmp_place_area    as p
                    join tmp_place_name    as pn
                      on p.key = pn.key  
                  '''

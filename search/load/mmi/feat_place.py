@@ -46,7 +46,7 @@ class CPlace(load.feature.CFeature):
         # get the state and country point
         sqlcmd = '''
                  insert into temp_feat_geom( key, type, code, geotype, geom ) 
-                 select f.feat_key, f.feat_type, 7379, 'P', c.the_geom
+                 select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from org_capital_indicator as ca
                    join temp_admincode        as t
                      on ca.stt_id  = t.id and t.kind = 9 
@@ -62,7 +62,7 @@ class CPlace(load.feature.CFeature):
         # get the city point
         sqlcmd = '''
                  insert into temp_feat_geom( key, type, code, geotype, geom ) 
-                 select f.feat_key, f.feat_type, 7379, 'P', c.the_geom
+                 select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from temp_admincode        as t 
                    join mid_feat_key          as f
                      on t.org_id1   = f.org_id1 and 
@@ -99,7 +99,11 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
-        pass
+        sqlcmd = '''
+                 insert into mid_full_area()
+                 select 
+                   from 
+                 '''
         
     def _domake_relation(self):
         sqlcmd = '''

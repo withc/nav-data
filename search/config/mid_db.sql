@@ -1,6 +1,7 @@
 
 DROP TABLE IF EXISTS mid_feat_key         CASCADE;
 DROP TABLE IF EXISTS mid_country_profile  CASCADE;
+DROP TABLE IF EXISTS mid_full_area        CASCADE;
 DROP TABLE IF EXISTS mid_place            CASCADE;
 DROP TABLE IF EXISTS mid_place_admin      CASCADE;
 DROP TABLE IF EXISTS mid_postcode         CASCADE;
@@ -45,6 +46,14 @@ create table mid_country_profile
     off_lang  char(3)  not null,
     key       bigint   not null,
     type      smallint not null
+);
+
+CREATE TABLE mid_full_area
+(
+    min_lon  double precision  NOT NULL,
+    min_lat  double precision  NOT NULL,
+    max_lon  double precision  NOT NULL,
+    max_lat  double precision  NOT NULL
 );
 
 create table mid_place
