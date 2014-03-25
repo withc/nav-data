@@ -6,6 +6,8 @@ class CPoi(entity.CEntity):
           
     def _do(self):
         self._do_gen_poiid()
+        self._do_poi_geom()
+        self._do_poi_attr()
         self._do_poi_infor()
         self._do_poi_address()
         self._do_poi_name()
@@ -30,23 +32,23 @@ class CPoi(entity.CEntity):
                                            tel, fax, email, internet, postcode,
                                            imp, gen1, gen2, gen3, 
                                            area0, area1, area2, area3, meshid )
-                 select p.id, st_x(g.geom)*100000, st_y(g.geom)*100000, st_x(g2.geom)*100000, st_y(g2.geom)*100000,
-                        COALESCE(te.attr_value, ''), 
-                        COALESCE(fa.attr_value, ''),
-                        COALESCE(em.attr_value, ''),
-                        COALESCE(it.attr_value, ''), 
+                 select p.id, g.lon, g.lat, g.entry_lon, g.entry_lat, 
+                        COALESCE( at.tel,      ''), 
+                        COALESCE( at.fax,      ''), 
+                        COALESCE( at.email,    ''),
+                        COALESCE( at.internet, ''),
                         po.pocode,
                         c.imp, c.gen1, c.gen2, c.gen3,
                         pa.area0, pa.area1, pa.area2, pa.area3, 0
                    from tmp_poi                  as p
+                   join tmp_poi_geom             as g
+                     on p.id = g.id
+              left join tmp_poi_attr             as at
+                     on p.id = at.id
                    join mid_poi                  as mp
                      on p.key = mp.key
                    join mid_poi_category         as c
                      on mp.gen_code = c.per_code
-                   join mid_feature_to_geometry  as fg
-                     on p.key   = fg.key and fg.code = 7000
-                   join mid_geometry             as g
-                     on fg.geomid = g.id
                    join tmp_feat_lowest_place    as fp
                      on p.key   = fp.key
                    join tmp_place_area           as pa
@@ -55,18 +57,6 @@ class CPoi(entity.CEntity):
                      on p.key = ff.fkey and ff.code = 7004
               left join mid_postcode             as po
                      on ff.tkey = po.key
-              left join mid_feature_to_geometry  as fg2
-                     on p.key = fg.key and fg.code = 9920
-              left join mid_geometry             as g2
-                     on fg2.geomid = g2.id
-              left join mid_poi_attr_value       as te
-                     on p.key = te.key  and  te.attr_type = 'TL'
-              left join mid_poi_attr_value       as fa
-                     on p.key = fa.key  and  fa.attr_type = 'TX'
-              left join mid_poi_attr_value       as em
-                     on p.key = em.key  and  em.attr_type = '8M'
-              left join mid_poi_attr_value       as it
-                     on p.key = it.key  and  it.attr_type = '8L'
                  '''
         self.db.do_big_insert(sqlcmd)
         
@@ -97,5 +87,56 @@ class CPoi(entity.CEntity):
                      on fn.nameid = n.id
                  '''
         self.db.do_big_insert(sqlcmd)
+    
+    def _do_poi_attr(self):
+        self.logger.info('  do poi attr')
+        sqlcmd = '''
+                 insert into tmp_poi_attr( id, tel, fax, email, internet )
+                 select p.id, 
+                        COALESCE(te.attr_value, ''), 
+                        COALESCE(fa.attr_value, ''),
+                        COALESCE(em.attr_value, ''),
+                        COALESCE(it.attr_value, '')
+                   from tmp_poi                  as p
+                   left join mid_poi_attr_value  as te
+                     on p.key = te.key  and  te.attr_type = 'TL'
+              left join mid_poi_attr_value       as fa
+                     on p.key = fa.key  and  fa.attr_type = 'TX'
+              left join mid_poi_attr_value       as em
+                     on p.key = em.key  and  em.attr_type = '8M'
+              left join mid_poi_attr_value       as it
+                     on p.key = it.key  and  it.attr_type = '8L'
+                  where te.attr_value is not null or
+                        fa.attr_value is not null or
+                        em.attr_value is not null or
+                        it.attr_value is not null 
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
+    def _do_poi_geom(self):
+        self.logger.info('  do poi geom')
+        sqlcmd = '''
+                 insert into tmp_poi_geom( id, lon, lat, entry_lon, entry_lat )
+                 select p.id, st_x(g.geom)*100000, st_y(g.geom)*100000, 
+                        case
+                           when g2.geom is null then 0
+                           else st_x(g2.geom)*100000
+                        end, 
+                        case
+                           when g2.geom is null then 0
+                           else st_y(g2.geom)*100000
+                        end
+                   from tmp_poi                  as p
+                   join mid_feature_to_geometry  as fg
+                     on p.key = fg.key and fg.code = 7000
+                   join mid_geometry             as g
+                     on fg.geomid = g.id
+              left join mid_feature_to_geometry  as fg2
+                     on p.key = fg2.key and fg2.code = 9920
+              left join mid_geometry             as g2
+                     on fg2.geomid = g2.id
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
         
         

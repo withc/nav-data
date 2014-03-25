@@ -43,7 +43,20 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
-        # get the state and country point
+        # get the country point for india
+        sqlcmd = '''
+                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
+                   from temp_admincode        as t 
+                   join mid_feat_key          as f
+                     on t.org_id1   = f.org_id1 and 
+                        t.org_id2   = f.org_id2 and
+                        t.kind      = 10
+                   join org_city_centre_point as c
+                     on c.name = 'New Delhi'
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        # get the state point
         sqlcmd = '''
                  insert into temp_feat_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)

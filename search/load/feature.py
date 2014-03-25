@@ -138,10 +138,18 @@ class CEndProcess(object):
         self.db.do_big_insert( sqlcmd )
         
     def _create_index(self):
-        self.logger.info('create index for mid table') 
-        fp = open(r'.\config\mid_index.sql','r')
-        self.db.execute( fp.read() )
-        fp.close()
+        self.logger.info('create index for mid table')
+        self.db.createIndex('mid_poi_attr_value',      'key'    )
+        self.db.createIndex('mid_feature_to_feature',  'fkey'   )
+        self.db.createIndex('mid_feature_to_feature',  'tkey'   ) 
+        self.db.createIndex('mid_feature_to_name',     'key'    )
+        self.db.createIndex('mid_feature_to_name',     'nameid' )
+        self.db.createIndex('mid_feature_to_geometry', 'key'    )
+        self.db.createIndex('mid_feature_to_geometry', 'geomid' )
+        
+       
+        
+        
         
         
         

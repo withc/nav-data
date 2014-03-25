@@ -23,6 +23,8 @@ DROP TABLE IF EXISTS tmp_place_area          CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
 DROP TABLE IF EXISTS tmp_poi                 CASCADE;
 DROP TABLE IF EXISTS tmp_street              CASCADE;
+DROP TABLE IF EXISTS tmp_poi_attr            CASCADE;
+DROP TABLE IF EXISTS tmp_poi_geom            CASCADE;
 
 DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
 
@@ -207,6 +209,24 @@ create table tmp_poi
     key    bigint    not null,
     type   smallint  not null,
     id     int       not null
+);
+
+create table tmp_poi_attr
+(
+   id        int   not null,
+   tel       varchar(255),
+   fax       varchar(255),
+   email     varchar(255),
+   internet  varchar(255)
+);
+
+create table tmp_poi_geom
+( 
+    id        int not null,
+    lon       int not null,
+    lat       int not null,
+    entry_lon int not null,
+    entry_lat int not null
 );
 
 create table tmp_street

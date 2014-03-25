@@ -86,7 +86,7 @@ create table mid_postcode
 -- category
 create table mid_poi_category
 (
-    per_code   bigint       not null,
+    per_code   bigint       not null PRIMARY KEY,
     gen1       int          not null,
     gen2       int          not null,
     gen3       int          not null,

@@ -104,6 +104,7 @@ class CPlace(entity.CEntity):
                      on pa.a8 = t.key and pa.type = 3010
                  '''
         self.db.do_big_insert(sqlcmd)
+        self.db.createIndex( 'tmp_place_area', 'key' )
         
     def _do_lowest_place(self):
         ''' when a feature belong to a9, we also add a8( the a9's parent) to table mid_feature_to_feature,
