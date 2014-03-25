@@ -86,8 +86,8 @@ class CPoi(load.feature.CFeature):
                         on t.org_id1 = f.org_id1 and t.org_id2 = f.org_id2
                     )
                 select  key, type, 'TL', phone   from pa where phone is not null
-                union
-                select  key, type, 'TL', phone2  from pa where phone2 is not null
+                --union
+                --select  key, type, 'TL', phone2  from pa where phone2 is not null
                 union
                 select  key, type, '6T', street  from pa where street is not null
                 union

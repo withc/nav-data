@@ -81,10 +81,7 @@ CREATE TABLE tbl_street_info
   area2     int          not null,
   area3     int          not null,
   lon       int          not null,
-  lat       int          not null,
-  type      char(2)      not null,
-  lang      char(3)      not null,
-  name      varchar(255) not null
+  lat       int          not null
 );
 
 create table tbl_street_name
@@ -235,6 +232,7 @@ create table tmp_street
     type   smallint  not null,
     pkey   bigint    not null,
     ptype  bigint    not null,
+    nameid int       not null,
     id     int       not null
 );
 --
