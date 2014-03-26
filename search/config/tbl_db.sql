@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS tmp_street              CASCADE;
 DROP TABLE IF EXISTS tmp_poi_attr            CASCADE;
 DROP TABLE IF EXISTS tmp_poi_geom            CASCADE;
 DROP TABLE IF EXISTS tmp_street_geom         CASCADE;
-
+DROP TABLE IF EXISTS tmp_street_hno_id       CASCADE;
 DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
 
 CREATE TABLE tbl_search_meta
@@ -138,11 +138,7 @@ create table tbl_poi_name
 create table tbl_hno_range
 (
     id       bigint        not null,
-    country  varchar(128)  not null,
-    state    varchar(128)  not null,
-    city     varchar(128)  not null,
-    district varchar(128)  not null,
-    street   varchar(128)  not null,
+    link_id  bigint        not null,
     scheme   char(1)       not null,
     first    varchar(128)  not null,
     last     varchar(128)  not null
@@ -150,13 +146,21 @@ create table tbl_hno_range
 
 create table tbl_hno_point
 (
-    id       bigint       not null,
-    country  varchar(128) not null,
-    state    varchar(128) not null,
-    city     varchar(128) not null,
-    district varchar(128) not null,
-    street   varchar(128) not null,
-    num      varchar(128) not null
+    id        bigint       not null,
+    link_id   bigint       not null,
+    hno       varchar(128) not null,
+    lon       int          not null,
+    lat       int          not null,
+    entry_lon int          not null,
+    entry_lat int          not null
+);
+
+create table tmp_street_hno_id
+(
+    id           int     not null,
+    org_link_id  bigint  not null,
+    
+    mid_id       int     not null
 );
 
 create table tbl_place_full

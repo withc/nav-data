@@ -146,7 +146,7 @@ create table mid_address_range
 
 create table mid_address_point
 (
-     id     bigint       not null,
+     id       bigint       not null,
      side     smallint     not null CONSTRAINT valid_sol CHECK (side IN (1,2)),
      num      varchar(128) not null,
      x        int          not null,

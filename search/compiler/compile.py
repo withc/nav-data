@@ -35,5 +35,5 @@ class CCompiler(object):
         self.entity.append( poicategory.CPoicategory(self.db) )
         self.entity.append( poi.CPoi(self.db) )
         self.entity.append( street.CLink(self.db) )
-        #self.entity.append( house_number.CHouseNumber(self.db) )
+        self.entity.append( house_number.CHouseNumber(self.db) )
         
