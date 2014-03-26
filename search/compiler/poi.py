@@ -93,21 +93,32 @@ class CPoi(entity.CEntity):
     
     def _do_poi_attr(self):
         self.logger.info('  do poi attr')
+        # each attribut, we only choice 1 item. we will fix the problem at next time.
         sqlcmd = '''
                  insert into tmp_poi_attr( id, tel, fax, email, internet )
+                 with att ( key, type, attr_type, attr_value)
+                   as (
+                       select key, type, attr_type, attr_value 
+                         from (
+                               select key, type, attr_type, attr_value, 
+                                      row_number() over ( partition by key, attr_type ) as seq
+                                 from mid_poi_attr_value
+                               ) as t
+                        where t.seq = 1
+                        )
                  select p.id, 
                         COALESCE(te.attr_value, ''), 
                         COALESCE(fa.attr_value, ''),
                         COALESCE(em.attr_value, ''),
                         COALESCE(it.attr_value, '')
                    from tmp_poi                  as p
-                   left join mid_poi_attr_value  as te
+              left join att       as te
                      on p.key = te.key  and  te.attr_type = 'TL'
-              left join mid_poi_attr_value       as fa
+              left join att       as fa
                      on p.key = fa.key  and  fa.attr_type = 'TX'
-              left join mid_poi_attr_value       as em
+              left join att       as em
                      on p.key = em.key  and  em.attr_type = '8M'
-              left join mid_poi_attr_value       as it
+              left join att       as it
                      on p.key = it.key  and  it.attr_type = '8L'
                   where te.attr_value is not null or
                         fa.attr_value is not null or
