@@ -20,6 +20,7 @@ class CPlace(entity.CEntity):
                      on p.key = fg.key and fg.code = 7379
                    join mid_geometry             as g
                      on fg.geomid = g.id
+                  order by p.level, p.area0, p.area1, p.area2, p.area3
                  '''
         self.db.do_big_insert(sqlcmd)
         
@@ -43,7 +44,8 @@ class CPlace(entity.CEntity):
                  select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, pn.lang, pn.name
                    from tmp_place_area    as p
                    join tmp_place_name    as pn
-                     on p.key = pn.key  
+                     on p.key = pn.key
+                  order by p.level, p.area0, p.area1, p.area2, p.area3 
                  '''
         self.db.do_big_insert(sqlcmd)
         

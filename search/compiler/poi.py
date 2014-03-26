@@ -57,6 +57,7 @@ class CPoi(entity.CEntity):
                      on p.key = ff.fkey and ff.code = 7004
               left join mid_postcode             as po
                      on ff.tkey = po.key
+                  order by p.id
                  '''
         self.db.do_big_insert(sqlcmd)
         
@@ -72,6 +73,7 @@ class CPoi(entity.CEntity):
                      on p.key = st.key and st.attr_type = '6T'
               left join mid_poi_attr_value as hn
                      on p.key = hn.key and hn.attr_type = '9H'
+                  order by p.id
                  ''' 
         self.db.do_big_insert(sqlcmd)
         
@@ -85,6 +87,7 @@ class CPoi(entity.CEntity):
                      on p.key = fn.key
                    join mid_name            as n
                      on fn.nameid = n.id
+                  order by p.id
                  '''
         self.db.do_big_insert(sqlcmd)
     

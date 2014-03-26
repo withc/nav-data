@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS tmp_poi                 CASCADE;
 DROP TABLE IF EXISTS tmp_street              CASCADE;
 DROP TABLE IF EXISTS tmp_poi_attr            CASCADE;
 DROP TABLE IF EXISTS tmp_poi_geom            CASCADE;
+DROP TABLE IF EXISTS tmp_street_geom         CASCADE;
 
 DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
 
@@ -234,6 +235,12 @@ create table tmp_street
     ptype  bigint    not null,
     nameid int       not null,
     id     int       not null
+);
+
+create table tmp_street_geom
+(
+       id    int not null,
+       geom  geometry not null
 );
 --
 create table tmp_feat_lowest_place
