@@ -40,7 +40,7 @@ class CLink(entity.CEntity):
     def _do_street_infor(self):
         sqlcmd = '''
                  insert into tbl_street_info( id, level, area0, area1, area2, area3, lon, lat )
-                 select s.id, p.level, p.area0, p.area1, p.area2, p.area3, 0, 0
+                 select distinct s.id, p.level, p.area0, p.area1, p.area2, p.area3, 0, 0
                    from tmp_street        as s
                    join tmp_place_area    as p
                      on s.pkey = p.key

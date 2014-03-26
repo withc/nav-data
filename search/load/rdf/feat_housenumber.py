@@ -38,9 +38,6 @@ class CHouseNumber(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         
-       
-    
-        
     def _domake_geomtry(self):
         pass
         
