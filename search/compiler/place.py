@@ -14,7 +14,7 @@ class CPlace(entity.CEntity):
         self.logger.info('  do place infor')
         sqlcmd = '''
                  insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat )
-                 select p.level, p.area0, p.area1, p.area2, p.area3, st_x(g.geom), st_y(g.geom)
+                 select p.level, p.area0, p.area1, p.area2, p.area3, st_x(g.geom)*100000, st_y(g.geom)*100000
                    from tmp_place_area           as p
                    join mid_feature_to_geometry  as fg
                      on p.key = fg.key and fg.code = 7379

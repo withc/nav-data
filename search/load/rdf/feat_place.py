@@ -24,16 +24,52 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
+        # we could miss lots of points for place!!!!
         # get country, state point 
         sqlcmd = '''
              insert into temp_feat_geom( key, type, code, geotype, geom )
-             select  l.location , ST_GeometryFromText(l.location, 4326) as geom
+               with p ( a0, a1, a0_c, a1_c, geom )
+               as (
+                   select country_id, order1_id, capital_country, capital_order1, ST_GeometryFromText(l.location, 4326) as geom
+                     from rdf_city_poi  as p
+                     join wkt_location  as l
+                       on p.location_id = l.location_id 
+                     where p.capital_country = 'Y' or p.capital_order1 = 'Y'
+                   )
+                select f.feat_key, f.feat_type, 7379, 'P', geom
+                  from p
+                  join mid_feat_key  as f
+                    on p.a0 = f.org_id1 and 0 = f.org_id2 and p.a0_c = 'Y'
+                union
+                select f.feat_key, f.feat_type, 7379, 'P', geom
+                  from p
+                  join mid_feat_key  as f
+                    on p.a1 = f.org_id1 and 1 = f.org_id2 and p.a1_c = 'Y'
+                 ''' 
+        self.db.do_big_insert( sqlcmd )
+        # get a8 point
+        sqlcmd = '''
+             insert into temp_feat_geom( key, type, code, geotype, geom )
+             select f.feat_key, f.feat_type, 7379, 'P', ST_GeometryFromText(l.location, 4326)
                from rdf_city_poi  as p
                join wkt_location  as l
-                 on p.location_id = l.location_id and p.capital_country = 'Y'
+                 on p.location_id = l.location_id and p.order8_id = p.named_place_id
+               join mid_feat_key  as f
+                 on p.order8_id = f.org_id1 and 8 = f.org_id2
                  ''' 
-        #self.db.do_big_insert( sqlcmd )
-        
+        self.db.do_big_insert( sqlcmd )
+        # get a9 point
+        sqlcmd = '''
+             insert into temp_feat_geom( key, type, code, geotype, geom )
+             select f.feat_key, f.feat_type, 7379, 'P', ST_GeometryFromText(l.location, 4326)
+               from rdf_city_poi  as p
+               join wkt_location  as l
+                 on p.location_id = l.location_id and p.builtup_id = p.named_place_id
+               join mid_feat_key  as f
+                 on p.builtup_id = f.org_id1 and 9 = f.org_id2
+                 ''' 
+        self.db.do_big_insert( sqlcmd )
+         
     def _domake_name(self):
         
         sqlcmd = '''

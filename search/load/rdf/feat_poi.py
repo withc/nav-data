@@ -22,7 +22,7 @@ class CPoi(load.feature.CFeature):
                            end
                       from rdf_poi       as p
                       join mid_feat_key  as f
-                        on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                        on p.poi_id = f.org_id1 and 1000 = f.org_id2
                       join temp_org_category as c
                         on p.cat_id = c.org_code
                  '''
