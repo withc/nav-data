@@ -2,7 +2,6 @@ import load.feature
 
 class CLink(load.feature.CFeature):
     def __init__(self ):
-        print "rdf's link"
         load.feature.CFeature.__init__(self, 'link')
  
     def _domake_key(self):
@@ -33,8 +32,13 @@ class CLink(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
+                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    select fe.feat_key, fe.feat_type, 7000,'L', ST_GeometryFromText(l.link, 4326) as geom
+                      from wkt_link      as l
+                      join mid_feat_key  as fe
+                        on l.link_id = fe.org_id1 and 2000 = fe.org_id2
                  '''
-        #self.db.do_big_insert( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
@@ -57,6 +61,8 @@ class CLink(load.feature.CFeature):
         pass
         
     def _domake_relation(self):
+        
+        #link to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select f.feat_key, f.feat_type, 7001, fp.feat_key, fp.feat_type

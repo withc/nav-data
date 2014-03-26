@@ -2,7 +2,6 @@ import load.feature
 
 class CHouseNumber(load.feature.CFeature):
     def __init__(self ):
-        print "rdf's house number"
         load.feature.CFeature.__init__(self, 'house_num')
  
     def _domake_key(self):

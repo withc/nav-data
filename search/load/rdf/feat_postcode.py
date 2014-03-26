@@ -7,14 +7,15 @@ class CPostcode(load.feature.CFeature):
     def _domake_key(self):
         sqlcmd = '''
                     insert into temp_postcode( id, sub, org_code )
-                    select row_number() over( order by zipcode ), 0, zipcode
+                    select row_number() over( order by iso_country_code, zipcode ), 0, zipcode
                       from (
-                            select distinct zipcode from org_city_nw_gc_polyline
-                             union
-                            select distinct zipcode from org_poi_point
+                            select iso_country_code, postal_code as zipcode
+                              from rdf_poi_address where postal_code is not null
+                            union
+                            select iso_country_code, actual_postal_code as zipcode
+                              from rdf_poi_address where actual_postal_code is not null
                            ) as a
                     where a.zipcode is not null
-                    order by zipcode
                  '''
         self.db.do_big_insert( sqlcmd )
         

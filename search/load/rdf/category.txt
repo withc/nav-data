@@ -1,97 +1,98 @@
-#code;name;imp
-2084;Winery;9999
-3578;ATM;9
-4013;Train Station;9
-4100;Commuter Rail Station;9999
-4170;Bus Station;9999
-4482;Ferry Terminal;9999
-4493;Marina;9999
-4580;Public Sports Airport;9999
-4581;Airport;9
-5000;Business Facility;9999
-5400;Grocery Store;9999
-5511;Auto Dealerships;9999
-5512;Auto Dealership-Used Cars;9999
-5540;Petrol/Gasoline Station;9999
-5571;Motorcycle Dealership;9999
-5800;Restaurant;9999
-5813;Nightlife;9999
-5999;Historical Monument;9999
-6000;Bank;9
-6512;Shopping;9999
-7011;Hotel;9
-7012;Ski Resort;9999
-7013;Other Accommodation;9999
-7014;Ski Lift;9999
-7389;Tourist Information;9999
-7510;Rental Car Agency;9999
-7520;Parking Lot;9999
-7521;Parking Garage/House;9999
-7522;Park & Ride;9999
-7538;Auto Service & Maintenance;9999
-7832;Cinema;9
-7897;Rest Area;9999
-7929;Performing Arts;9999
-7933;Bowling Centre;9999
-7940;Sports Complex;9999
-7947;Park/Recreation Area;9999
-7985;Casino;9999
-7990;Convention/Exhibition Centre;9999
-7992;Golf Course;9999
-7994;Civic/Community Centre;9999
-7996;Amusement Park;9999
-7997;Sports Centre;9999
-7998;Ice Skating Rink;9999
-7999;Tourist Attraction;9
-8060;Hospital;9
-8200;Higher Education;9
-8211;School;9999
-8231;Library;9999
-8410;Museum;9
-8699;Automobile Club;9999
-9121;City Hall;9999
-9211;Court House;9999
-9221;Police Station;9
-9517;Campground;9999
-9522;Truck Stop/Plaza;9999
-9525;Government Office;9
-9530;Post Office;9999
-9535;Convenience Store;9999
-9537;Clothing Store;9999
-9545;Department Store;9
-9560;Home Specialty Store;9999
-9565;Pharmacy;9999
-9567;Specialty Store;9999
-9568;Sporting Good Store;9999
-9573;Golf Practice Range;9999
-9583;Medical Service;9999
-9589;Public Restroom;9999
-9590;Residential Area/Building;9999
-9591;Cemetery;9999
-9592;Highway Exit;9999
-9593;Transportation Service;9999
-9595;Repair Services;9999
-9596;Training Centre/Institute;9999
-9707;Public Transit Stop1;9999
-9708;Public Transit Access1;9999
-9710;Weigh Station;9999
-9714;Cargo Centre;9999
-9715;Military Base;9999
-9717;Toll Booth;9999
-9718;Animal Park;9999
-9719;Truck Dealership;9999
-9722;Delivery Entrance;9999
-9723;Dock;9999
-9724;Loading Zone;9999
-9730;Named Intersection;9999
-9986;Home Improvement & Hardware Store;9999
-9987;Consumer Electronics Store;9999
-9988;Office Supply and Service Store;9999
-9989;Taxi Stand1;9999
-9991;Industrial Zone;9999
-9992;Place of Worship;9999
-9993;Embassy;9999
-9994;County Council;9999
-9995;Book Store;9999
-9996;Coffee Shop;9999
-9999;Border Crossing;9999
+#permanent_code,gen1,gen2,gen3,level,name,imp,org_code
+436207616;26;0;0;1;dummy;9999;0
+436273152;26;1;0;2;Airport;9;4581
+436338688;26;2;0;2;Amusement Park;9999;7996
+436404224;26;3;0;2;Animal Park;9999;9718
+436469760;26;4;0;2;ATM;9;3578
+436535296;26;5;0;2;Auto Dealerships;9999;5511
+436600832;26;6;0;2;Auto Dealership-Used Cars;9999;5512
+436666368;26;7;0;2;Automobile Club;9999;8699
+436731904;26;8;0;2;Auto Service & Maintenance;9999;7538
+436797440;26;9;0;2;Bank;9;6000
+436862976;26;10;0;2;Book Store;9999;9995
+436928512;26;11;0;2;Border Crossing;9999;9999
+436994048;26;12;0;2;Bowling Centre;9999;7933
+437059584;26;13;0;2;Business Facility;9999;5000
+437125120;26;14;0;2;Bus Station;9999;4170
+437190656;26;15;0;2;Campground;9999;9517
+437256192;26;16;0;2;Cargo Centre;9999;9714
+437321728;26;17;0;2;Casino;9999;7985
+437387264;26;18;0;2;Cemetery;9999;9591
+437452800;26;19;0;2;Cinema;9;7832
+437518336;26;20;0;2;City Hall;9999;9121
+437583872;26;21;0;2;Civic/Community Centre;9999;7994
+437649408;26;22;0;2;Clothing Store;9999;9537
+437714944;26;23;0;2;Coffee Shop;9999;9996
+437780480;26;24;0;2;Commuter Rail Station;9999;4100
+437846016;26;25;0;2;Consumer Electronics Store;9999;9987
+437911552;26;26;0;2;Convenience Store;9999;9535
+437977088;26;27;0;2;Convention/Exhibition Centre;9999;7990
+438042624;26;28;0;2;County Council;9999;9994
+438108160;26;29;0;2;Court House;9999;9211
+438173696;26;30;0;2;Delivery Entrance;9999;9722
+438239232;26;31;0;2;Department Store;9;9545
+438304768;26;32;0;2;Dock;9999;9723
+438370304;26;33;0;2;Embassy;9999;9993
+438435840;26;34;0;2;Ferry Terminal;9999;4482
+438501376;26;35;0;2;Golf Course;9999;7992
+438566912;26;36;0;2;Golf Practice Range;9999;9573
+438632448;26;37;0;2;Government Office;9;9525
+438697984;26;38;0;2;Grocery Store;9999;5400
+438763520;26;39;0;2;Higher Education;9;8200
+438829056;26;40;0;2;Highway Exit;9999;9592
+438894592;26;41;0;2;Historical Monument;9999;5999
+438960128;26;42;0;2;Home Improvement & Hardware Store;9999;9986
+439025664;26;43;0;2;Home Specialty Store;9999;9560
+439091200;26;44;0;2;Hospital;9;8060
+439156736;26;45;0;2;Hotel;9;7011
+439222272;26;46;0;2;Ice Skating Rink;9999;7998
+439287808;26;47;0;2;Industrial Zone;9999;9991
+439353344;26;48;0;2;Library;9999;8231
+439418880;26;49;0;2;Loading Zone;9999;9724
+439484416;26;50;0;2;Marina;9999;4493
+439549952;26;51;0;2;Medical Service;9999;9583
+439615488;26;52;0;2;Military Base;9999;9715
+439681024;26;53;0;2;Motorcycle Dealership;9999;5571
+439746560;26;54;0;2;Museum;9;8410
+439812096;26;55;0;2;Named Intersection;9999;9730
+439877632;26;56;0;2;Nightlife;9999;5813
+439943168;26;57;0;2;Office Supply and Service Store;9999;9988
+440008704;26;58;0;2;Other Accommodation;9999;7013
+440074240;26;59;0;2;Parking Garage/House;9999;7521
+440139776;26;60;0;2;Parking Lot;9999;7520
+440205312;26;61;0;2;Park/Recreation Area;9999;7947
+440270848;26;62;0;2;Park & Ride;9999;7522
+440336384;26;63;0;2;Performing Arts;9999;7929
+440401920;26;64;0;2;Petrol/Gasoline Station;9999;5540
+440467456;26;65;0;2;Pharmacy;9999;9565
+440532992;26;66;0;2;Place of Worship;9999;9992
+440598528;26;67;0;2;Police Station;9;9221
+440664064;26;68;0;2;Post Office;9999;9530
+440729600;26;69;0;2;Public Restroom;9999;9589
+440795136;26;70;0;2;Public Sports Airport;9999;4580
+440860672;26;71;0;2;Public Transit Access1;9999;9708
+440926208;26;72;0;2;Public Transit Stop1;9999;9707
+440991744;26;73;0;2;Rental Car Agency;9999;7510
+441057280;26;74;0;2;Repair Services;9999;9595
+441122816;26;75;0;2;Residential Area/Building;9999;9590
+441188352;26;76;0;2;Rest Area;9999;7897
+441253888;26;77;0;2;Restaurant;9999;5800
+441319424;26;78;0;2;School;9999;8211
+441384960;26;79;0;2;Shopping;9999;6512
+441450496;26;80;0;2;Ski Lift;9999;7014
+441516032;26;81;0;2;Ski Resort;9999;7012
+441581568;26;82;0;2;Specialty Store;9999;9567
+441647104;26;83;0;2;Sporting Good Store;9999;9568
+441712640;26;84;0;2;Sports Centre;9999;7997
+441778176;26;85;0;2;Sports Complex;9999;7940
+441843712;26;86;0;2;Taxi Stand1;9999;9989
+441909248;26;87;0;2;Toll Booth;9999;9717
+441974784;26;88;0;2;Tourist Attraction;9;7999
+442040320;26;89;0;2;Tourist Information;9999;7389
+442105856;26;90;0;2;Training Centre/Institute;9999;9596
+442171392;26;91;0;2;Train Station;9;4013
+442236928;26;92;0;2;Transportation Service;9999;9593
+442302464;26;93;0;2;Truck Dealership;9999;9719
+442368000;26;94;0;2;Truck Stop/Plaza;9999;9522
+442433536;26;95;0;2;Weigh Station;9999;9710
+442499072;26;96;0;2;Winery;9999;2084

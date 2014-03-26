@@ -2,7 +2,6 @@ import load.feature
 
 class CPlace(load.feature.CFeature):
     def __init__(self ):
-        print "rdf's place"
         load.feature.CFeature.__init__(self, 'place')
  
     def _domake_key(self):
@@ -25,9 +24,13 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
-
+        # get country, state point 
         sqlcmd = '''
-             insert into temp_feat_geom( key, type, code, geotype, geom ) 
+             insert into temp_feat_geom( key, type, code, geotype, geom )
+             select  l.location , ST_GeometryFromText(l.location, 4326) as geom
+               from rdf_city_poi  as p
+               join wkt_location  as l
+                 on p.location_id = l.location_id and p.capital_country = 'Y'
                  ''' 
         #self.db.do_big_insert( sqlcmd )
         
