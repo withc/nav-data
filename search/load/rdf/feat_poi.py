@@ -35,7 +35,7 @@ class CPoi(load.feature.CFeature):
 #                     select f.feat_key, f.feat_type, 7000, 'P', ST_SetSRID(st_makepoint(p.lon,p.lat), 4326)
 #                       from rdf_poi as p
 #                       join mid_feat_key    as f
-#                         on p.poi_id = f.org_id1 and 2000 = f.org_id2
+#                         on p.poi_id = f.org_id1 and 1000 = f.org_id2
 #                  '''
 #         self.db.do_big_insert( sqlcmd )
         # poi's entry point
@@ -44,7 +44,7 @@ class CPoi(load.feature.CFeature):
                     select f.feat_key, f.feat_type, 7000, 'P', ST_GeometryFromText(l.location, 4326) 
                       from rdf_poi_address as p
                       join mid_feat_key    as f
-                        on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                        on p.poi_id = f.org_id1 and 1000 = f.org_id2
                       join wkt_location    as l
                         on p.location_id = l.location_id
                  '''
@@ -61,7 +61,7 @@ class CPoi(load.feature.CFeature):
                         n.language_code,n.name
                    from rdf_poi_names as p
                    join mid_feat_key  as f
-                     on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                     on p.poi_id = f.org_id1 and 1000 = f.org_id2
                    join rdf_poi_name  as n
                      on p.name_id = n.name_id
                  '''
@@ -77,7 +77,7 @@ class CPoi(load.feature.CFeature):
                            COALESCE(street_name, actual_street_name)
                       from rdf_poi_address as p
                       join mid_feat_key    as f
-                        on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                        on p.poi_id = f.org_id1 and 1000 = f.org_id2
                     )
                select  key, type, '6T', street  from pa where street is not null
                 union
@@ -97,7 +97,7 @@ class CPoi(load.feature.CFeature):
                            end, contact
                       from rdf_poi_contact_information as p
                       join mid_feat_key                as f
-                        on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                        on p.poi_id = f.org_id1 and 1000 = f.org_id2
                 '''
         self.db.do_big_insert( sqlcmd )
         
@@ -110,7 +110,7 @@ class CPoi(load.feature.CFeature):
                          COALESCE( a9.feat_type, a8.feat_key )
                     from rdf_poi_address as p
                     join mid_feat_key    as f
-                      on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                      on p.poi_id = f.org_id1 and 1000 = f.org_id2
                     join mid_feat_key    as a8
                       on p.order8_id = a8.org_id1 and a8.org_id2  = 8
                left join mid_feat_key    as a9
@@ -124,7 +124,7 @@ class CPoi(load.feature.CFeature):
                   select f.feat_key, f.feat_type, 7004, fz.feat_key, fz.feat_type
                     from rdf_poi_address as p
                     join mid_feat_key    as f
-                      on p.poi_id = f.org_id1 and 2000 = f.org_id2
+                      on p.poi_id = f.org_id1 and 1000 = f.org_id2
                     join temp_postcode as z
                       on p.postal_code = z.org_code
                     join mid_feat_key  as fz
