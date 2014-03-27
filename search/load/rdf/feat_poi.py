@@ -30,25 +30,18 @@ class CPoi(load.feature.CFeature):
     
     def _domake_geomtry(self):
         # poi's point
-#         sqlcmd = '''
-#                     insert into temp_feat_geom( key, type, code, geotype, geom )
-#                     select f.feat_key, f.feat_type, 7000, 'P', ST_SetSRID(st_makepoint(p.lon,p.lat), 4326)
-#                       from rdf_poi as p
-#                       join mid_feat_key    as f
-#                         on p.poi_id = f.org_id1 and 1000 = f.org_id2
-#                  '''
-#         self.db.do_big_insert( sqlcmd )
-        # poi's entry point
         sqlcmd = '''
                     insert into temp_feat_geom( key, type, code, geotype, geom )
-                    select f.feat_key, f.feat_type, 7000, 'P', ST_GeometryFromText(l.location, 4326) 
+                    select f.feat_key, f.feat_type, 7000, 'P', 
+                           ST_SetSRID(st_makepoint( l.lon/100000.0, l.lat/100000.0 ), 4326)
                       from rdf_poi_address as p
                       join mid_feat_key    as f
                         on p.poi_id = f.org_id1 and 1000 = f.org_id2
-                      join wkt_location    as l
+                      join rdf_location    as l
                         on p.location_id = l.location_id
                  '''
         self.db.do_big_insert( sqlcmd )
+        # poi's entry point
         
     def _domake_name(self):
         sqlcmd = '''
@@ -133,6 +126,18 @@ class CPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
         # poi to link
+        sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype ) 
+                  select f.feat_key, f.feat_type, 7002, fz.feat_key, fz.feat_type
+                    from rdf_poi_address as p
+                    join mid_feat_key    as f
+                      on p.poi_id = f.org_id1 and 1000 = f.org_id2
+                    join rdf_location    as l
+                      on p.location_id = l.location_id
+                    join mid_feat_key  as fz
+                      on l.link_id = fz.org_id1 and 2000 = fz.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
         
         
