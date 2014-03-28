@@ -61,6 +61,14 @@ class CPlace(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         
+        sqlcmd = '''
+                 insert into mid_full_area()
+                 select st_xmin(geom)*100000, st_ymin(geom)*100000, 
+                        st_xmax(geom)*100000, st_ymax(geom)*100000
+                   from ( select ST_extent(the_geom) as geom from org_a0 ) as a
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
     def _domake_relation(self):
         self.db.do_big_insert( self._gen_admin_sql(0) )
         self.db.do_big_insert( self._gen_admin_sql(1) )

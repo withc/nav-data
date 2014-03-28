@@ -50,10 +50,10 @@ create table mid_country_profile
 
 CREATE TABLE mid_full_area
 (
-    min_lon  double precision  NOT NULL,
-    min_lat  double precision  NOT NULL,
-    max_lon  double precision  NOT NULL,
-    max_lat  double precision  NOT NULL
+    min_lon  int  not null,
+    min_lat  int  not null,
+    max_lon  int  not null,
+    max_lat  int  not null,
 );
 
 create table mid_place

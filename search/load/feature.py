@@ -146,13 +146,11 @@ class CEndProcess(object):
         self.db.createIndex('mid_feature_to_name',     'nameid' )
         self.db.createIndex('mid_feature_to_geometry', 'key'    )
         self.db.createIndex('mid_feature_to_geometry', 'geomid' )
+        self.db.createIndex('mid_name', 'name' )
         
        
         
-        
-        
-        
-        
+
         
         
         

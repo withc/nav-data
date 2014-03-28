@@ -112,11 +112,14 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
+        
         sqlcmd = '''
                  insert into mid_full_area()
-                 select 
-                   from 
+                 select st_xmin(geom)*100000, st_ymin(geom)*100000, 
+                        st_xmax(geom)*100000, st_ymax(geom)*100000
+                   from ( select ST_extent(the_geom) as geom from org_state_region ) as a
                  '''
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
         sqlcmd = '''

@@ -99,6 +99,20 @@ class CPlace(load.feature.CFeature):
                      on a0.country_id = f.org_id1 and  0 = f.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
+        sqlcmd = '''
+                 insert into mid_full_area()
+                 select st_xmin(geom)*100000, st_ymin(geom)*100000, 
+                        st_xmax(geom)*100000, st_ymax(geom)*100000
+                   from ( 
+                          select ST_extent( ST_GeometryFromText(g.face, 4326)  ) as geom 
+                            from rdf_carto      as c
+                            join rdf_carto_face as f
+                              on c.carto_id = f.carto_id and c.named_place_type = 'A'
+                            join wkt_face       as g
+                              on g.face_id = f.face_id 
+                        ) as a
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
         sqlcmd = '''
