@@ -26,15 +26,28 @@ class CHouseNumber(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
             
     def _hno_range(self):
-        pass
+        sqlcmd = '''
+                 insert into tbl_street_hno_range( id, link_id, side, scheme, prefix, suffix, f_hno, l_hno )
+                 select s.id, s.org_link_id, h.side, h.scheme, 
+                        srch_hno_prefix(h.first), srch_hno_suffix(h.first), h.first, h.last
+                   from mid_house_number_road    as r
+                   join mid_address_range        as h
+                     on r.id = h.id
+                   join tmp_street_hno_id        as s
+                     on s.mid_id = r.id
+                 '''
+        self.db.do_big_insert(sqlcmd)
         
     def _hno_point(self):
         sqlcmd = '''
-                 insert into tbl_hno_point( id, link_id, hno, lon, lat, entry_lon, entry_lat )
-                 select s.id, s.org_link_id, hn.num, hn.dis_x, hn.dis_y, hn.x, hn.y
+                 insert into tbl_street_hno_point( id, link_id, side, prefix, suffix, hno, lon, lat, entry_lon, entry_lat )
+                 select s.id, s.org_link_id, h.side, 
+                        srch_hno_prefix(h.num), srch_hno_suffix(h.num), h.num, 
+                        srch_coord(h.dis_x), srch_coord(h.dis_y),
+                        srch_coord( h.x ), srch_coord( h.y )
                    from mid_house_number_road    as r
-                   join mid_address_point        as hn
-                     on r.id = hn.id
+                   join mid_address_point        as h
+                     on r.id = h.id
                    join tmp_street_hno_id        as s
                      on s.mid_id = r.id
                  '''

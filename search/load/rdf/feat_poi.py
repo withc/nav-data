@@ -119,7 +119,7 @@ class CPoi(load.feature.CFeature):
                     join mid_feat_key    as f
                       on p.poi_id = f.org_id1 and 1000 = f.org_id2
                     join temp_postcode as z
-                      on p.postal_code = z.org_code
+                      on COALESCE( p.postal_code, p.actual_postal_code) = z.org_code 
                     join mid_feat_key  as fz
                       on z.id = fz.org_id1 and z.sub = fz.org_id2
                  '''

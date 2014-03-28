@@ -63,7 +63,7 @@ class CLink(entity.CEntity):
         sqlcmd = '''
                  insert into tbl_street_info( id, level, area0, area1, area2, area3, lon, lat )
                  select distinct s.id, p.level, p.area0, p.area1, p.area2, p.area3, 
-                        st_x(g.geom)*100000, st_y(g.geom)*100000
+                        srch_coord((st_x(g.geom)*100000)::int), srch_coord((st_y(g.geom)*100000)::int)
                    from tmp_street        as s
                    join tmp_place_area    as p
                      on s.pkey = p.key

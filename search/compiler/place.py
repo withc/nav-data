@@ -5,16 +5,28 @@ class CPlace(entity.CEntity):
         entity.CEntity.__init__(self, database, 'place')
           
     def _do(self):
+        self._do_meta()
         self._do_lowest_place()
         self._do_gen_areaid()
         self._do_name()
         self._do_table()
         
+    def _do_meta(self):
+        sqlcmd = '''
+                 insert into tbl_search_meta( base_lon, base_lat, min_lon, min_lat, max_lon, max_lat )
+                 select srch_base_coord(min_lon), srch_base_coord(min_lat), 
+                        srch_coord(min_lon),      srch_coord(min_lat), 
+                        srch_coord(max_lon),      srch_coord(max_lat)
+                   from mid_full_area
+                 '''
+        self.db.do_big_insert(sqlcmd)
+            
     def _do_table(self):
         self.logger.info('  do place infor')
         sqlcmd = '''
                  insert into tbl_city_info( level, area0, area1, area2, area3, lon, lat )
-                 select p.level, p.area0, p.area1, p.area2, p.area3, st_x(g.geom)*100000, st_y(g.geom)*100000
+                 select p.level, p.area0, p.area1, p.area2, p.area3, 
+                        srch_coord((st_x(g.geom)*100000)::int), srch_coord((st_y(g.geom)*100000)::int)
                    from tmp_place_area           as p
                    join mid_feature_to_geometry  as fg
                      on p.key = fg.key and fg.code = 7379

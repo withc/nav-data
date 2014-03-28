@@ -10,6 +10,7 @@ class CPlace(load.feature.CFeature):
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
                     select 3001+admin_order, admin_place_id, admin_order
                       from rdf_admin_hierarchy
+                     order by admin_order, admin_place_id
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -30,7 +31,8 @@ class CPlace(load.feature.CFeature):
              insert into temp_feat_geom( key, type, code, geotype, geom )
                with p ( a0, a1, a0_c, a1_c, geom )
                as (
-                   select country_id, order1_id, capital_country, capital_order1, ST_GeometryFromText(l.location, 4326) as geom
+                   select country_id, order1_id, 
+                          capital_country, capital_order1, ST_GeometryFromText(l.location, 4326) as geom
                      from rdf_city_poi  as p
                      join wkt_location  as l
                        on p.location_id = l.location_id 
@@ -69,7 +71,33 @@ class CPlace(load.feature.CFeature):
                  on p.builtup_id = f.org_id1 and 9 = f.org_id2
                  ''' 
         self.db.do_big_insert( sqlcmd )
-         
+        #get more point
+        self._get_more_geomtry()
+        
+    def _get_more_geomtry(self):
+        
+        sqlcmd = '''
+            insert into temp_feat_geom( key, type, code, geotype, geom )
+             with p ( a0, a1, a2, a8, a9, geom )
+               as (
+                   select country_id, order1_id, order2_id, order8_id, builtup_id, ST_GeometryFromText(l.location, 4326) as geom
+                     from rdf_city_poi  as p
+                     join wkt_location  as l
+                       on p.location_id = l.location_id 
+                     where p.capital_country = 'Y' or p.capital_order1 = 'Y'
+                   )
+                select f.feat_key, f.feat_type, 7379, 'P', geom
+                  from p
+                  join mid_feat_key  as f
+                    on p.a1 = f.org_id1 and 1 = f.org_id2
+                union
+                select f.feat_key, f.feat_type, 7379, 'P', geom
+                  from p
+                  join mid_feat_key  as f
+                    on p.a9 = f.org_id1 and 9 = f.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
+          
     def _domake_name(self):
         
         sqlcmd = '''
@@ -100,7 +128,7 @@ class CPlace(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         sqlcmd = '''
-                 insert into mid_full_area()
+                 insert into mid_full_area(min_lon, min_lat, max_lon, max_lat )
                  select st_xmin(geom)*100000, st_ymin(geom)*100000, 
                         st_xmax(geom)*100000, st_ymax(geom)*100000
                    from ( 

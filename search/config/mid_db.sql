@@ -53,7 +53,7 @@ CREATE TABLE mid_full_area
     min_lon  int  not null,
     min_lat  int  not null,
     max_lon  int  not null,
-    max_lat  int  not null,
+    max_lat  int  not null
 );
 
 create table mid_place

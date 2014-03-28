@@ -32,14 +32,16 @@ class CPoi(entity.CEntity):
                                            tel, fax, email, internet, postcode,
                                            imp, gen1, gen2, gen3, 
                                            area0, area1, area2, area3, meshid )
-                 select p.id, g.lon, g.lat, g.entry_lon, g.entry_lat, 
+                 select p.id, srch_coord(g.lon), srch_coord(g.lat),
+                        srch_coord( g.entry_lon ), srch_coord( g.entry_lat ), 
                         COALESCE( at.tel,      ''), 
                         COALESCE( at.fax,      ''), 
                         COALESCE( at.email,    ''),
                         COALESCE( at.internet, ''),
                         po.pocode,
                         c.imp, c.gen1, c.gen2, c.gen3,
-                        pa.area0, pa.area1, pa.area2, pa.area3, 0
+                        pa.area0, pa.area1, pa.area2, pa.area3,
+                        srch_mesh( srch_coord(g.lon), srch_coord(g.lat) )
                    from tmp_poi                  as p
                    join tmp_poi_geom             as g
                      on p.id = g.id

@@ -137,3 +137,22 @@ begin
     return code;
 end;
 $$ language 'plpgsql';
+
+CREATE OR REPLACE FUNCTION getphone( ph character varying  )
+  RETURNS character varying  AS
+$BODY$
+declare
+    len    integer = length(ph);
+    ch     char;
+    numstr character varying = '';
+begin
+    
+    for i in 1 .. len loop
+	    ch = substring( ph, i, 1);
+	    if '0' <= ch and ch <= '9' then
+	         numstr := numstr || ch;
+	    end if;	    
+    end loop;
+    return numstr;    
+end;
+$BODY$ language 'plpgsql';
