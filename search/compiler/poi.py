@@ -33,7 +33,12 @@ class CPoi(entity.CEntity):
                                            imp, gen1, gen2, gen3, 
                                            area0, area1, area2, area3, meshid )
                  select p.id, srch_coord(g.lon), srch_coord(g.lat),
-                        srch_coord( g.entry_lon ), srch_coord( g.entry_lat ), 
+                        case when g.entry_lon = 0 then null
+                             else srch_coord( g.entry_lon )
+                        end,
+                        case when g.entry_lon = 0 then null
+                             else srch_coord( g.entry_lat )
+                        end , 
                         COALESCE( at.tel,      ''), 
                         COALESCE( at.fax,      ''), 
                         COALESCE( at.email,    ''),
