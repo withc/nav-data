@@ -59,6 +59,11 @@ class CDB(object):
     def analyze(self, table):
         self.cur.execute( 'ANALYZE %s' % table )
         
+    def run(self, filename ):  
+        fp = open(filename,'r')
+        self.execute( fp.read() )
+        fp.close()
+      
     def getResultCount(self, sqlcmd):
         self.execute(sqlcmd)
         rows = self.cur.fetchone()
