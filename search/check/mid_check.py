@@ -22,7 +22,7 @@ class CMid_check(object):
             
     def _check_place_point(self):
         sql = '''
-              select * 
+              select p.key, p.type 
                 from mid_place               as p
            left join mid_feature_to_geometry as g
                   on p.key = g.key and g.code = 7379
@@ -31,4 +31,28 @@ class CMid_check(object):
         rows = self.db.getOneResult(sql )
         if 0 != rows:
             self.logger.info( 'some place do not set center point:' + str(rows) )
+            
+        sql = '''
+              select p.key, p.type, count(*)
+                from mid_place               as p
+                join mid_feature_to_geometry as g
+                  on p.key = g.key and g.code = 7379
+               group by p.key, p.type having count(*) > 1
+              '''
+        rows = self.db.getOneResult(sql )
+        if 0 != rows:
+            self.logger.info( 'some place have more than one center point:' + str(rows) )
+            
+    def _check_poi_point(self):
+        sql = '''
+              select p.key, p.type 
+                from mid_poi                 as p
+           left join mid_feature_to_geometry as g
+                  on p.key = g.key and g.code = 7000
+               where g.key is null
+              '''
+        rows = self.db.getOneResult(sql )
+        if 0 != rows:
+            self.logger.info( 'some poi do not set point:' + str(rows) )
+
         
