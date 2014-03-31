@@ -50,7 +50,8 @@ def featureFactory( name, loader ):
         loader.add_feature( load.mmi.feat_place.CPlace( ) ) 
         loader.add_feature( load.mmi.feat_postcode.CPostcode( ) )
         loader.add_feature( load.mmi.feat_poi.CPoi( ) )
-        loader.add_feature( load.mmi.feat_link.CLink( ) )  
+        loader.add_feature( load.mmi.feat_link.CLink( ) )
+        loader.add_feature( load.mmi.feat_housenumber.CHouseNumber())
     else:
         print '---- unkonw vendor %s' % name
         

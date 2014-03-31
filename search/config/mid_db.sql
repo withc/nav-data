@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS mid_link               CASCADE;
 DROP TABLE IF EXISTS mid_house_number_road  CASCADE;
 DROP TABLE IF EXISTS mid_address_range      CASCADE;
 DROP TABLE IF EXISTS mid_address_point      CASCADE;
+DROP TABLE IF EXISTS mid_bldg_point         CASCADE;
 
 DROP TABLE IF EXISTS mid_name                 CASCADE;
 DROP TABLE IF EXISTS mid_geometry             CASCADE;
@@ -155,6 +156,22 @@ create table mid_address_point
      dis_y    int          not null    
 );
 
+create table mid_bldg_point
+(
+     id       bigint       not null,
+     pkey     bigint       not null,
+     ptype    smallint     not null,
+     
+     lkey     bigint       not null,
+     ltype    smallint     not null,
+     side     smallint     not null CONSTRAINT valid_sol CHECK (side IN (1,2)),
+     
+     num      varchar(128) not null,
+     x        int          not null,
+     y        int          not null,
+     entry_x    int          not null,
+     entry_y    int          not null    
+);
 -- name
 create table mid_name
 (

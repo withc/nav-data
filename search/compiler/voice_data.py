@@ -81,11 +81,17 @@ class CVoiceData(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
         
         sqlcmd = '''
-                 insert into voice_street_hno_rang( country_id, state_id, country, state, city, district, 
-                                                    name_type, street_name, street_phonetic,
-                                                    scheme, f_hno, l_hno )
+              insert into voice_street_hno_rang( country_id, state_id, country, state, city, district, 
+                                                 name_type, street_name, street_phonetic,
+                                                 scheme, f_hno, l_hno )
+              select area0, area1, country, state, city, district,
+                     type, name, phonetic, scheme,
+                     CASE when f < l then f_hno else l_hno END,
+                     CASE when f < l then l_hno else f_hno END 
+               from (
                  select s.area0, s.area1, t.country, t.state, t.city, t.district, 
-                        n.type, n.name, '', h.scheme, h.f_hno, h.l_hno
+                        n.type, n.name, '' as phonetic, h.scheme, h.f_hno, h.l_hno,
+                        get_house_number(h.f_hno) as f, get_house_number(h.l_hno) as l
                    from tbl_street_hno_range as h
                    join tbl_street_info      as s
                      on h.id = s.id
@@ -96,6 +102,7 @@ class CVoiceData(entity.CEntity):
                         s.area1 = t.area1  and
                         s.area2 = t.area2  and
                         s.area3 = t.area3
+                    ) as a
                  '''
         self.db.do_big_insert(sqlcmd)
         
