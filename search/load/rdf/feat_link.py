@@ -44,7 +44,8 @@ class CLink(load.feature.CFeature):
         sqlcmd = '''
                     insert into temp_feat_name( key, type, nametype, langcode, name )
                     select f.feat_key, f.feat_type, 
-                           case  
+                           case 
+                             when n.route_type is not null then 'RN'
                              when n.name_type = 'B' and n.is_exonym = 'N' then 'ON'
                              else 'AN'
                            end,

@@ -108,7 +108,8 @@ class CPlace(entity.CEntity):
                      on pa.a1 = t.key and pa.type = 3009
                  '''
         self.db.do_big_insert(sqlcmd)
-        #for a9
+        
+        #for a9, discard the a9 that have no center point.
         sqlcmd = '''
                  insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
                  select pa.key, pa.type, 3, t.area0, t.area1, t.area2,
@@ -116,6 +117,11 @@ class CPlace(entity.CEntity):
                    from mid_place_admin  as pa
                    join tmp_place_area   as t
                      on pa.a8 = t.key and pa.type = 3010
+                   where exists (
+                       select 1 
+                         from mid_feature_to_geometry  as fg
+                        where pa.key = fg.key and fg.code = 7379
+                   )
                  '''
         self.db.do_big_insert(sqlcmd)
         self.db.createIndex( 'tmp_place_area', 'key' )
