@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS tbl_search_meta   CASCADE;
 DROP TABLE IF EXISTS tbl_genre_info    CASCADE;
 DROP TABLE IF EXISTS tbl_city_info     CASCADE;
 DROP TABLE IF EXISTS tbl_city_name     CASCADE;
+DROP TABLE IF EXISTS tbl_postcode_info CASCADE;
 
 DROP TABLE IF EXISTS tbl_street_info   CASCADE;
 DROP TABLE IF EXISTS tbl_street_name   CASCADE;
@@ -48,6 +49,15 @@ create table tbl_genre_info
     level      smallint     not null,
     imp        smallint     not null,
     name       varchar(128) not null
+);
+
+create table tbl_postcode_info
+(
+    area0   int         not null,
+    id      int         not null, 
+    pocode  varchar(32) not null,
+    lon     int,
+    lat     int    
 );
 
 create table tbl_city_info

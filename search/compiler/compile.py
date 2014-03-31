@@ -29,6 +29,7 @@ class CCompiler(object):
 
     def _addEntity(self):
         self.entity.append( place.CPlace(self.db) )
+        self.entity.append( postcode.CPostcode(self.db) )
         self.entity.append( poicategory.CPoicategory(self.db) )
         self.entity.append( poi.CPoi(self.db) )
         self.entity.append( street.CLink(self.db) )
