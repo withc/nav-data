@@ -8,6 +8,7 @@ class CHouseNumber(entity.CEntity):
         self._do_tmp()
         self._hno_range()
         self._hno_point()
+        self._bldg_point()
         self._update_to_rdb_link()
         
     def _do_tmp(self):
@@ -57,7 +58,22 @@ class CHouseNumber(entity.CEntity):
                      on s.mid_id = r.id
                  '''
         self.db.do_big_insert(sqlcmd)
-    
+        
+    def _bldg_point(self):
+        self.logger.info('  do bldg point')
+        sqlcmd = '''
+                 insert into tbl_bldg_point( id, area0,area1, area2, area3, link_id, side, hno, lon, lat, entry_lon, entry_lat, rdb_link_id )
+                 select p.area0, p.area1, p.area2, p.area3, f.org_id1, b.side, b.num,
+                        srch_coord(b.x), srch_coord(b.y),
+                        srch_coord( b.entry_x ), srch_coord( b.entry_y ), 0
+                   from mid_bldg_point    as b
+                   join tmp_place_area    as p
+                     on b.pkey = p.key
+                   join mid_feat_key      as f
+                     on b.lkey = f.feat_key
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
     def _update_to_rdb_link(self):
         self.logger.info('  update to rdb_link_id')
         sqlcmd = '''
@@ -77,6 +93,7 @@ class CHouseNumber(entity.CEntity):
                       where u.org_link_id = h.link_id 
                  '''
         self.db.do_big_insert(sqlcmd)
+        
         sqlcmd = '''
                  update tbl_street_hno_point as h 
                     set rdb_link_id = u.target_link_id
@@ -91,6 +108,22 @@ class CHouseNumber(entity.CEntity):
                       where u.org_link_id = h.link_id 
                  '''
         self.db.do_big_insert(sqlcmd)
+        
+        sqlcmd = '''
+                 update tbl_bldg_point as h 
+                    set rdb_link_id = u.target_link_id
+                    from (
+                        select org_link_id, target_link_id  
+                         from ( select org_link_id, target_link_id,
+                                      row_number() over ( partition by org_link_id ) as seq
+                                 from temp_link_org_rdb 
+                              ) as t
+                        where t.seq = 1 
+                      ) as u
+                      where u.org_link_id = h.link_id 
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
     
 #     def _hno_range(self):
 #         sqlcmd = '''

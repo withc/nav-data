@@ -26,7 +26,7 @@ class CPoi(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert  into temp_feat_geom( key, type, code, geotype, geom )
                     select  distinct fe.feat_key, fe.feat_type, 7000,'P', p.the_geom
                       from  org_landmark  as p
                       join  mid_feat_key  as fe

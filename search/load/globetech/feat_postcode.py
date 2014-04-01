@@ -34,7 +34,16 @@ class CPostcode(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
-        pass
+        sqlcmd = '''
+                 insert into temp_feat_geom( key, type, code, geotype, geom )
+                 select f.feat_key, f.feat_type, 7379, 'P', p.the_geom
+                   from org_postcode             as p
+                   join temp_postcode            as t
+                     on p.postcode = t.org_code
+                   join mid_feat_key             as f
+                     on t.id = f.org_id1 and t.sub = f.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         pass

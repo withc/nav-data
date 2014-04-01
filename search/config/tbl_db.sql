@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS tbl_poi_info      CASCADE;
 DROP TABLE IF EXISTS tbl_poi_address   CASCADE;
 DROP TABLE IF EXISTS tbl_poi_name      CASCADE;
 
-
+DROP TABLE IF EXISTS tbl_bldg_point          CASCADE;
 DROP TABLE IF EXISTS tbl_street_hno_range    CASCADE;
 DROP TABLE IF EXISTS tbl_street_hno_point    CASCADE;
 DROP TABLE IF EXISTS tbl_place_full          CASCADE;
@@ -175,6 +175,23 @@ create table tbl_street_hno_point
     entry_lat int          not null,
     
     rdb_link_id  bigint    not null
+);
+
+create table tbl_bldg_point
+(
+     id        bigint not null,
+     area0     int    not null,
+     area1     int    not null,
+     area2     int    not null,
+     area3     int    not null,
+     
+     link_id   bigint       not null,
+     side      smallint     not null,
+     hno       varchar(128) not null,
+     lon       int          not null,
+     lat       int          not null,
+     entry_lon int          not null,
+     entry_lat int          not null    
 );
 
 create table tmp_street_hno_id

@@ -169,8 +169,8 @@ create table mid_bldg_point
      num      varchar(128) not null,
      x        int          not null,
      y        int          not null,
-     entry_x    int          not null,
-     entry_y    int          not null    
+     entry_x  int          not null,
+     entry_y  int          not null    
 );
 -- name
 create table mid_name
