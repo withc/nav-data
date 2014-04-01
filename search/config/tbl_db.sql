@@ -154,7 +154,11 @@ create table tbl_street_hno_range
     prefix   varchar(128)  not null,
     suffix   varchar(128)  not null,
     f_hno    varchar(128)  not null,
-    l_hno    varchar(128)  not null
+    l_hno    varchar(128)  not null,
+    
+    rdb_link_id  bigint    not null,
+    s_fraction   int       not null,
+    e_fraction   int       not null
 );
 
 create table tbl_street_hno_point
@@ -168,7 +172,9 @@ create table tbl_street_hno_point
     lon       int          not null,
     lat       int          not null,
     entry_lon int          not null,
-    entry_lat int          not null
+    entry_lat int          not null,
+    
+    rdb_link_id  bigint    not null
 );
 
 create table tmp_street_hno_id

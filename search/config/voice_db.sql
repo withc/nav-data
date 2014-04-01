@@ -1,8 +1,8 @@
 
-DROP TABLE IF EXISTS voice_poi   CASCADE;
-DROP TABLE IF EXISTS voice_state   CASCADE;
-DROP TABLE IF EXISTS voice_street   CASCADE;
-DROP TABLE IF EXISTS voice_street_hno_rang   CASCADE;
+DROP TABLE IF EXISTS voice_poi                CASCADE;
+DROP TABLE IF EXISTS voice_state              CASCADE;
+DROP TABLE IF EXISTS voice_street             CASCADE;
+DROP TABLE IF EXISTS voice_street_hno_rang    CASCADE;
 DROP TABLE IF EXISTS voice_street_hno_point   CASCADE;
 DROP TABLE IF EXISTS voice_tmp_full_place     CASCADE;
 

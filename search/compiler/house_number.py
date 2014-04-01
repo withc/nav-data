@@ -8,6 +8,7 @@ class CHouseNumber(entity.CEntity):
         self._do_tmp()
         self._hno_range()
         self._hno_point()
+        self._update_to_rdb_link()
         
     def _do_tmp(self):
         sqlcmd = '''
@@ -26,10 +27,13 @@ class CHouseNumber(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
             
     def _hno_range(self):
+        self.logger.info('  do hno range')
         sqlcmd = '''
-                 insert into tbl_street_hno_range( id, link_id, side, scheme, prefix, suffix, f_hno, l_hno )
+                 insert into tbl_street_hno_range( id, link_id, side, scheme, prefix, suffix, 
+                                                   f_hno, l_hno, rdb_link_id, s_fraction, e_fraction )
                  select s.id, s.org_link_id, h.side, h.scheme, 
-                        srch_hno_prefix(h.first), srch_hno_suffix(h.first), h.first, h.last
+                        srch_hno_prefix(h.first), srch_hno_suffix(h.first), h.first, h.last,
+                        0, 0, 0
                    from mid_house_number_road    as r
                    join mid_address_range        as h
                      on r.id = h.id
@@ -39,17 +43,52 @@ class CHouseNumber(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
         
     def _hno_point(self):
+        self.logger.info('  do hno point')
         sqlcmd = '''
-                 insert into tbl_street_hno_point( id, link_id, side, prefix, suffix, hno, lon, lat, entry_lon, entry_lat )
+                 insert into tbl_street_hno_point( id, link_id, side, prefix, suffix, hno, lon, lat, entry_lon, entry_lat, rdb_link_id )
                  select s.id, s.org_link_id, h.side, 
                         srch_hno_prefix(h.num), srch_hno_suffix(h.num), h.num, 
                         srch_coord(h.dis_x), srch_coord(h.dis_y),
-                        srch_coord( h.x ), srch_coord( h.y )
+                        srch_coord( h.x ), srch_coord( h.y ), 0
                    from mid_house_number_road    as r
                    join mid_address_point        as h
                      on r.id = h.id
                    join tmp_street_hno_id        as s
                      on s.mid_id = r.id
+                 '''
+        self.db.do_big_insert(sqlcmd)
+    
+    def _update_to_rdb_link(self):
+        self.logger.info('  update to rdb_link_id')
+        sqlcmd = '''
+                 update tbl_street_hno_range as h 
+                 set  rdb_link_id = u.target_link_id, s_fraction = u.s, e_fraction = u.e
+                 from  (
+                        select org_link_id, target_link_id, (s*65535)::int as s, (e*65535)::int as e
+                         from (
+                              select org_link_id, target_link_id, 
+                                     case flag when false then s_fraction else e_fraction end as s, 
+                                     case flag when false then e_fraction else s_fraction end as e, 
+                                     row_number() over ( partition by org_link_id ) as seq
+                                from temp_link_org_rdb
+                              ) as t  
+                              where t.seq = 1
+                       ) as u
+                      where u.org_link_id = h.link_id 
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        sqlcmd = '''
+                 update tbl_street_hno_point as h 
+                    set rdb_link_id = u.target_link_id
+                    from (
+                        select org_link_id, target_link_id  
+                         from ( select org_link_id, target_link_id,
+                                      row_number() over ( partition by org_link_id ) as seq
+                                 from temp_link_org_rdb 
+                              ) as t
+                        where t.seq = 1 
+                      ) as u
+                      where u.org_link_id = h.link_id 
                  '''
         self.db.do_big_insert(sqlcmd)
     
