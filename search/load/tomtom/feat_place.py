@@ -2,7 +2,6 @@ import load.feature
 
 class CPlace(load.feature.CFeature):
     def __init__(self ):
-        print "tomtom's place feature"
         load.feature.CFeature.__init__(self,'place')
 
     def _domake_key(self):
@@ -40,7 +39,53 @@ class CPlace(load.feature.CFeature):
         tbs = ['org_a0','org_a1','org_a2','org_a8','org_a9']
         for tb in tbs:
             self._geomtry(tb)
-        
+        #set point for a0, a1,
+        sqlcmd = '''
+                insert into temp_feat_geom( key, type, code, geotype, geom )
+                with sm ( adminclass, axorder, axid, the_geom, order00, order01,order02, order07 )
+                 as (
+                   select adminclass,  axorder, axid, s.the_geom, 
+                          COALESCE( a8.order00, a9.order00 ),
+                          COALESCE( a8.order01, a9.order01 ), 
+                          COALESCE( a8.order02, a9.order02 ), 
+                          COALESCE( a8.order07, a9.order07 )
+                     from org_sm as s
+                left join org_a8 as a8
+                       on s.axid = a8.id
+                left join org_a9 as a9
+                       on s.axid = a9.id
+                    where adminclass < 8
+                   )
+                select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
+                  from sm
+                  join ( select distinct id, order00, feattyp from org_a0 ) as a0
+                    on sm.adminclass = 0 and sm.order00 = a0.order00
+                  join mid_feat_key  as fe
+                    on a0.id = fe.org_id1 and a0.feattyp = fe.org_id2
+                union
+                select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
+                  from sm
+                  join ( select distinct id, order01, feattyp from org_a1 ) as a1
+                    on sm.adminclass <= 1 and sm.order01 = a1.order01
+                  join mid_feat_key  as fe
+                    on a1.id = fe.org_id1 and a1.feattyp = fe.org_id2
+                union
+                select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
+                  from sm
+                  join ( select distinct id, order02, feattyp from org_a2 ) as a2
+                    on sm.adminclass <= 2 and sm.order02 = a2.order02
+                  join mid_feat_key  as fe
+                    on a2.id = fe.org_id1 and a2.feattyp = fe.org_id2
+                union
+                select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
+                  from sm
+                  join ( select distinct id, order07, feattyp from org_a7 ) as a7
+                    on sm.adminclass <= 7 and sm.order07 = a7.order07
+                  join mid_feat_key  as fe
+                    on a7.id = fe.org_id1 and a7.feattyp = fe.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )  
+          
     def _domake_name(self):
         sqlcmd = '''
                     insert into temp_feat_name( key, type, nametype, langcode, name )
@@ -102,6 +147,7 @@ class CPlace(load.feature.CFeature):
                         on a.citycenter = sm.id
                     ''' % tb
             self.db.do_big_insert( sqlcmd )
+            
     def _gen_admin_sql(self, s):
         if s == 0:
             sqlcmd = self._select_admin(0)

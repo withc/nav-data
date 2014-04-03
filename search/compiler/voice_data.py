@@ -91,7 +91,7 @@ class CVoiceData(entity.CEntity):
                from (
                  select s.area0, s.area1, t.country, t.state, t.city, t.district, 
                         n.type, n.name, '' as phonetic, h.scheme, h.f_hno, h.l_hno,
-                        get_house_number(h.f_hno) as f, get_house_number(h.l_hno) as l
+                        srch_hno_num(h.f_hno) as f, srch_hno_num(h.l_hno) as l
                    from tbl_street_hno_range as h
                    join tbl_street_info      as s
                      on h.id = s.id

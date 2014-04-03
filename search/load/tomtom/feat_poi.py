@@ -2,7 +2,6 @@ import load.feature
 
 class CPoi(load.feature.CFeature):
     def __init__(self ):
-        print "tomtom's poi feature"
         load.feature.CFeature.__init__(self,'poi')
         
     def _domake_key(self):

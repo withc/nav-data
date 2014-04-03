@@ -28,7 +28,6 @@ DROP TABLE IF EXISTS temp_feat_name            CASCADE;
 DROP TABLE IF EXISTS temp_feat_name_gen_id     CASCADE;
 DROP TABLE IF EXISTS temp_feat_geom            CASCADE;
 DROP TABLE IF EXISTS temp_feat_geom_gen_id     CASCADE;
-DROP TABLE IF EXISTS temp_feat_class           CASCADE;
 DROP TABLE IF EXISTS temp_postcode             CASCADE;
 --------------------------------------------------------------
 create table mid_feat_key
@@ -176,7 +175,7 @@ create table mid_bldg_point
 create table mid_name
 (
     id       bigint       not null PRIMARY KEY,
-    langcode char(4)      not null,
+    langcode char(3)      not null,
     name     varchar(255) not null
 );
 
@@ -261,16 +260,6 @@ create table temp_feat_geom_gen_id
     geotype  char     not null,
     geom     geometry not null,
     geomid   int      not null
-);
-
-create table temp_feat_class
-(
-    c1       int not null,
-    c2       int not null,
-    c3       int not null,
-    level    smallint     not null,
-    imp      smallint     not null,
-    name     varchar(128) not null
 );
 
 create table temp_postcode

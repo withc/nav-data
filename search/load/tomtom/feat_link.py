@@ -2,7 +2,6 @@ import load.feature
 
 class CLink(load.feature.CFeature):
     def __init__(self ):
-        print "tomtom's link feature"
         load.feature.CFeature.__init__(self,'link')
 
     def _domake_key(self):
