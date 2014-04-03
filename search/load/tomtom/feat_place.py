@@ -62,7 +62,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
-                 insert into mid_full_area()
+                 insert into mid_full_area( min_lon, min_lat, max_lon, max_lat )
                  select st_xmin(geom)*100000, st_ymin(geom)*100000, 
                         st_xmax(geom)*100000, st_ymax(geom)*100000
                    from ( select ST_extent(the_geom) as geom from org_a0 ) as a

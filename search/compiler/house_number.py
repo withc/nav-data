@@ -63,7 +63,8 @@ class CHouseNumber(entity.CEntity):
         self.logger.info('  do bldg point')
         sqlcmd = '''
                  insert into tbl_bldg_point( id, area0,area1, area2, area3, link_id, side, hno, lon, lat, entry_lon, entry_lat, rdb_link_id )
-                 select p.area0, p.area1, p.area2, p.area3, f.org_id1, b.side, b.num,
+                 select row_number() over( order by p.area0, p.area1, p.area2, p.area3, b.num ), 
+                        p.area0, p.area1, p.area2, p.area3, f.org_id1, b.side, b.num,
                         srch_coord(b.x), srch_coord(b.y),
                         srch_coord( b.entry_x ), srch_coord( b.entry_y ), 0
                    from mid_bldg_point    as b
@@ -76,13 +77,19 @@ class CHouseNumber(entity.CEntity):
         
     def _update_to_rdb_link(self):
         self.logger.info('  update to rdb_link_id')
+        ## need adjust the side flag
         sqlcmd = '''
                  update tbl_street_hno_range as h 
-                 set  rdb_link_id = u.target_link_id, s_fraction = u.s, e_fraction = u.e
+                 set  rdb_link_id = u.target_link_id, s_fraction = u.s, e_fraction = u.e,
+                      side = case  
+                                when flag = true and side = 1 then 2
+                                when flag = true and side = 2 then 1
+                                else side
+                             end
                  from  (
-                        select org_link_id, target_link_id, (s*65535)::int as s, (e*65535)::int as e
+                        select org_link_id, target_link_id, (s*65535)::int as s, (e*65535)::int as e, flag
                          from (
-                              select org_link_id, target_link_id, 
+                              select org_link_id, target_link_id, flag,
                                      case flag when false then s_fraction else e_fraction end as s, 
                                      case flag when false then e_fraction else s_fraction end as e, 
                                      row_number() over ( partition by org_link_id ) as seq
@@ -96,10 +103,15 @@ class CHouseNumber(entity.CEntity):
         
         sqlcmd = '''
                  update tbl_street_hno_point as h 
-                    set rdb_link_id = u.target_link_id
+                    set rdb_link_id = u.target_link_id,
+                        side = case  
+                                 when flag = true and side = 1 then 2
+                                 when flag = true and side = 2 then 1
+                                 else side
+                               end
                     from (
-                        select org_link_id, target_link_id  
-                         from ( select org_link_id, target_link_id,
+                        select org_link_id, target_link_id, flag  
+                         from ( select org_link_id, target_link_id, flag,
                                       row_number() over ( partition by org_link_id ) as seq
                                  from temp_link_org_rdb 
                               ) as t
@@ -111,10 +123,15 @@ class CHouseNumber(entity.CEntity):
         
         sqlcmd = '''
                  update tbl_bldg_point as h 
-                    set rdb_link_id = u.target_link_id
+                    set rdb_link_id = u.target_link_id,
+                        side = case  
+                                 when flag = true and side = 1 then 2
+                                 when flag = true and side = 2 then 1
+                                 else side
+                               end
                     from (
-                        select org_link_id, target_link_id  
-                         from ( select org_link_id, target_link_id,
+                        select org_link_id, target_link_id, flag  
+                         from ( select org_link_id, target_link_id, flag,
                                       row_number() over ( partition by org_link_id ) as seq
                                  from temp_link_org_rdb 
                               ) as t

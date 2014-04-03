@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS voice_state              CASCADE;
 DROP TABLE IF EXISTS voice_street             CASCADE;
 DROP TABLE IF EXISTS voice_street_hno_rang    CASCADE;
 DROP TABLE IF EXISTS voice_street_hno_point   CASCADE;
+DROP TABLE IF EXISTS voice_bldg_point         CASCADE;
 DROP TABLE IF EXISTS voice_tmp_full_place     CASCADE;
 
 create table voice_tmp_full_place
@@ -83,4 +84,15 @@ create table voice_street_hno_point
    street_name     varchar(255),
    street_phonetic varchar(255),
    hno             varchar(128)
+);
+
+create table voice_bldg_point
+(
+     country_id   int,
+     state_id     int,
+     country      varchar(255),
+     state        varchar(255),
+     city         varchar(255),
+     district     varchar(255),
+     hno          varchar(128) not null
 );

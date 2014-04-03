@@ -191,7 +191,8 @@ create table tbl_bldg_point
      lon       int          not null,
      lat       int          not null,
      entry_lon int          not null,
-     entry_lat int          not null    
+     entry_lat int          not null,
+     rdb_link_id  bigint    not null    
 );
 
 create table tmp_street_hno_id

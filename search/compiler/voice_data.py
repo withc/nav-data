@@ -122,5 +122,18 @@ class CVoiceData(entity.CEntity):
                         s.area2 = t.area2  and
                         s.area3 = t.area3
                  '''
-        self.db.do_big_insert(sqlcmd)       
+        self.db.do_big_insert(sqlcmd)  
+        # for bldg
+        sqlcmd = '''
+                 insert into voice_bldg_point( country_id, state_id, country, state, city, district, hno )
+                 select t.area0, t.area1, t.country, t.state, t.city, t.district, b.hno
+                   from tbl_bldg_point       as b
+                   join voice_tmp_full_place as t
+                     on t.area0 = b.area0  and
+                        t.area1 = b.area1  and
+                        t.area2 = b.area2  and
+                        t.area3 = b.area3
+                 '''
+        self.db.do_big_insert(sqlcmd)
+             
         

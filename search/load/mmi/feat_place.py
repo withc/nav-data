@@ -114,6 +114,14 @@ class CPlace(load.feature.CFeature):
     def _domake_attribute(self):
         
         sqlcmd = '''
+                 insert into mid_country_profile( iso, off_lang, key, type )
+                 select 'IND', 'ENG', f.feat_key, f.feat_type
+                   from mid_feat_key    as f
+                  where f.feat_type = 3001
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
+        sqlcmd = '''
                  insert into mid_full_area( min_lon, min_lat, max_lon, max_lat )
                  select st_xmin(geom)*100000, st_ymin(geom)*100000, 
                         st_xmax(geom)*100000, st_ymax(geom)*100000
