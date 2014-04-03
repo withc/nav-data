@@ -54,5 +54,16 @@ class CMid_check(object):
         rows = self.db.getOneResult(sql )
         if 0 != rows:
             self.logger.info( 'some poi do not set point:' + str(rows) )
+            
+        sql = '''
+              select p.key, p.type, count(*)
+                from mid_poi                 as p
+                join mid_feature_to_geometry as g
+                  on p.key = g.key and g.code = 9920
+               group by p.key having count(*) > 1
+              '''
+        rows = self.db.getOneResult(sql )
+        if 0 != rows:
+            self.logger.info( 'some poi have more than entry point:' + str(rows) )
 
         
