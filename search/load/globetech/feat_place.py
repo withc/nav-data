@@ -67,16 +67,14 @@ class CPlace(load.feature.CFeature):
         
     def _domake_name(self):
         # add the country name by myself
-        self.db.do_big_insert( ''' insert into temp_feat_name( key, type, nametype, langcode, name )
-                             select key, type, 'ON', 'THA', '\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2'
-                               from mid_place where type = 3001
-                              union
-                             select key, type, 'ON', 'ENG', 'Thailand'
+        self.db.do_big_insert( ''' insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+                             select key, type, 'ON', 'THA', '\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2',
+                                    'ENG', 'Thailand'
                                from mid_place where type = 3001
                          ''' )
         
         sqlcmd = '''
-             insert into temp_feat_name( key, type, nametype, langcode, name )
+             insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                 with ad ( key, type, namt, name )
                 as (select fe.feat_key, fe.feat_type,  a.namt, a.name
                     from org_admin_point as a
@@ -88,9 +86,7 @@ class CPlace(load.feature.CFeature):
                     join mid_feat_key     as fe
                       on ta.org_id1 = fe.org_id1 and ta.org_id2 = fe.org_id2
                     )
-                  select key, type, 'ON', 'THA', namt from ad
-                   union
-                  select key, type, 'ON', 'ENG', name from ad
+                  select key, type, 'ON', 'THA', namt, 'ENG', name from ad
                  '''
         self.db.do_big_insert( sqlcmd )
     

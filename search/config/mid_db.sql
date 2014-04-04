@@ -174,9 +174,11 @@ create table mid_bldg_point
 -- name
 create table mid_name
 (
-    id       bigint       not null PRIMARY KEY,
-    langcode char(3)      not null,
-    name     varchar(255) not null
+    id        bigint       not null PRIMARY KEY,
+    langcode  char(3)      not null,
+    name      varchar(255) not null,
+    tr_lang   char(3)      not null,
+    tr_name   varchar(255) not null  
 );
 
 -- geometry
@@ -200,8 +202,8 @@ create table mid_geometry_xyz
 
 create table mid_feature_to_feature
 (
-    fkey       bigint   not null,
-    ftype      smallint not null,
+    fkey      bigint   not null,
+    ftype     smallint not null,
     code      smallint not null,
     tkey      bigint   not null,
     ttype     smallint not null
@@ -226,25 +228,26 @@ create table mid_feature_to_geometry
 -- temp table
 create table temp_feat_name
 (
+    gid       serial   PRIMARY KEY,
     key       bigint   not null,
     type      smallint not null,
     nametype  char(2)  not null,
-    langcode  char(4)  not null,
-    name      varchar(255)
+    
+    langcode  char(3)      not null,
+    name      varchar(255) not null,
+    tr_lang   char(3)      default '',
+    tr_name   varchar(255) default ''
 );
 
 create table temp_feat_name_gen_id
 (
-    key       bigint   not null,
-    type      smallint not null,
-    nametype  char(2)  not null,
-    langcode  char(4)  not null,
-    name      varchar(255),
+    gid       int      not null,
     nameid    int      not null
 );
 
 create table temp_feat_geom
 (
+    gid      serial   PRIMARY KEY,
     key      bigint   not null,
     type     smallint not null,
     code     smallint not null,
@@ -254,11 +257,7 @@ create table temp_feat_geom
 
 create table temp_feat_geom_gen_id
 (
-    key      bigint   not null,
-    type     smallint not null,
-    code     smallint not null,
-    geotype  char     not null,
-    geom     geometry not null,
+    gid      int      not null,
     geomid   int      not null
 );
 

@@ -51,16 +51,14 @@ class CPoi(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-              insert into temp_feat_name( key, type, nametype, langcode, name )
+              insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                 with pn ( key, type, namt, name )
                 as ( select fe.feat_key, fe.feat_type, p.nav_namt, p.nav_name
                        from org_landmark   as p
                        join mid_feat_key   as fe
                          on p.objectid = fe.org_id1 and fe.org_id2 = 1000
                     )
-                select key, type, 'ON', 'THA', namt from pn
-                 union
-                select key, type, 'ON', 'ENG', name from pn
+                select key, type, 'ON', 'THA', namt, 'ENG', name from pn
                  '''
         self.db.do_big_insert( sqlcmd )
     

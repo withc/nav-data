@@ -34,24 +34,19 @@ class CLink(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                    insert into temp_feat_name( key, type, nametype, langcode, name )
+                    insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                     with tr ( key, type, nav_namt, nav_name, alt_namt, alt_name, brdnamt, brdname )
                     as ( select fe.feat_key, fe.feat_type, nav_namt, nav_name, alt_namt, alt_name, brdnamt, brdname
                            from org_l_tran   as l
                            join mid_feat_key as fe
                              on l.routeid = fe.org_id1 and 2000 = fe.org_id2
                        )
-                    select key, type, 'ON', 'THA', nav_namt from tr where nav_namt is not null
+                    select key, type, 'ON', 'THA', nav_namt, 'ENG', nav_name from tr where nav_namt is not null
                     union
-                    select key, type, 'ON', 'ENG', nav_name from tr where nav_namt is not null
+                    select key, type, 'AN', 'THA', alt_namt, 'ENG', alt_name from tr where alt_namt is not null
                     union
-                    select key, type, 'AN', 'THA', alt_namt from tr where alt_namt is not null
-                    union
-                    select key, type, 'AN', 'ENG', alt_name from tr where alt_name is not null
-                    union
-                    select key, type, 'BU', 'THA', brdnamt  from tr where brdnamt is not null
-                    union
-                    select key, type, 'BU', 'ENG', brdname  from tr where brdname is not null
+                    select key, type, 'BU', 'THA', brdnamt,  'ENG', brdname  from tr where brdnamt is not null
+                    
                  '''
         self.db.do_big_insert( sqlcmd )
     
