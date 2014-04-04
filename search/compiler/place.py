@@ -98,6 +98,40 @@ class CPlace(entity.CEntity):
                      on pa.a0 = t.key and pa.type = 3002
                  '''
         self.db.do_big_insert(sqlcmd)
+        
+        sqlcmd = 'select count(*) from mid_place where type = 3010'
+        count = self.db.getResultCount(sqlcmd)
+        if  count > 1 :
+            self._add_a8_a9()
+        else:
+            self._add_a7_a8()
+            
+        self.db.createIndex( 'tmp_place_area', 'key' )
+        
+    def _add_a7_a8(self):
+        #in some country, there is no a9, so, we will set a8 to area3.
+        #for a7
+        sqlcmd = '''
+                 insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
+                 select pa.key, pa.type, 2, t.area0, t.area1, 
+                        row_number() over ( partition by t.area0, t.area1 order by pa.key ), 0
+                   from mid_place_admin  as pa
+                   join tmp_place_area   as t
+                     on pa.a1 = t.key and pa.type = 3008
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        #for a8
+        sqlcmd = '''
+                 insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
+                 select pa.key, pa.type, 3, t.area0, t.area1, t.area2,
+                        row_number() over ( partition by t.area0, t.area1 order by pa.key )
+                   from mid_place_admin  as pa
+                   join tmp_place_area   as t
+                     on pa.a7 = t.key and pa.type = 3009
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
+    def _add_a8_a9(self):
         #for a8
         sqlcmd = '''
                  insert into tmp_place_area( key, type, level, area0, area1, area2, area3)
@@ -124,7 +158,7 @@ class CPlace(entity.CEntity):
                    )
                  '''
         self.db.do_big_insert(sqlcmd)
-        self.db.createIndex( 'tmp_place_area', 'key' )
+        
         
     def _do_lowest_place(self):
         ''' when a feature belong to a9, we also add a8( the a9's parent) to table mid_feature_to_feature,
