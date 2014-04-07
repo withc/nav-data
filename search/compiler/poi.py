@@ -90,9 +90,9 @@ class CPoi(entity.CEntity):
                  insert into tbl_poi_name( id, type, lang, name )
                  select p.id, fn.nametype, n.langcode, n.name
                    from tmp_poi             as p
-                   join mid_feature_to_name as fn
+                   join mid_poi_to_name as fn
                      on p.key = fn.key
-                   join mid_name            as n
+                   join mid_poi_name            as n
                      on fn.nameid = n.id
                   order by p.id
                  '''
@@ -148,13 +148,13 @@ class CPoi(entity.CEntity):
                            else st_y(g2.geom)*100000
                         end
                    from tmp_poi                  as p
-                   join mid_feature_to_geometry  as fg
+                   join mid_poi_to_geometry  as fg
                      on p.key = fg.key and fg.code = 7000
-                   join mid_geometry             as g
+                   join mid_poi_geometry             as g
                      on fg.geomid = g.id
-              left join mid_feature_to_geometry  as fg2
+              left join mid_poi_to_geometry  as fg2
                      on p.key = fg2.key and fg2.code = 9920
-              left join mid_geometry             as g2
+              left join mid_poi_geometry             as g2
                      on fg2.geomid = g2.id
                  '''
         self.db.do_big_insert(sqlcmd)

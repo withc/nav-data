@@ -27,7 +27,7 @@ class CMNPoi(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_poi_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7000,'P', pi.the_geom
                       from org_mnpoi_pi as pi
                       join mid_feat_key as fe
@@ -36,7 +36,7 @@ class CMNPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
-                  insert into temp_feat_geom( key, type, code, geotype, geom )
+                  insert into temp_poi_geom( key, type, code, geotype, geom )
                   select fe.feat_key, fe.feat_type, 9920,'P', p1.the_geom
                     from org_mnpoi_pi   as pi
                     join mid_feat_key   as fe
@@ -44,13 +44,15 @@ class CMNPoi(load.feature.CFeature):
                     join org_mnpoi_pipr as pr
                       on pi.id = pr.poiid
                     join org_mnpoi_pi   as p1
-                      on pr.belpoityp = 9920 and pr.belpoiid = p1.id 
+                      on pr.belpoityp = 9920  and
+                         pr.entrytyp  = 1     and
+                         pr.belpoiid  = p1.id
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
-                  insert into temp_feat_name( key, type, nametype, langcode, name )
+                  insert into temp_poi_name( key, type, nametype, langcode, name )
                   select fe.feat_key, fe.feat_type, p.nametyp, p.namelc, p.name
                     from org_mnpoi_pinm as p
                     join mid_feat_key   as fe

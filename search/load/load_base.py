@@ -55,10 +55,11 @@ class CLoader(object):
             f.make_feature()
         
     def _copy_common_attribute(self):
-        self.logger.info( '--copy_geomtry' )
+        self.logger.info( '--copy_name_geomtry' )
         for f in self.feats:
             f.make_geomtry()
             f.make_name()
+            f.gen_name_geom()
     
     def _copy_attribute(self):
         self.logger.info( '--copy_attribute' )

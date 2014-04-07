@@ -20,7 +20,7 @@ class CLink(entity.CEntity):
                           from mid_link              as l
                           join tmp_feat_lowest_place as fp
                             on l.key = fp.key
-                          join mid_feature_to_name   as n
+                          join mid_street_to_name   as n
                             on l.key = n.key
                     ) as t
               order by pkey, nameid
@@ -33,9 +33,9 @@ class CLink(entity.CEntity):
                  insert into tbl_street_name( id, type, lang, name )
                  select distinct s.id, fn.nametype, n.langcode, n.name
                    from tmp_street           as s
-                   join mid_feature_to_name  as fn
+                   join mid_street_to_name  as fn
                      on s.key = fn.key and s.nameid = fn.nameid
-                   join mid_name             as n
+                   join mid_street_name             as n
                      on fn.nameid = n.id
                   order by s.id
                  '''
@@ -49,9 +49,9 @@ class CLink(entity.CEntity):
                    from (
                         select s.id, ST_Union(g.geom) as geom
                           from tmp_street              as s
-                          join mid_feature_to_geometry as fg
+                          join mid_street_to_geometry as fg
                             on s.key = fg.key
-                          join mid_geometry            as g
+                          join mid_street_geometry            as g
                             on fg.geomid = g.id
                          group by s.id
                         ) as t

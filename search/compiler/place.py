@@ -28,9 +28,9 @@ class CPlace(entity.CEntity):
                  select p.level, p.area0, p.area1, p.area2, p.area3, 
                         srch_coord((st_x(g.geom)*100000)::int), srch_coord((st_y(g.geom)*100000)::int)
                    from tmp_place_area           as p
-                   join mid_feature_to_geometry  as fg
+                   join mid_street_to_geometry  as fg
                      on p.key = fg.key and fg.code = 7379
-                   join mid_geometry             as g
+                   join mid_street_geometry             as g
                      on fg.geomid = g.id
                   order by p.level, p.area0, p.area1, p.area2, p.area3
                  '''
@@ -43,9 +43,9 @@ class CPlace(entity.CEntity):
                  insert into tmp_place_name( key, type, nametype, lang, name)
                  select p.key, p.type, pn.nametype, n.langcode, n.name
                    from mid_place_admin      as p
-                   join mid_feature_to_name  as pn
+                   join mid_street_to_name  as pn
                      on p.key = pn.key and p.type = pn.type
-                   join mid_name             as n
+                   join mid_street_name             as n
                      on pn.nameid = n.id 
                  ''' 
         self.db.do_big_insert(sqlcmd)
@@ -153,7 +153,7 @@ class CPlace(entity.CEntity):
                      on pa.a8 = t.key and pa.type = 3010
                    where exists (
                        select 1 
-                         from mid_feature_to_geometry  as fg
+                         from mid_street_to_geometry  as fg
                         where pa.key = fg.key and fg.code = 7379
                    )
                  '''

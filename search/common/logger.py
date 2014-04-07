@@ -12,7 +12,7 @@ def sub_log( name='' ):
 def init_log( file='' ):
     logger = logging.getLogger(PROJECT)
     logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler('test_'+file+'_'+time.strftime('%Y-%m-%d %H_%M_%S',time.localtime(time.time()))+'.log')
+    fh = logging.FileHandler('log\\test_'+file+'_'+time.strftime('%Y-%m-%d %H_%M_%S',time.localtime(time.time()))+'.log')
     fh.setLevel(logging.DEBUG)
 
     ch = logging.StreamHandler()

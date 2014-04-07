@@ -18,8 +18,6 @@ DROP TABLE IF EXISTS tbl_poi_name      CASCADE;
 DROP TABLE IF EXISTS tbl_bldg_point          CASCADE;
 DROP TABLE IF EXISTS tbl_street_hno_range    CASCADE;
 DROP TABLE IF EXISTS tbl_street_hno_point    CASCADE;
-DROP TABLE IF EXISTS tbl_place_full          CASCADE;
-DROP TABLE IF EXISTS tbl_road_full           CASCADE;
 DROP TABLE IF EXISTS tmp_place_area          CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
 DROP TABLE IF EXISTS tmp_poi                 CASCADE;
@@ -201,29 +199,6 @@ create table tmp_street_hno_id
     org_link_id  bigint  not null,
     
     mid_id       int     not null
-);
-
-create table tbl_place_full
-(
-    key      bigint       not null,
-    type     smallint     not null,
-    lang     char(3)      not null,
-    country  varchar(128) not null,
-    state    varchar(128) not null,
-    city     varchar(128) not null,
-    district varchar(128) not null
-);
-
-CREATE TABLE tbl_road_full
-(
-  key      bigint   NOT NULL,
-  type     smallint NOT NULL,
-  lang     char(3)      NOT NULL,
-  country  varchar(128) not null,
-  state    varchar(128) not null,
-  city     varchar(128) not null,
-  district varchar(128) not null,
-  road     varchar(128) not null
 );
 
 create table tmp_place_name

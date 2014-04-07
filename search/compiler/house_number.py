@@ -16,7 +16,7 @@ class CHouseNumber(entity.CEntity):
                  insert into tmp_street_hno_id( id, org_link_id, mid_id)
                  select s.id, k.org_id1, m.id
                    from mid_house_number_road as m
-                   join mid_name              as n
+                   join mid_street_name              as n
                      on m.langcode = n.langcode and m.name = n.name
                    join tmp_street            as s
                      on m.key = s.key     and

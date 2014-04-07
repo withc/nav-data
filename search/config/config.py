@@ -1,9 +1,9 @@
 
 class Config( object ):
     __instance = None
-    _vendor  ='rdf'
-    _host    ='172.26.179.7'
-    _dbname  ='14tmap_idn_rdf_2014Q4'
+    _vendor  ='tomtom'
+    _host    ='172.26.179.184'
+    _dbname  ='14tmai_sea_tomtom_1312_ci'
     _user    ='postgres'
     _password=''
 

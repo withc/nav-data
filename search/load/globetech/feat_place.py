@@ -47,19 +47,19 @@ class CPlace(load.feature.CFeature):
     
     def _domake_geomtry(self):
         # add the country point by myself
-        self.db.do_big_insert( ''' insert into temp_feat_geom( key, type, code, geotype, geom )
+        self.db.do_big_insert( ''' insert into temp_street_geom( key, type, code, geotype, geom )
                              select key, type, 7379, 'P',  ST_SetSRID(st_makepoint(100.5018272, 13.7541276), 4326)
                                from mid_place where type = 3001
                          ''' )
         sqlcmd = '''
-             insert into temp_feat_geom( key, type, code, geotype, geom )
+             insert into temp_street_geom( key, type, code, geotype, geom )
                   select fe.feat_key, fe.feat_type, 7379, 'P', a.the_geom
                     from org_admin_point as a
                     join temp_admincode  as ta
-                      on a.type      = ta.type
-                     and a.prov_code = ta.prov_code
-                     and a.amp_code  = ta.amp_code
-                     and a.tam_code  = ta.tam_code
+                      on a.type      = ta.type       and
+                         a.prov_code = ta.prov_code  and
+                         a.amp_code  = ta.amp_code   and
+                         a.tam_code  = ta.tam_code
                     join mid_feat_key     as fe
                       on ta.org_id1 = fe.org_id1 and ta.org_id2 = fe.org_id2
                  ''' 
@@ -67,14 +67,14 @@ class CPlace(load.feature.CFeature):
         
     def _domake_name(self):
         # add the country name by myself
-        self.db.do_big_insert( ''' insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
-                             select key, type, 'ON', 'THA', '\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2',
-                                    'ENG', 'Thailand'
-                               from mid_place where type = 3001
-                         ''' )
+        self.db.do_big_insert( ''' 
+                      insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+                      select key, type, 'ON', 'THA', '\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2', 'ENG', 'Thailand'
+                        from mid_place where type = 3001
+                      ''' )
         
         sqlcmd = '''
-             insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+             insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                 with ad ( key, type, namt, name )
                 as (select fe.feat_key, fe.feat_type,  a.namt, a.name
                     from org_admin_point as a

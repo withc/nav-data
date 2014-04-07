@@ -41,7 +41,7 @@ class CPlace(load.feature.CFeature):
             self._geomtry(tb)
         #set point for a0, a1,
         sqlcmd = '''
-                insert into temp_feat_geom( key, type, code, geotype, geom )
+                insert into temp_street_geom( key, type, code, geotype, geom )
                 with sm ( adminclass, axorder, axid, the_geom, order00, order01,order02, order07 )
                  as (
                    select adminclass,  axorder, axid, s.the_geom, 
@@ -88,7 +88,7 @@ class CPlace(load.feature.CFeature):
           
     def _domake_name(self):
         sqlcmd = '''
-                    insert into temp_feat_name( key, type, nametype, langcode, name )
+                    insert into temp_street_name( key, type, nametype, langcode, name )
                     select fe.feat_key, fe.feat_type, an.nametyp, an.namelc, an.name
                       from org_an       as an
                       join mid_feat_key as fe
@@ -124,7 +124,7 @@ class CPlace(load.feature.CFeature):
       
     def _geomtry(self, tb):
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_street_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7000,'A', a.geom
                      from (
                            select id, feattyp, st_multi (st_union(the_geom)) as geom
@@ -138,7 +138,7 @@ class CPlace(load.feature.CFeature):
         
         if tb.find('a8') >= 0 or tb.find('a9') >= 0:
             sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_street_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7379, 'P', sm.the_geom
                       from %s           as a
                       join mid_feat_key as fe

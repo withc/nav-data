@@ -26,7 +26,7 @@ class CPoi(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
-                    insert  into temp_feat_geom( key, type, code, geotype, geom )
+                    insert  into temp_poi_geom( key, type, code, geotype, geom )
                     select  distinct fe.feat_key, fe.feat_type, 7000,'P', p.the_geom
                       from  org_landmark  as p
                       join  mid_feat_key  as fe
@@ -35,7 +35,7 @@ class CPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_poi_geom( key, type, code, geotype, geom )
                     select  distinct fe.feat_key, fe.feat_type, 9920,'P', 
                             case
                               when p.guide_x1 <> 0 then ST_SetSRID(st_makepoint(guide_x1, guide_y1), 4326)
@@ -51,7 +51,7 @@ class CPoi(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-              insert into temp_feat_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+              insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                 with pn ( key, type, namt, name )
                 as ( select fe.feat_key, fe.feat_type, p.nav_namt, p.nav_name
                        from org_landmark   as p
@@ -104,4 +104,9 @@ class CPoi(load.feature.CFeature):
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'poi' )
+        self._gen_geomid( 'poi' )
+        
         

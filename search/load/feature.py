@@ -35,6 +35,10 @@ class CFeature(object):
         self.logger.info('make relation')
         self._domake_relation()
         
+    def gen_name_geom(self):
+        self._domake_name_geom()
+        pass
+                
     def _domake_key(self):
         pass
         
@@ -47,11 +51,82 @@ class CFeature(object):
     def _domake_name(self):
         pass
     
+    def _domake_name_geom(self):
+        pass
+    
     def _domake_attribute(self):
         pass
         
     def _domake_relation(self):
         pass
+    
+    def _gen_nameid( self, feat = None ):
+        if not feat:
+            return 0
+        
+        self.logger.info('generate %s name id' % feat) 
+        sqlcmd = '''
+                   insert into temp_<f>_name_gen_id( gid, nameid )
+                   select gid, dense_rank() over ( order by tr_lang, tr_name, langcode, name ) 
+                     from temp_<f>_name
+                 '''  
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        sqlcmd = '''
+                   insert into mid_<f>_name( id, langcode, name, tr_lang, tr_name )
+                   select distinct nameid, langcode, name, tr_lang, tr_name
+                     from temp_<f>_name         as n
+                     join temp_<f>_name_gen_id  as g
+                       on n.gid = g.gid
+                     order by nameid
+                 ''' 
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        sqlcmd = '''
+                   insert into mid_<f>_to_name( key, type, nametype, nameid)
+                   select distinct key, type, nametype, nameid
+                     from temp_<f>_name         as n
+                     join temp_<f>_name_gen_id  as g
+                       on n.gid = g.gid
+                     order by key
+                 '''
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+    
+    def _gen_geomid(self,feat = None):
+        if not feat:
+            return 0
+        
+        self.logger.info('generate %s geometry id'%feat)
+        sqlcmd = '''
+                   insert into temp_<f>_geom_gen_id( gid, geomid )
+                   select gid, dense_rank() over (order by geotype, geom ) 
+                     from temp_<f>_geom
+                 '''
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        # when geom is so close,the geomid will be same, so ,we need select only one geom in that case.
+        sqlcmd = '''
+                   insert into mid_<f>_geometry( id, type, geom)
+                   select geomid, geotype, geom
+                     from (
+                           select geomid, geotype, geom, row_number() over ( partition by geomid ) as seq
+                             from temp_<f>_geom         as e
+                             join temp_<f>_geom_gen_id  as g
+                               on e.gid = g.gid
+                          ) as t
+                     where seq = 1
+                 '''
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        sqlcmd = '''
+                   insert into mid_<f>_to_geometry( key, type, code, geomid)
+                   select key, type, code, geomid
+                     from temp_<f>_geom         as e
+                     join temp_<f>_geom_gen_id  as g
+                       on e.gid = g.gid
+                    order by key
+                 '''
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
 class CStartProcess(object):
     
@@ -74,8 +149,6 @@ class CEndProcess(object):
         self.db = database
         self.name = vendor
     def do(self):
-        self._gen_nameid()
-        self._gen_geomid()
         self._create_index()
         
     def _gen_nameid(self):
@@ -145,11 +218,18 @@ class CEndProcess(object):
         self.db.createIndex('mid_poi_attr_value',      'key'    )
         self.db.createIndex('mid_feature_to_feature',  'fkey'   )
         self.db.createIndex('mid_feature_to_feature',  'tkey'   ) 
-        self.db.createIndex('mid_feature_to_name',     'key'    )
-        self.db.createIndex('mid_feature_to_name',     'nameid' )
-        self.db.createIndex('mid_feature_to_geometry', 'key'    )
-        self.db.createIndex('mid_feature_to_geometry', 'geomid' )
-        self.db.createIndex('mid_name', 'name' )
+        
+        self.db.createIndex('mid_street_name',        'name'   )
+        self.db.createIndex('mid_street_to_name',     'key'    )
+        self.db.createIndex('mid_street_to_name',     'nameid' )
+        self.db.createIndex('mid_street_to_geometry', 'key'    )
+
+        self.db.createIndex('mid_poi_name',        'name' )
+        self.db.createIndex('mid_poi_to_name',     'key'    )
+        self.db.createIndex('mid_poi_to_name',     'nameid' )
+        self.db.createIndex('mid_poi_to_geometry', 'key'    )
+
+        
         
        
         
