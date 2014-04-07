@@ -35,9 +35,13 @@ class CPoi(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         
+        # just get the first entry point
         sqlcmd = '''
-                  insert into temp_poi_geom( key, type, code, geotype, geom )
-                  select fe.feat_key, fe.feat_type, 9920,'P', p1.the_geom
+              insert into temp_poi_geom( key, type, code, geotype, geom )
+              select feat_key, feat_type, 9920,'P', the_geom
+                from ( 
+                  select fe.feat_key, fe.feat_type,  p1.the_geom, 
+                         row_number() over (partition by pr.poiid, pr.belpoityp order by pr.entrytyp, pr.gid ) as seq
                     from org_pi       as pi
                     join mid_feat_key as fe
                       on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
@@ -45,8 +49,9 @@ class CPoi(load.feature.CFeature):
                       on pi.id = pr.poiid
                     join org_pi       as p1
                       on pr.belpoityp = 9920  and
-                         pr.entrytyp  = 1     and
                          pr.belpoiid  = p1.id 
+                     ) as t
+                where t.seq = 1
                  '''
         self.db.do_big_insert( sqlcmd )
         
