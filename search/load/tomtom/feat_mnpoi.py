@@ -57,6 +57,7 @@ class CMNPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
+        # poi name
         sqlcmd = '''
                   insert into temp_poi_name( key, type, nametype, langcode, name )
                   select fe.feat_key, fe.feat_type, p.nametyp, p.namelc, p.name
@@ -67,7 +68,15 @@ class CMNPoi(load.feature.CFeature):
                          p.feattyp = fe.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
-    
+        # poi street name
+        sqlcmd = '''
+                   insert into temp_poi_name( key, type, nametype, langcode, name )
+                   select fe.feat_key, fe.feat_type, '6T', pi.lancd, pi.stname
+                     from org_mnpoi_piad as pi
+                     join mid_feat_key   as fe
+                       on pi.stname is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
     def _domake_attribute(self):
         sqlcmd = '''
                   insert into mid_poi_attr_value( key, type, attr_type, attr_value )
@@ -90,11 +99,6 @@ class CMNPoi(load.feature.CFeature):
                      from org_mnpoi_pi as pi
                      join mid_feat_key as fe
                        on pi.http is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
-                    union
-                     select fe.feat_key, fe.feat_type, '6T', pi.stname
-                     from org_mnpoi_piad as pi
-                     join mid_feat_key   as fe
-                       on pi.stname is not null and pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                     union
                      select fe.feat_key, fe.feat_type, '9H', pi.hsnum
                      from org_mnpoi_piad as pi

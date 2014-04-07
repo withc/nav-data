@@ -30,8 +30,8 @@ class CLink(entity.CEntity):
     def _do_street_name(self):
         self.logger.info('  do name')
         sqlcmd = '''
-                 insert into tbl_street_name( id, type, lang, name )
-                 select distinct s.id, fn.nametype, n.langcode, n.name
+                 insert into tbl_street_name( id, type, lang, name, tr_lang, tr_name )
+                 select distinct s.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
                    from tmp_street           as s
                    join mid_street_to_name  as fn
                      on s.key = fn.key and s.nameid = fn.nameid
@@ -48,10 +48,10 @@ class CLink(entity.CEntity):
                  select t.id, ST_ClosestPoint( geom, ST_Centroid(geom) )
                    from (
                         select s.id, ST_Union(g.geom) as geom
-                          from tmp_street              as s
+                          from tmp_street             as s
                           join mid_street_to_geometry as fg
                             on s.key = fg.key
-                          join mid_street_geometry            as g
+                          join mid_street_geometry    as g
                             on fg.geomid = g.id
                          group by s.id
                         ) as t
@@ -70,24 +70,6 @@ class CLink(entity.CEntity):
                    join tmp_street_geom   as g
                      on s.id = g.id
                   order by s.id
-                 '''
-        self.db.do_big_insert(sqlcmd)
-           
-    def _do_full_name(self):
-        sqlcmd = '''
-                 insert into tbl_road_full( key, type, lang, country, state, city, district, road )
-                 select 1, 0, f.langcode, p.country, p.state, p.city, p.district,  f.name
-                   from (
-                          select distinct ff.pkey, ln.langcode, ln.name
-                            from mid_link              as l
-                            join temp_feat_name        as ln
-                              on l.key = ln.key
-                            join tmp_feat_lowest_place as ff
-                              on l.key = ff.key
-                        ) as f
-                   join tbl_place as p
-                     on f.pkey = p.key and f.langcode = p.lang 
-                   order by f.langcode, f.pkey
                  '''
         self.db.do_big_insert(sqlcmd)
         

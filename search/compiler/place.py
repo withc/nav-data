@@ -40,8 +40,8 @@ class CPlace(entity.CEntity):
         self.logger.info('  do place name')
         
         sqlcmd = '''
-                 insert into tmp_place_name( key, type, nametype, lang, name)
-                 select p.key, p.type, pn.nametype, n.langcode, n.name
+                 insert into tmp_place_name( key, type, nametype, lang, name, tr_lang, tr_name )
+                 select p.key, p.type, pn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
                    from mid_place_admin      as p
                    join mid_street_to_name  as pn
                      on p.key = pn.key and p.type = pn.type
@@ -52,8 +52,9 @@ class CPlace(entity.CEntity):
         self.db.createIndex( 'tmp_place_name', 'key' )
         
         sqlcmd = '''
-                 insert into tbl_city_name( level, area0, area1, area2, area3, type, lang, name )
-                 select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, pn.lang, pn.name
+                 insert into tbl_city_name( level, area0, area1, area2, area3, type, lang, name, tr_lang, tr_name )
+                 select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, 
+                        pn.lang, pn.name, pn.tr_lang, pn.tr_name
                    from tmp_place_area    as p
                    join tmp_place_name    as pn
                      on p.key = pn.key
@@ -61,21 +62,21 @@ class CPlace(entity.CEntity):
                  '''
         self.db.do_big_insert(sqlcmd)
         
-        sqlcmd = '''
-                 insert into tbl_place_full( key, type, lang, country, state, city, district )
-                 select a.key, a.type, n0.lang, n0.name, n1.name, n8.name, 
-                        COALESCE( n9.name, '' )
-                   from mid_place_admin  as a
-                   join tmp_place_name   as n0
-                     on a.a0 = n0.key
-                   join tmp_place_name   as n1
-                     on a.a1 = n1.key and n0.lang = n1.lang
-                   join tmp_place_name   as n8
-                     on a.a8 = n8.key and n0.lang = n8.lang
-              left join tmp_place_name   as n9
-                     on a.a9 = n9.key and n0.lang = n9.lang
-                   where a.a8 <> 0 or a.a9 <> 0
-                 '''
+#         sqlcmd = '''
+#                  insert into tbl_place_full( key, type, lang, country, state, city, district )
+#                  select a.key, a.type, n0.lang, n0.name, n1.name, n8.name, 
+#                         COALESCE( n9.name, '' )
+#                    from mid_place_admin  as a
+#                    join tmp_place_name   as n0
+#                      on a.a0 = n0.key
+#                    join tmp_place_name   as n1
+#                      on a.a1 = n1.key and n0.lang = n1.lang
+#                    join tmp_place_name   as n8
+#                      on a.a8 = n8.key and n0.lang = n8.lang
+#               left join tmp_place_name   as n9
+#                      on a.a9 = n9.key and n0.lang = n9.lang
+#                    where a.a8 <> 0 or a.a9 <> 0
+#                  '''
         #self.db.do_big_insert(sqlcmd)
         #self.db.createIndex( 'tbl_place_full', 'key' )
     

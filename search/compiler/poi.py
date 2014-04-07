@@ -71,13 +71,14 @@ class CPoi(entity.CEntity):
     def _do_poi_address(self):
         self.logger.info('  do poi address')
         sqlcmd = '''
-                 insert into tbl_poi_address( id, lang, street, hno )
-                 select p.id, '', 
-                        COALESCE(st.attr_value, ''), 
-                        COALESCE(hn.attr_value, '')
-                   from tmp_poi            as p
-              left join mid_poi_attr_value as st
-                     on p.key = st.key and st.attr_type = '6T'
+                 insert into tbl_poi_address( id, lang, street, tr_lang, tr_street, hno )
+                 select p.id, n.langcode, n.name, n.tr_lang, n.tr_name,   
+                        COALESCE( hn.attr_value, '')
+                   from tmp_poi             as p
+                   join mid_poi_to_name     as fn
+                     on p.key = fn.key
+                   join mid_poi_name        as n
+                     on fn.nameid = n.id and fn.nametype = '6T'
               left join mid_poi_attr_value as hn
                      on p.key = hn.key and hn.attr_type = '9H'
                   order by p.id
@@ -87,13 +88,13 @@ class CPoi(entity.CEntity):
     def _do_poi_name(self):
         self.logger.info('  do poi name')
         sqlcmd = '''
-                 insert into tbl_poi_name( id, type, lang, name )
-                 select p.id, fn.nametype, n.langcode, n.name
+                 insert into tbl_poi_name( id, type, lang, name, tr_lang, tr_name )
+                 select p.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
                    from tmp_poi             as p
-                   join mid_poi_to_name as fn
+                   join mid_poi_to_name     as fn
                      on p.key = fn.key
-                   join mid_poi_name            as n
-                     on fn.nameid = n.id
+                   join mid_poi_name        as n
+                     on fn.nameid = n.id and fn.nametype <> '6T'
                   order by p.id
                  '''
         self.db.do_big_insert(sqlcmd)

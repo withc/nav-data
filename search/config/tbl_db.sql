@@ -47,6 +47,7 @@ create table tbl_genre_info
     level      smallint     not null,
     imp        smallint     not null,
     name       varchar(128) not null
+    -- tr_name    varchar(128) not null
 );
 
 create table tbl_postcode_info
@@ -77,8 +78,10 @@ create table tbl_city_name
     area2  int          not null,
     area3  int          not null,
     type   char(2)      not null,
-    lang   char(3)      not null,
-    name   varchar(255) not null
+    lang     char(3)      not null,
+    name     varchar(128) not null,
+    tr_lang  char(3)      not null,
+    tr_name  varchar(128) not null
 );
 
 CREATE TABLE tbl_street_info
@@ -95,10 +98,12 @@ CREATE TABLE tbl_street_info
 
 create table tbl_street_name
 (
-    id     int          not null,
-    type   char(2)      not null,
-    lang   char(3)      not null,
-    name   varchar(255) not null
+    id       int          not null,
+    type     char(2)      not null,
+    lang     char(3)      not null,
+    name     varchar(128) not null,
+    tr_lang  char(3)      not null,
+    tr_name  varchar(128) not null
 );
 
 --
@@ -129,18 +134,22 @@ create table tbl_poi_info
 
 create table tbl_poi_address
 (
-    id      int          NOT NULL,
-    lang    char(3)      not null,
-    street  varchar(255) not null,
-    hno     varchar(32)  not null
+    id         int          NOT NULL,
+    lang       char(3)      not null,
+    street     varchar(128) not null,
+    tr_lang    char(3)      not null,
+    tr_street  varchar(128) not null,
+    hno        varchar(32)  not null
 );
 
 create table tbl_poi_name
 (
-    id      int          NOT NULL,
-    type    char(2)      not null,
-    lang    char(3)      not null,
-    name    varchar(255) not null
+    id        int          NOT NULL,
+    type      char(2)      not null,
+    lang      char(3)      not null,
+    name      varchar(128) not null,
+    tr_lang   char(3)      not null,
+    tr_name   varchar(128) not null
 );
 ---
 create table tbl_street_hno_range
@@ -207,7 +216,9 @@ create table tmp_place_name
     type     smallint     not null,
     nametype char(2)      not null,
     lang     char(3)      not null,
-    name     varchar(255) not null
+    name     varchar(128) not null,
+    tr_lang  char(3)      not null,
+    tr_name  varchar(128) not null
 );
 
 create table tmp_place_area
@@ -264,8 +275,8 @@ create table tmp_street_geom
 --
 create table tmp_feat_lowest_place
 (
-    key   bigint       not null,
-    type  smallint     not null,
+    key    bigint       not null,
+    type   smallint     not null,
     pkey   bigint       not null,
     ptype  smallint     not null
 );

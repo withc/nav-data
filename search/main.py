@@ -20,8 +20,8 @@ if __name__ == "__main__":
     
     logger.info( cfg.getDBPath() )
     logger.info( " ---- start load search data ---- " )
-    loader = load.load_base.CLoader( db_instance, cfg.getVendor() )
-    loader.load()
+    #loader = load.load_base.CLoader( db_instance, cfg.getVendor() )
+    #loader.load()
     
     logger.info( " ---- start check mid search data ---- " )
     checker = check.mid_check.CMid_check( db_instance )
