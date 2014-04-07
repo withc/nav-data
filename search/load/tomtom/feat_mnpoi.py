@@ -16,12 +16,14 @@ class CMNPoi(load.feature.CFeature):
     def _domake_feature(self):
         sqlcmd = '''
                     insert into mid_poi( key, type, gen_code, imp )
-                    select fe.feat_key, fe.feat_type, c.per_code, pi.import
-                      from org_mnpoi_pi  as pi
-                      join mid_feat_key  as fe
+                    select fe.feat_key, fe.feat_type, COALESCE( cc.per_code, c.per_code), pi.import
+                      from org_mnpoi_pi      as pi
+                      join mid_feat_key      as fe
                         on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
                       join temp_org_category as c
-                        on pi.subcat = c.org_code
+                        on pi.feattyp = c.org_code
+                 left join temp_org_category as cc
+                        on pi.subcat = cc.org_code
                  '''
         self.db.do_big_insert( sqlcmd )
     
