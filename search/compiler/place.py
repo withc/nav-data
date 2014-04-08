@@ -169,26 +169,17 @@ class CPlace(entity.CEntity):
         self.logger.info('  do feat to lowest place')
         sqlcmd = '''
                insert into tmp_feat_lowest_place( key, type, pkey, ptype )
-                 with ff ( fkey, ftype, tkey, ttype, a8 ) as 
-                 (
-                 select ff.fkey, ff.ftype, ff.tkey, ff.ttype, p.a8
+               select fkey, ftype, tkey, ttype 
+                from (
+                 select ff.fkey, ff.ftype, ff.tkey, ff.ttype, p.a8, 
+                        dense_rank() over ( partition by ff.fkey, p.a8 order by ff.ttype desc ) as seq
                    from mid_feature_to_feature  as ff
                    join mid_place_admin         as p
                      on ff.tkey  = p.key  and 
                         ff.code  = 7001   and 
                         ff.ttype in ( 3009, 3010 )
-                 )
-                 select ff.fkey, ff.ftype, ff.tkey, ff.ttype
-                   from ff
-                   join (
-                          select fkey, ftype, a8, max(ttype) as ttype
-                            from ff
-                           group by fkey, ftype, a8
-                         ) as t
-                      on ff.fkey  = t.fkey  and 
-                         ff.ftype = t.ftype and
-                         ff.a8    = t.a8    and
-                         ff.ttype = t.ttype
+                      ) as t 
+                  where seq = 1
                  '''
         self.db.do_big_insert(sqlcmd)
         self.db.createIndex( 'tmp_feat_lowest_place', 'key' )

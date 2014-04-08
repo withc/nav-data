@@ -28,7 +28,7 @@ class CPlace(load.feature.CFeature):
         # we could miss lots of points for place!!!!
         # get country, state point 
         sqlcmd = '''
-             insert into temp_feat_geom( key, type, code, geotype, geom )
+             insert into temp_street_geom( key, type, code, geotype, geom )
                with p ( a0, a1, a0_c, a1_c, geom )
                as (
                    select country_id, order1_id, 
@@ -51,7 +51,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # get a8 point
         sqlcmd = '''
-             insert into temp_feat_geom( key, type, code, geotype, geom )
+             insert into temp_street_geom( key, type, code, geotype, geom )
              select f.feat_key, f.feat_type, 7379, 'P', ST_GeometryFromText(l.location, 4326)
                from rdf_city_poi  as p
                join wkt_location  as l
@@ -62,7 +62,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # get a9 point
         sqlcmd = '''
-             insert into temp_feat_geom( key, type, code, geotype, geom )
+             insert into temp_street_geom( key, type, code, geotype, geom )
              select f.feat_key, f.feat_type, 7379, 'P', ST_GeometryFromText(l.location, 4326)
                from rdf_city_poi  as p
                join wkt_location  as l
@@ -145,13 +145,13 @@ class CPlace(load.feature.CFeature):
         
     def _update_geomtry(self):
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom )
+                 insert into temp_street_geom( key, type, code, geotype, geom )
                  select tp.key, tp.type, 7379, 'P', geom
                    from temp_place_point as tp
                    where not exists
                          (
                             select key 
-                              from temp_feat_geom
+                              from temp_street_geom
                               where key = tp.key and code = 7379
                          )
                  '''
@@ -159,7 +159,7 @@ class CPlace(load.feature.CFeature):
            
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_feat_name( key, type, nametype, langcode, name )
+                 insert into temp_street_name( key, type, nametype, langcode, name )
                  select p.key, p.type, 
                         case  
                           when ns.name_type = 'B' and ns.is_exonym = 'N' then 'ON'

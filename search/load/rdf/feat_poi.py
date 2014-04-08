@@ -31,7 +31,7 @@ class CPoi(load.feature.CFeature):
     def _domake_geomtry(self):
         # poi's point
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_poi_geom( key, type, code, geotype, geom )
                     select f.feat_key, f.feat_type, 7000, 'P', 
                            ST_SetSRID(st_makepoint( l.lon/100000.0, l.lat/100000.0 ), 4326)
                       from rdf_poi_address as p
@@ -45,7 +45,7 @@ class CPoi(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_feat_name( key, type, nametype, langcode, name )
+                 insert into temp_poi_name( key, type, nametype, langcode, name )
                  select f.feat_key, f.feat_type, 
                         case  
                              when p.name_type = 'B' and p.is_exonym = 'N' then 'ON'
@@ -57,6 +57,17 @@ class CPoi(load.feature.CFeature):
                      on p.poi_id = f.org_id1 and 1000 = f.org_id2
                    join rdf_poi_name  as n
                      on p.name_id = n.name_id
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        sqlcmd = '''
+                 insert into temp_poi_name( key, type, nametype, langcode, name )
+                 select f.feat_key, f.feat_type, '6T', 
+                        COALESCE( language_code, ''),
+                        COALESCE( street_name, actual_street_name)
+                   from rdf_poi_address as p
+                   join mid_feat_key    as f
+                     on p.poi_id = f.org_id1 and 1000 = f.org_id2
+                  where street_name is not null or actual_street_name is not null
                  '''
         self.db.do_big_insert( sqlcmd )
     
@@ -72,8 +83,6 @@ class CPoi(load.feature.CFeature):
                       join mid_feat_key    as f
                         on p.poi_id = f.org_id1 and 1000 = f.org_id2
                     )
-               select  key, type, '6T', street  from pa where street is not null
-                union
                select  key, type, '9H', number  from pa where number is not null
                 '''
         self.db.do_big_insert( sqlcmd )
@@ -139,5 +148,7 @@ class CPoi(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         
-        
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'poi' )
+        self._gen_geomid( 'poi' )
         

@@ -46,7 +46,7 @@ class CPostcode(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom )
+                 insert into temp_street_geom( key, type, code, geotype, geom )
                  select f.feat_key, f.feat_type, 7379, 'P', 
                         ST_SetSRID(st_makepoint( p.lon/100000.0, p.lat/100000.0 ), 4326)
                    from rdf_postal_code_midpoint as p
