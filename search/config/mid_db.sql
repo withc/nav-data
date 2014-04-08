@@ -103,7 +103,8 @@ create table mid_poi_category
     gen3       int          not null,
     level      smallint     not null,
     imp        smallint     not null,
-    name       varchar(128) not null
+    name       varchar(128) not null,
+    tr_name    varchar(128) not null default ''
 );
 
 -- poi
@@ -269,8 +270,8 @@ create table temp_street_name
     
     langcode  char(3)      not null,
     name      varchar(128) not null,
-    tr_lang   char(3)      default '',
-    tr_name   varchar(128) default ''
+    tr_lang   char(3)      not null default '',
+    tr_name   varchar(128) not null default ''
 );
 
 create table temp_street_name_gen_id
@@ -304,8 +305,8 @@ create table temp_poi_name
     
     langcode  char(3)      not null,
     name      varchar(128) not null,
-    tr_lang   char(3)      default '',
-    tr_name   varchar(128) default ''
+    tr_lang   char(3)      not null default '',
+    tr_name   varchar(128) not null default ''
 );
 
 create table temp_poi_name_gen_id

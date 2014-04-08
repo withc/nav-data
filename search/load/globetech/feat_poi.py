@@ -61,6 +61,15 @@ class CPoi(load.feature.CFeature):
                 select key, type, 'ON', 'THA', namt, 'ENG', name from pn
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+        sqlcmd = '''
+                insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+                select fe.feat_key, fe.feat_type, '6T', 'THA',p.location_t, 'ENG', p.location_e
+                  from org_landmark as p
+                  join mid_feat_key as fe
+                    on p.location_t is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
+                 '''
+        self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
         sqlcmd = '''
@@ -69,16 +78,6 @@ class CPoi(load.feature.CFeature):
                       from org_landmark as p
                       join mid_feat_key as fe
                         on p.tel is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
-                    union
-                    select fe.feat_key, fe.feat_type, '6T', p.location_t
-                      from org_landmark as p
-                      join mid_feat_key as fe
-                        on p.location_t is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
-                    union
-                    select fe.feat_key, fe.feat_type, '6T', p.location_e
-                      from org_landmark as p
-                      join mid_feat_key as fe
-                        on p.location_e is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
                     union
                     select fe.feat_key, fe.feat_type, '9H', p.hno
                       from org_landmark as p

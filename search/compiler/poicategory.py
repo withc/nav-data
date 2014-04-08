@@ -6,7 +6,7 @@ class CPoicategory(entity.CEntity):
           
     def _do(self):
         sqlcmd = '''
-                 insert into tbl_genre_info( u_code, gen1, gen2, gen3, level, imp, name)
+                 insert into tbl_genre_info( u_code, gen1, gen2, gen3, level, imp, name, tr_name )
                  select * 
                    from mid_poi_category
                  '''

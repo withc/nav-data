@@ -51,9 +51,13 @@ class CPlace(load.feature.CFeature):
                              select key, type, 7379, 'P',  ST_SetSRID(st_makepoint(100.5018272, 13.7541276), 4326)
                                from mid_place where type = 3001
                          ''' )
+        # there  are more then one point for some city, we just select the first one
         sqlcmd = '''
              insert into temp_street_geom( key, type, code, geotype, geom )
-                  select fe.feat_key, fe.feat_type, 7379, 'P', a.the_geom
+             select feat_key, feat_type, 7379, 'P', the_geom
+               from (
+                  select fe.feat_key, fe.feat_type,  a.the_geom,
+                         row_number() over (partition by fe.feat_key order by a.gid ) as seq
                     from org_admin_point as a
                     join temp_admincode  as ta
                       on a.type      = ta.type       and
@@ -62,6 +66,8 @@ class CPlace(load.feature.CFeature):
                          a.tam_code  = ta.tam_code
                     join mid_feat_key     as fe
                       on ta.org_id1 = fe.org_id1 and ta.org_id2 = fe.org_id2
+                      ) as t
+                 where seq = 1
                  ''' 
         self.db.do_big_insert( sqlcmd )
         
@@ -74,9 +80,11 @@ class CPlace(load.feature.CFeature):
                       ''' )
         
         sqlcmd = '''
-             insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
-                with ad ( key, type, namt, name )
-                as (select fe.feat_key, fe.feat_type,  a.namt, a.name
+              insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+              select feat_key, feat_type, case seq when 1 then 'ON' else 'AN' end, 'THA', namt, 'ENG', name 
+                from (
+                  select fe.feat_key, fe.feat_type,  a.namt, a.name,
+                         row_number() over (partition by fe.feat_key order by a.gid ) as seq
                     from org_admin_point as a
                     join temp_admincode  as ta
                       on a.type      = ta.type
@@ -85,13 +93,26 @@ class CPlace(load.feature.CFeature):
                      and a.tam_code  = ta.tam_code
                     join mid_feat_key     as fe
                       on ta.org_id1 = fe.org_id1 and ta.org_id2 = fe.org_id2
-                    )
-                  select key, type, 'ON', 'THA', namt, 'ENG', name from ad
+                    ) as t
                  '''
         self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
-        pass
+        sqlcmd = '''
+                 insert into mid_country_profile( iso, off_lang, key, type )
+                 select 'THA', 'THA', f.feat_key, f.feat_type
+                   from mid_feat_key as f
+                  where feat_type = 3001
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
+        sqlcmd = '''
+                 insert into mid_full_area( min_lon, min_lat, max_lon, max_lat )
+                 select st_xmin(geom)*100000, st_ymin(geom)*100000, 
+                        st_xmax(geom)*100000, st_ymax(geom)*100000
+                   from ( select ST_extent(the_geom) as geom from org_admin_poly ) as a
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
         # add the country admin by myself

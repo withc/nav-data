@@ -224,7 +224,7 @@ class CEndProcess(object):
         self.db.createIndex('mid_street_to_name',     'nameid' )
         self.db.createIndex('mid_street_to_geometry', 'key'    )
 
-        self.db.createIndex('mid_poi_name',        'name' )
+        #self.db.createIndex('mid_poi_name',        'name' )
         self.db.createIndex('mid_poi_to_name',     'key'    )
         self.db.createIndex('mid_poi_to_name',     'nameid' )
         self.db.createIndex('mid_poi_to_geometry', 'key'    )

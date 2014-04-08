@@ -46,8 +46,8 @@ create table tbl_genre_info
     gen3       int          not null,
     level      smallint     not null,
     imp        smallint     not null,
-    name       varchar(128) not null
-    -- tr_name    varchar(128) not null
+    name       varchar(128) not null,
+    tr_name    varchar(128) not null
 );
 
 create table tbl_postcode_info
