@@ -31,7 +31,15 @@ class CMid_check(object):
                 from mid_place               as p
            left join mid_street_to_geometry as g
                   on p.key = g.key and g.code = 7379
-               where g.key is null
+               where g.key is null 
+               order by case 
+                         when p.type = 3009 then 1
+                         when p.type = 3002 then 2
+                         when p.type = 3001 then 3
+                         when p.type = 3010 then 4
+                         when p.type = 3008 then 5
+                         else 6
+                        end
               '''
         rows = self.db.getOneResult(sql )
         if 0 != rows:

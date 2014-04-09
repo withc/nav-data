@@ -20,7 +20,7 @@ class CPoiCategory(load.feature.CFeature):
     def _domake_feature(self):
         sqlcmd = '''
                  insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name, tr_name)
-                 select per_code, gen1, gen2, gen3, level, imp, name, name2
+                 select per_code, gen1, gen2, gen3, level, imp, name2, name
                    from temp_org_category
                    order by level, case level 
                                       when 1 then  0
