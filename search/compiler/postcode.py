@@ -17,9 +17,9 @@ class CPostcode(entity.CEntity):
                           else srch_coord((st_y(g.geom)*100000)::int)
                         end
                    from mid_postcode             as p
-              left join mid_street_to_geometry  as fg
+              left join mid_street_to_geometry   as fg
                      on p.key = fg.key and fg.code = 7379
-              left join mid_street_geometry             as g
+              left join mid_street_geometry      as g
                      on fg.geomid = g.id
                  '''
         self.db.do_big_insert(sqlcmd)

@@ -36,7 +36,7 @@ class CPostcode(load.feature.CFeature):
     def _domake_geomtry(self):
         sqlcmd = '''
                  insert into temp_street_geom( key, type, code, geotype, geom )
-                 select f.feat_key, f.feat_type, 7379, 'P', p.the_geom
+                 select f.feat_key, f.feat_type, 7379, 'P', ST_Centroid(p.the_geom)
                    from org_postcode             as p
                    join temp_postcode            as t
                      on p.postcode = t.org_code

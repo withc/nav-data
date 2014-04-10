@@ -26,6 +26,7 @@ def featureFactory( name, loader ):
         loader.add_feature( load.globetech.feat_link.CLink( ) )
         
         loader.add_feature( load.globetech.feat_poi.CPoi( ) )
+        loader.add_feature( load.globetech.feat_housenumber.CHouseNumber())
          
     elif name == 'rdf':
         import load.rdf
