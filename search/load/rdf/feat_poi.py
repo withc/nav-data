@@ -1,4 +1,5 @@
 import load.feature
+import attribute_sql
 
 class CPoi(load.feature.CFeature):
     def __init__(self ):
@@ -45,19 +46,19 @@ class CPoi(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_poi_name( key, type, nametype, langcode, name )
+                 insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                  select f.feat_key, f.feat_type, 
                         case  
                              when p.name_type = 'B' and p.is_exonym = 'N' then 'ON'
                              else 'AN'
                            end,
-                        n.language_code,n.name
+                        n.language_code,n.name,
+                        COALESCE(tr.transliteration_type, ''),   COALESCE( tr.name,''),
+                        COALESCE(ph.phonetic_language_code, ''), COALESCE( ph.phonetic_string, '') 
                    from rdf_poi_names as p
                    join mid_feat_key  as f
                      on p.poi_id = f.org_id1 and 1000 = f.org_id2
-                   join rdf_poi_name  as n
-                     on p.name_id = n.name_id
-                 '''
+                 ''' + attribute_sql.sql_all_name( 'p','name_id', 'poi' )
         self.db.do_big_insert( sqlcmd )
         
     
@@ -68,7 +69,7 @@ class CPoi(load.feature.CFeature):
                         COALESCE( language_code, ''),
                         COALESCE( street_name, actual_street_name),
                         '','',
-                        COALESCE(house_number, actual_house_number )
+                        COALESCE(house_number, actual_house_number, '' )
                    from rdf_poi_address as p
                    join mid_feat_key    as f
                      on p.poi_id = f.org_id1 and 1000 = f.org_id2

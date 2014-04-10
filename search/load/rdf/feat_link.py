@@ -1,4 +1,5 @@
 import load.feature
+import attribute_sql
 
 class CLink(load.feature.CFeature):
     def __init__(self ):
@@ -42,20 +43,21 @@ class CLink(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                    insert into temp_street_name( key, type, nametype, langcode, name )
+                    insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                     select f.feat_key, f.feat_type, 
                            case 
                              when n.route_type is not null then 'RN'
                              when n.name_type = 'B' and n.is_exonym = 'N' then 'ON'
                              else 'AN'
                            end,
-                           n.language_code,n.street_name 
+                           n.language_code,n.street_name,
+                           COALESCE(tr.transliteration_type, ''),   COALESCE( tr.name,''),
+                           COALESCE(ph.phonetic_language_code, ''), COALESCE( ph.phonetic_string, '') 
                     from rdf_road_link  as r
                     join mid_feat_key   as f
                       on r.link_id = f.org_id1 and f.org_id2 = 2000
-                    join rdf_road_name  as n
-                      on r.road_name_id = n.road_name_id
-                 '''
+                 ''' + attribute_sql.sql_all_name( 'r','road_name_id', 'road' )
+                 
         self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):

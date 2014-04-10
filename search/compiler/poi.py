@@ -16,7 +16,7 @@ class CPoi(entity.CEntity):
         self.logger.info('  do gen id')
         sqlcmd = '''
                  insert into tmp_poi( key, type, id)
-                 select p.key, p.type, row_number() over (order by pa.area0, pa.area1, p.key )
+                 select p.key, p.type, row_number() over ( order by pa.area0, pa.area1, p.key )
                    from mid_poi               as p
                    join mid_feature_to_feature as lp
                      on p.key = lp.fkey and lp.code = 7001

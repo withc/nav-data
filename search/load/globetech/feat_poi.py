@@ -63,10 +63,11 @@ class CPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
     def _domake_attribute(self):
-        
+        # org_landmark have same poi but set different poi name,
+        # about other attribute, we must distinct the record.
         sqlcmd = '''
                 insert into mid_poi_address( key, type, lang, name, tr_lang, tr_name, hno )
-                select fe.feat_key, fe.feat_type, 'THA',p.location_t, 'ENG', p.location_e,
+                select distinct fe.feat_key, fe.feat_type, 'THA', p.location_t, 'ENG', p.location_e,
                        COALESCE(p.hno,'')
                   from org_landmark as p
                   join mid_feat_key as fe

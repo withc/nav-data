@@ -167,14 +167,14 @@ class CPlace(load.feature.CFeature):
                           else 'AN'
                         end,
                         n.language_code, n.name,
-                        COALESCE(tr.transliteration_type, '' ),   COALESCE( tr.name,''),
-                        COALESCE(ph.phonetic_language_code, '' ), COALESCE( ph.phonetic_string, '' )
+                        COALESCE(tr.transliteration_type, ''),   COALESCE( tr.name,''),
+                        COALESCE(ph.phonetic_language_code, ''), COALESCE( ph.phonetic_string, '')
                    from mid_place               as p
                    join mid_feat_key            as f
                      on p.key = f.feat_key and p.type = f.feat_type
                    join rdf_feature_names       as ns
                      on f.org_id1  = ns.feature_id
-                ''' + attribute_sql.sql_all_name( 'ns', 'feature' )
+                ''' + attribute_sql.sql_all_name( 'ns', 'name_id', 'feature' )
 
         self.db.do_big_insert( sqlcmd )
     
