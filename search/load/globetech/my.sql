@@ -40,5 +40,5 @@ create table temp_org_category
     name       varchar(128) not null,
     imp        smallint     not null,
     org_code   bigint       not null,
-    name2      varchar(128) not null
+    tr_name    varchar(128) not null
 );

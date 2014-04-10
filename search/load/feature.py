@@ -60,6 +60,20 @@ class CFeature(object):
     def _domake_relation(self):
         pass
     
+    def _domake_common_category(self):
+        sqlcmd = '''
+                 insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name, tr_name)
+                 select per_code, gen1, gen2, gen3, level, imp, name, tr_name
+                   from temp_org_category
+                   order by level, case level 
+                                      when 1 then  0
+                                      when 2 then  gen1
+                                      else   (gen1<<8) + gen2
+                                    end,
+                              name
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
     def _gen_nameid( self, feat = None ):
         if not feat:
             return 0
