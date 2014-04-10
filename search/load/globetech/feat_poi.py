@@ -62,27 +62,24 @@ class CPoi(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         
+    def _domake_attribute(self):
+        
         sqlcmd = '''
-                insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name )
-                select fe.feat_key, fe.feat_type, '6T', 'THA',p.location_t, 'ENG', p.location_e
+                insert into mid_poi_address( key, type, lang, name, tr_lang, tr_name, hno )
+                select fe.feat_key, fe.feat_type, 'THA',p.location_t, 'ENG', p.location_e,
+                       COALESCE(p.hno,'')
                   from org_landmark as p
                   join mid_feat_key as fe
                     on p.location_t is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
                  '''
         self.db.do_big_insert( sqlcmd )
-    
-    def _domake_attribute(self):
+        
         sqlcmd = '''
                     insert into mid_poi_attr_value( key, type, attr_type, attr_value )
                     select fe.feat_key, fe.feat_type, 'TL', p.tel
                       from org_landmark as p
                       join mid_feat_key as fe
                         on p.tel is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
-                    union
-                    select fe.feat_key, fe.feat_type, '9H', p.hno
-                      from org_landmark as p
-                      join mid_feat_key as fe
-                        on p.hno is not null and p.objectid = fe.org_id1 and fe.org_id2 = 1000
                 '''
         self.db.do_big_insert( sqlcmd )
         

@@ -59,32 +59,21 @@ class CPoi(load.feature.CFeature):
                      on p.name_id = n.name_id
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+    
+    def _domake_attribute(self):
         sqlcmd = '''
-                 insert into temp_poi_name( key, type, nametype, langcode, name )
-                 select f.feat_key, f.feat_type, '6T', 
+                 insert into mid_poi_address( key, type, lang, name, tr_lang, tr_name, hno )
+                 select f.feat_key, f.feat_type,
                         COALESCE( language_code, ''),
-                        COALESCE( street_name, actual_street_name)
+                        COALESCE( street_name, actual_street_name),
+                        '','',
+                        COALESCE(house_number, actual_house_number )
                    from rdf_poi_address as p
                    join mid_feat_key    as f
                      on p.poi_id = f.org_id1 and 1000 = f.org_id2
                   where street_name is not null or actual_street_name is not null
                  '''
-        self.db.do_big_insert( sqlcmd )
-    
-    def _domake_attribute(self):
-        sqlcmd = '''
-              insert into mid_poi_attr_value( key, type, attr_type, attr_value )
-                with pa ( key, type, number, street )
-                as (
-                    select f.feat_key, f.feat_type, 
-                           COALESCE(house_number, actual_house_number ),
-                           COALESCE(street_name, actual_street_name)
-                      from rdf_poi_address as p
-                      join mid_feat_key    as f
-                        on p.poi_id = f.org_id1 and 1000 = f.org_id2
-                    )
-               select  key, type, '9H', number  from pa where number is not null
-                '''
         self.db.do_big_insert( sqlcmd )
         
         sqlcmd = '''

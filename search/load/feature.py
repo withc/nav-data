@@ -150,69 +150,7 @@ class CEndProcess(object):
         self.name = vendor
     def do(self):
         self._create_index()
-        
-    def _gen_nameid(self):
-        self.logger.info('generate name id') 
-        sqlcmd = '''
-                   insert into temp_feat_name_gen_id( gid, nameid )
-                   select gid, dense_rank() over (order by  langcode, name, tr_lang, tr_name ) 
-                     from temp_feat_name
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        
-        sqlcmd = '''
-                   insert into mid_name( id, langcode, name, tr_lang, tr_name )
-                   select distinct nameid, langcode, name, tr_lang, tr_name
-                     from temp_feat_name         as n
-                     join temp_feat_name_gen_id  as g
-                       on n.gid = g.gid
-                     order by nameid
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        
-        sqlcmd = '''
-                   insert into mid_feature_to_name( key, type, nametype, nameid)
-                   select distinct key, type, nametype, nameid
-                     from temp_feat_name         as n
-                     join temp_feat_name_gen_id  as g
-                       on n.gid = g.gid
-                     order by key
-                 '''
-        self.db.do_big_insert( sqlcmd )
-    
-    def _gen_geomid(self):
-        self.logger.info('generate geometry id')
-        sqlcmd = '''
-                   insert into temp_feat_geom_gen_id( gid, geomid )
-                   select gid, dense_rank() over (order by geotype, geom ) 
-                     from temp_feat_geom
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        
-        # when geom is so close,the geomid will be same, so ,we need select only one geom in that case.
-        sqlcmd = '''
-                   insert into mid_geometry( id, type, geom)
-                   select geomid, geotype, geom
-                     from (
-                           select geomid, geotype, geom, row_number() over ( partition by geomid ) as seq
-                             from temp_feat_geom         as e
-                             join temp_feat_geom_gen_id  as g
-                               on e.gid = g.gid
-                          ) as t
-                     where seq = 1
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        
-        sqlcmd = '''
-                   insert into mid_feature_to_geometry( key, type, code, geomid)
-                   select key, type, code, geomid
-                     from temp_feat_geom         as e
-                     join temp_feat_geom_gen_id  as g
-                       on e.gid = g.gid
-                    order by key
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        
+
     def _create_index(self):
         self.logger.info('create index for mid table')
         self.db.createIndex('mid_poi_attr_value',      'key'    )

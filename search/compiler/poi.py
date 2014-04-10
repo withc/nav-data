@@ -72,15 +72,10 @@ class CPoi(entity.CEntity):
         self.logger.info('  do poi address')
         sqlcmd = '''
                  insert into tbl_poi_address( id, lang, street, tr_lang, tr_street, hno )
-                 select p.id, n.langcode, n.name, n.tr_lang, n.tr_name,   
-                        COALESCE( hn.attr_value, '')
+                 select p.id, pa.lang, pa.name, pa.tr_lang, pa.tr_name, pa.hno  
                    from tmp_poi             as p
-                   join mid_poi_to_name     as fn
-                     on p.key = fn.key
-                   join mid_poi_name        as n
-                     on fn.nameid = n.id and fn.nametype = '6T'
-              left join mid_poi_attr_value as hn
-                     on p.key = hn.key and hn.attr_type = '9H'
+                   join mid_poi_address     as pa
+                     on p.key = pa.key
                   order by p.id
                  ''' 
         self.db.do_big_insert(sqlcmd)

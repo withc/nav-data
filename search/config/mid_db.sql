@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS mid_postcode         CASCADE;
 
 DROP TABLE IF EXISTS mid_poi             CASCADE;
 DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
+DROP TABLE IF EXISTS mid_poi_address     CASCADE;
 DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
@@ -122,6 +123,17 @@ create table mid_poi_attr_value
     type        smallint     not null,
     attr_type   char(2)      not null,
     attr_value  varchar(255) not null
+);
+
+create table mid_poi_address
+(
+    key         bigint       not null,
+    type        smallint     not null,
+    lang        char(3)      not null,
+    name        varchar(128) not null,
+    tr_lang     char(3)      not null,
+    tr_name     varchar(128) not null,
+    hno         varchar(32)  not null     
 );
 
 create table mid_poi_children
@@ -271,7 +283,9 @@ create table temp_street_name
     langcode  char(3)      not null,
     name      varchar(128) not null,
     tr_lang   char(3)      not null default '',
-    tr_name   varchar(128) not null default ''
+    tr_name   varchar(128) not null default '',
+    ph_lang   char(3)      not null default '',
+    ph_name   varchar(128) not null default ''
 );
 
 create table temp_street_name_gen_id
@@ -306,7 +320,9 @@ create table temp_poi_name
     langcode  char(3)      not null,
     name      varchar(128) not null,
     tr_lang   char(3)      not null default '',
-    tr_name   varchar(128) not null default ''
+    tr_name   varchar(128) not null default '',
+    ph_lang   char(3)      not null default '',
+    ph_name   varchar(128) not null default ''
 );
 
 create table temp_poi_name_gen_id

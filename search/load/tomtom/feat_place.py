@@ -89,10 +89,31 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         sqlcmd = '''
                     insert into temp_street_name( key, type, nametype, langcode, name )
-                    select fe.feat_key, fe.feat_type, an.nametyp, an.namelc, an.name
+                    select distinct fe.feat_key, fe.feat_type, 
+                           case 
+                             when an.nametyp='ON' and an.namelc = o.namelc  then 'ON'
+                             when an.nametyp='ON' and an.namelc <> o.namelc then 'AN'
+                             else an.nametyp
+                           end, 
+                           an.namelc, an.name
                       from org_an       as an
                       join mid_feat_key as fe
                         on an.id = fe.org_id1 and an.feattyp = fe.org_id2
+                      join (
+                             select id, feattyp, namelc from org_a0
+                             union
+                             select id, feattyp, namelc from org_a1
+                             union
+                             select id, feattyp, namelc from org_a2
+                             union
+                             select id, feattyp, namelc from org_a7
+                             union
+                             select id, feattyp, namelc from org_a8
+                             union
+                             select id, feattyp, namelc from org_a9
+                           ) as o
+                         on an.id = o.id and an.feattyp = o.feattyp
+                      order by fe.feat_key
                  '''
         self.db.do_big_insert( sqlcmd )
         

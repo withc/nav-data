@@ -1,4 +1,5 @@
 import load.feature
+import attribute_sql
 
 class CPlace(load.feature.CFeature):
     def __init__(self ):
@@ -159,21 +160,22 @@ class CPlace(load.feature.CFeature):
            
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_street_name( key, type, nametype, langcode, name )
+                 insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                  select p.key, p.type, 
                         case  
                           when ns.name_type = 'B' and ns.is_exonym = 'N' then 'ON'
                           else 'AN'
                         end,
-                        m.language_code, m.name
-                   from mid_place         as p
-                   join mid_feat_key      as f
+                        n.language_code, n.name,
+                        COALESCE(tr.transliteration_type, '' ),   COALESCE( tr.name,''),
+                        COALESCE(ph.phonetic_language_code, '' ), COALESCE( ph.phonetic_string, '' )
+                   from mid_place               as p
+                   join mid_feat_key            as f
                      on p.key = f.feat_key and p.type = f.feat_type
-                   join rdf_feature_names as ns
+                   join rdf_feature_names       as ns
                      on f.org_id1  = ns.feature_id
-                   join rdf_feature_name as m
-                     on ns.name_id = m.name_id
-                 '''
+                ''' + attribute_sql.sql_all_name( 'ns', 'feature' )
+
         self.db.do_big_insert( sqlcmd )
     
     def _domake_attribute(self):
