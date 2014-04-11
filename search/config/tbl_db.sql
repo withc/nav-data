@@ -28,6 +28,8 @@ DROP TABLE IF EXISTS tmp_street_geom         CASCADE;
 DROP TABLE IF EXISTS tmp_street_hno_id       CASCADE;
 DROP TABLE IF EXISTS tmp_feat_lowest_place   CASCADE;
 
+DROP TABLE IF EXISTS tmp_org_to_many_rdb_link CASCADE;
+
 CREATE TABLE tbl_search_meta
 (
     base_lon int  NOT NULL,
@@ -271,6 +273,18 @@ create table tmp_street_geom
 (
        id    int not null,
        geom  geometry not null
+);
+
+create table tmp_org_to_many_rdb_link
+(
+       org_link_id  bigint           NOT NULL,
+       s_org        double precision not null,
+       e_org        double precision not null,
+       rdb_link_id  bigint           NOT NULL,
+       s_rdb        double precision not null,
+       e_rdb        double precision not null,
+       flag         boolean          not null,
+       seq          int              not null
 );
 --
 create table tmp_feat_lowest_place

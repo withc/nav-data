@@ -5,20 +5,10 @@ class CLink(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'link')
  
     def _domake_key(self):
-        #filter some link, it is so big.
-        #we just store the link which refer to poi or has name.
         sqlcmd = '''
                  insert into mid_feat_key( feat_type, org_id1, org_id2 )
                  select 2000, nw.id, nw.feattyp
                    from org_city_nw_gc_polyline as nw
-              left join ( select distinct edge_id 
-                          from org_poi_point  ) as p
-                     on nw.id = p.edge_id
-                  where p.edge_id   is not null  or
-                        nw.name     is not null  or
-                        nw.pop_name is not null  or
-                        nw.alt_name is not null  or
-                        nw.routenum is not null
                  '''
         self.db.do_big_insert( sqlcmd )
         
