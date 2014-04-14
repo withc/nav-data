@@ -158,6 +158,8 @@ class CStartProcess(object):
         self.logger.info('create mid table and function') 
         self.db.run( r'.\config\mid_db.sql' )
         self.db.run( r'.\load\%s\my.sql' % self.name )
+        self.logger.info('do some start work') 
+        self._do_my()
 
 class CEndProcess(object):
     

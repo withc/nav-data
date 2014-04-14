@@ -5,7 +5,7 @@ def featureFactory( name, loader ):
     
     if name == 'tomtom':
         import load.tomtom
-        loader.add_process( load.feature.CStartProcess() )
+        loader.add_process( load.tomtom.start_work.CStartWork() )
         loader.add_process( load.feature.CEndProcess() )
         loader.add_feature( load.tomtom.feat_category.CPoiCategory() )
         loader.add_feature( load.tomtom.feat_place.CPlace( ) )

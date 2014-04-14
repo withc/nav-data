@@ -79,11 +79,13 @@ create table tbl_city_name
     area1  int          not null,
     area2  int          not null,
     area3  int          not null,
-    type   char(2)      not null,
+    type     char(2)      not null,
     lang     char(3)      not null,
     name     varchar(128) not null,
     tr_lang  char(3)      not null,
-    tr_name  varchar(128) not null
+    tr_name  varchar(128) not null,
+    ph_lang  char(3)      not null,
+    ph_name  varchar(128) not null
 );
 
 CREATE TABLE tbl_street_info

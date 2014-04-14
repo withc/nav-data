@@ -88,14 +88,23 @@ class CPlace(load.feature.CFeature):
           
     def _domake_name(self):
         sqlcmd = '''
-                    insert into temp_street_name( key, type, nametype, langcode, name )
-                    select distinct fe.feat_key, fe.feat_type, 
+                    insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                    select feat_key, feat_type, nametype, namelc, name, '', '', ph_lang, ph_name
+                      from (
+                    select fe.feat_key, fe.feat_type, 
                            case 
                              when an.nametyp='ON' and an.namelc = o.namelc  then 'ON'
                              when an.nametyp='ON' and an.namelc <> o.namelc then 'AN'
                              else an.nametyp
-                           end, 
-                           an.namelc, an.name
+                           end as nametype, 
+                           an.namelc, an.name, ph.ph_lang, ph.ph_name, 
+                           row_number() over (partition by fe.feat_key, fe.feat_type, an.namelc, an.name 
+                                              order by case 
+                                                         when an.namelc = ph.ph_lang then 1
+                                                         when o.namelc  = ph.ph_lang then 2
+                                                         else 3
+                                                       end, ph.ph_name
+                                              ) as seq
                       from org_an       as an
                       join mid_feat_key as fe
                         on an.id = fe.org_id1 and an.feattyp = fe.org_id2
@@ -113,7 +122,14 @@ class CPlace(load.feature.CFeature):
                              select id, feattyp, namelc from org_a9
                            ) as o
                          on an.id = o.id and an.feattyp = o.feattyp
-                      order by fe.feat_key
+                       join temp_phoneme as ph
+                         on an.feattyp = ph.featclass  and
+                            an.id      = ph.shapeid    and
+                            an.namelc  = ph.lang       and
+                            an.name    = ph.name
+                        ) as t 
+                      where t.seq = 1  
+                      order by feat_key
                  '''
         self.db.do_big_insert( sqlcmd )
         
