@@ -202,7 +202,9 @@ create table mid_street_name
     langcode  char(3)      not null,
     name      varchar(128) not null,
     tr_lang   char(3)      not null,
-    tr_name   varchar(128) not null  
+    tr_name   varchar(128) not null,
+    ph_lang   char(3)      not null,
+    ph_name   varchar(128) not null
 );
 
 create table mid_poi_name
@@ -211,7 +213,9 @@ create table mid_poi_name
     langcode  char(3)      not null,
     name      varchar(128) not null,
     tr_lang   char(3)      not null,
-    tr_name   varchar(128) not null  
+    tr_name   varchar(128) not null,
+    ph_lang   char(3)      not null,
+    ph_name   varchar(128) not null  
 );
 
 -- geometry

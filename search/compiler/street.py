@@ -30,8 +30,8 @@ class CLink(entity.CEntity):
     def _do_street_name(self):
         self.logger.info('  do name')
         sqlcmd = '''
-                 insert into tbl_street_name( id, type, lang, name, tr_lang, tr_name )
-                 select distinct s.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
+                 insert into tbl_street_name( id, type, lang, name, tr_lang, tr_name, ph_lang, ph_name )
+                 select distinct s.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name, n.ph_lang, n.ph_name
                    from tmp_street           as s
                    join mid_street_to_name   as fn
                      on s.key = fn.key and s.nameid = fn.nameid

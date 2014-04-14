@@ -50,9 +50,9 @@ class CVoiceData(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
         
         sqlcmd = '''
-                 insert into voice_poi( country_id, state_id, poi_id, gen_code, country, state, city, district, poi_name, poi_phonetic )
+                 insert into voice_poi( country_id, state_id, poi_id, gen_code, country, state, city, district, poi_lang, poi_name, poi_phonetic )
                  select p.area0, p.area1, p.id, (p.gen1<<24)+(p.gen2<<16)+p.gen3,
-                        t.country, t.state, t.city, t.district, pn.name, ''
+                        t.country, t.state, t.city, t.district, pn.lang, pn.name, pn.ph_name
                    from tbl_poi_info         as p
                    join tbl_poi_name         as pn
                      on p.id = pn.id
@@ -65,10 +65,10 @@ class CVoiceData(entity.CEntity):
         self.db.do_big_insert(sqlcmd)
         
         sqlcmd = '''
-                 insert into voice_street( country_id, state_id, country, state, city, district, name_type, street_name, street_phonetic )
+                 insert into voice_street( country_id, state_id, country, state, city, district, name_type, street_lang, street_name, street_phonetic )
                  select s.area0, s.area1,
                         t.country, t.state, t.city, t.district, 
-                        n.type, n.name, ''
+                        n.type, n.lang, n.name, n.ph_name
                    from tbl_street_info as s
                    join tbl_street_name as n
                      on s.id = n.id
@@ -82,15 +82,15 @@ class CVoiceData(entity.CEntity):
         
         sqlcmd = '''
               insert into voice_street_hno_rang( country_id, state_id, country, state, city, district, 
-                                                 name_type, street_name, street_phonetic,
+                                                 name_type, street_lang, street_name, street_phonetic,
                                                  scheme, f_hno, l_hno )
               select area0, area1, country, state, city, district,
-                     type, name, phonetic, scheme,
+                     type, lang, name, ph_name, scheme,
                      CASE when f < l then f_hno else l_hno END,
                      CASE when f < l then l_hno else f_hno END 
                from (
                  select s.area0, s.area1, t.country, t.state, t.city, t.district, 
-                        n.type, n.name, '' as phonetic, h.scheme, h.f_hno, h.l_hno,
+                        n.type, n.lang, n.name, n.ph_name, h.scheme, h.f_hno, h.l_hno,
                         srch_hno_num(h.f_hno) as f, srch_hno_num(h.l_hno) as l
                    from tbl_street_hno_range as h
                    join tbl_street_info      as s
@@ -108,9 +108,9 @@ class CVoiceData(entity.CEntity):
         
         sqlcmd = '''
                   insert into voice_street_hno_point( country_id, state_id, country, state, city, district, 
-                                                    name_type, street_name, street_phonetic, hno )
+                                                    name_type, street_lang, street_name, street_phonetic, hno )
                  select s.area0, s.area1, t.country, t.state, t.city, t.district, 
-                        n.type, n.name, '', h.hno
+                        n.type, n.lang, n.name, n.ph_name, h.hno
                    from tbl_street_hno_point as h
                    join tbl_street_info      as s
                      on h.id = s.id

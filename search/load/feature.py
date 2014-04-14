@@ -87,12 +87,17 @@ class CFeature(object):
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
         sqlcmd = '''
-                   insert into mid_<f>_name( id, langcode, name, tr_lang, tr_name )
-                   select distinct nameid, langcode, name, tr_lang, tr_name
+                   insert into mid_<f>_name( id, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                   select nameid, langcode, name, tr_lang, tr_name, ph_lang, ph_name
+                     from (
+                   select nameid, langcode, name, tr_lang, tr_name, ph_lang, ph_name,
+                          row_number() over (partition by nameid order by ph_name desc ) as seq
                      from temp_<f>_name         as n
                      join temp_<f>_name_gen_id  as g
                        on n.gid = g.gid
-                     order by nameid
+                          ) as t
+                    where seq = 1
+                    order by nameid
                  ''' 
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
@@ -102,7 +107,7 @@ class CFeature(object):
                      from temp_<f>_name         as n
                      join temp_<f>_name_gen_id  as g
                        on n.gid = g.gid
-                     order by key
+                    order by key
                  '''
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
     

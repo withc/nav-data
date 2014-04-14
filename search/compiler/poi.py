@@ -83,8 +83,8 @@ class CPoi(entity.CEntity):
     def _do_poi_name(self):
         self.logger.info('  do poi name')
         sqlcmd = '''
-                 insert into tbl_poi_name( id, type, lang, name, tr_lang, tr_name )
-                 select p.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
+                 insert into tbl_poi_name( id, type, lang, name, tr_lang, tr_name, ph_lang, ph_name)
+                 select p.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name, n.ph_lang, n.ph_name
                    from tmp_poi             as p
                    join mid_poi_to_name     as fn
                      on p.key = fn.key

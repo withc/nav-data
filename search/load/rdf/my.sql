@@ -12,7 +12,8 @@ create table temp_org_category
     level      smallint     not null,
     name       varchar(128) not null,
     imp        smallint     not null,
-    org_code   bigint       not null
+    org_code   bigint       not null,
+    tr_name    varchar(128) not null default ''
 );
 
 create table temp_road_link

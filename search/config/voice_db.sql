@@ -30,6 +30,7 @@ create table voice_poi
    state        varchar(255),
    city         varchar(255),
    district     varchar(255),
+   poi_lang     char(3),
    poi_name     varchar(255),
    poi_phonetic varchar(255)
 );
@@ -50,8 +51,9 @@ create table voice_street
    state        varchar(255),
    city         varchar(255),
    district     varchar(255),
-   name_type    char(2),
-   street_name  varchar(255),
+   name_type       char(2),
+   street_lang     char(3),
+   street_name     varchar(255),
    street_phonetic varchar(255)
 );
 
@@ -64,6 +66,7 @@ create table voice_street_hno_rang
    city         varchar(255),
    district     varchar(255),
    name_type       char(2),
+   street_lang     char(3),
    street_name     varchar(255),
    street_phonetic varchar(255),
    
@@ -80,7 +83,8 @@ create table voice_street_hno_point
    state        varchar(255),
    city         varchar(255),
    district     varchar(255),
-   name_type    char(2),
+   name_type       char(2),
+   street_lang     char(3),
    street_name     varchar(255),
    street_phonetic varchar(255),
    hno             varchar(128)
