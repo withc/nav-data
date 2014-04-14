@@ -26,6 +26,13 @@ class CDB(object):
         self.cur = self.conn.cursor()
         self.connected = True
         
+    def fetchone(self):
+        '''读一条记录'''
+        return self.cur.fetchone()  
+     
+    def fetchall(self):
+        return self.cur.fetchall()
+     
     def do_big_insert(self, sqlcmd ): 
         self.execute( sqlcmd )
         m=re.match( '\s*?(insert)\s+?(into)\s+?(.*?)\s*?\(', sqlcmd,  re.IGNORECASE )

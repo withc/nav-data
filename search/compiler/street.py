@@ -33,9 +33,9 @@ class CLink(entity.CEntity):
                  insert into tbl_street_name( id, type, lang, name, tr_lang, tr_name )
                  select distinct s.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
                    from tmp_street           as s
-                   join mid_street_to_name  as fn
+                   join mid_street_to_name   as fn
                      on s.key = fn.key and s.nameid = fn.nameid
-                   join mid_street_name             as n
+                   join mid_street_name      as n
                      on fn.nameid = n.id
                   order by s.id
                  '''

@@ -156,3 +156,67 @@ begin
     return numstr;    
 end;
 $BODY$ language 'plpgsql';
+
+CREATE OR REPLACE FUNCTION srch_s_e_num( scheme char, s_num double precision, e_num double precision, is_s bool )
+  RETURNS  integer 
+  LANGUAGE plpgsql 
+  AS $$
+DECLARE
+   s   integer;
+   e   integer;
+
+BEGIN
+    
+    if s_num < e_num then
+        s = ceil(s_num);
+        e = floor(e_num);
+        if scheme = 'O' then
+           if s%2 = 0 then
+              s = s+1;
+           end if;
+           if e%2 = 0 then
+              e = e-1;
+           end if;
+        elsif scheme = 'E' then
+           if s%2 = 1 then
+              s = s+1;
+           end if;
+           if e%2 = 1 then
+              e = e-1;
+           end if;
+        end if; 
+        if s > e then
+           s = -1;
+           e = -1;
+        end if;
+    else
+        s = floor(s_num);
+        e = ceil(e_num);
+        if scheme = 'O' then
+           if s%2 = 0 then
+              s = s-1;
+           end if;
+           if e%2 = 0 then
+              e = e+1;
+           end if;
+        elsif scheme = 'E' then
+           if s%2 = 1 then
+              s = s-1;
+           end if;
+           if e%2 = 1 then
+              e = e+1;
+           end if;
+        end if ;
+        if s < e then
+           s = -1;
+           e = -1;
+        end if;
+    end if;
+    
+    if is_s then
+        return s;
+    else 
+        return e;
+    end if;
+END;
+$$;
