@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS mid_place            CASCADE;
 DROP TABLE IF EXISTS mid_place_admin      CASCADE;
 DROP TABLE IF EXISTS mid_postcode         CASCADE;
 
+DROP TABLE IF EXISTS temp_org_category   CASCADE;
 DROP TABLE IF EXISTS mid_poi             CASCADE;
 DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
 DROP TABLE IF EXISTS mid_poi_address     CASCADE;
@@ -350,6 +351,20 @@ create table temp_poi_geom_gen_id
     gid      int      not null,
     geomid   int      not null
 );
+
+create table temp_org_category
+(
+    per_code   bigint       not null,
+    gen1       int          not null,
+    gen2       int          not null,
+    gen3       int          not null,
+    level      smallint     not null,
+    name       varchar(128) not null,
+    imp        smallint     not null,
+    org_code   bigint       not null,
+    tr_name    varchar(128) not null default ''
+);
+
 --
 create table temp_postcode
 (
