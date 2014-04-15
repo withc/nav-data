@@ -13,11 +13,12 @@ class CHouseNumber(entity.CEntity):
         
     def _do_tmp(self):
         self.logger.info('  do hno temp table')
+        # get from link + street name
         sqlcmd = '''
                  insert into tmp_street_hno_id( id, org_link_id, mid_id)
                  select s.id, k.org_id1, m.id
-                   from mid_house_number_road as m
-                   join mid_street_name              as n
+                   from mid_link_road         as m
+                   join mid_street_name       as n
                      on m.langcode = n.langcode and m.name = n.name
                    join tmp_street            as s
                      on m.key = s.key     and
@@ -28,14 +29,28 @@ class CHouseNumber(entity.CEntity):
                  '''
         self.db.do_big_insert(sqlcmd)
         
+        # get from place + street name
+        sqlcmd = '''
+                 insert into tmp_street_hno_id( id, org_link_id, mid_id)
+                 select distinct s.id, 0, m.id
+                   from mid_place_road        as m
+                   join mid_street_name       as n
+                     on (m.lang = n.langcode and m.name = n.name) or (m.lang = n.tr_lang and m.name = n.tr_name)
+                   join tmp_street            as s
+                     on m.pkey = s.pkey   and
+                        n.id  = s.nameid
+                  order by s.id
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        
         #get the org link which split to many rdb link
         sqlcmd = '''
                  insert into tmp_org_to_many_rdb_link( org_link_id, s_org, e_org, rdb_link_id, s_rdb, e_rdb, flag, seq )
                   select *, row_number() over ( partition by org_link_id order by abs( (s_org+e_org)/2 - 0.5 ) ) as seq
                    from (
                          select t.org_link_id, 
-                                ST_Line_Locate_Point(g.geom, ST_StartPoint(target_geom)) as s_org,
-                                ST_Line_Locate_Point(g.geom, ST_EndPoint(target_geom))   as e_org,
+                                ST_Line_Locate_Point(g.geom, ST_StartPoint(mid_geom)) as s_org,
+                                ST_Line_Locate_Point(g.geom, ST_EndPoint(mid_geom))   as e_org,
                                 target_link_id, t.s_fraction , t.e_fraction, t.flag
                            from temp_link_org_rdb as t
                             join ( 
@@ -72,7 +87,7 @@ class CHouseNumber(entity.CEntity):
                         srch_hno_prefix(h.num), srch_hno_suffix(h.num), h.num, 
                         srch_coord(h.dis_x), srch_coord(h.dis_y),
                         srch_coord( h.x ), srch_coord( h.y ), rdb.target_link_id
-                   from mid_house_number_road    as r
+                   from mid_link_road            as r
                    join mid_address_point        as h
                      on r.id = h.id
                    join tmp_street_hno_id        as s
@@ -86,6 +101,20 @@ class CHouseNumber(entity.CEntity):
                             where m.seq = 1 or m.seq is null
                          ) as rdb
                       on s.org_link_id = rdb.org_link_id
+                 '''
+        self.db.do_big_insert(sqlcmd)
+        # get the hno in place + street name
+        sqlcmd = '''
+                 insert into tbl_street_hno_point( id, link_id, side, prefix, suffix, hno, lon, lat, entry_lon, entry_lat, rdb_link_id )
+                 select s.id, s.org_link_id, h.side, 
+                        srch_hno_prefix(h.num), srch_hno_suffix(h.num), h.num, 
+                        srch_coord(h.dis_x), srch_coord(h.dis_y),
+                        srch_coord( h.x ), srch_coord( h.y ), 0
+                   from mid_place_road           as r
+                   join mid_address_point        as h
+                     on r.id = h.id
+                   join tmp_street_hno_id        as s
+                     on s.mid_id = r.id
                  '''
         self.db.do_big_insert(sqlcmd)
         
@@ -137,7 +166,7 @@ class CHouseNumber(entity.CEntity):
                         rdb.target_link_id, 
                         CASE flag when false then s_rdb else e_rdb END, 
                         CASE flag when false then e_rdb else s_rdb END
-                   from mid_house_number_road    as r
+                   from mid_link_road            as r
                    join mid_address_range        as h
                      on r.id = h.id
                    join tmp_street_hno_id        as s
@@ -172,7 +201,7 @@ class CHouseNumber(entity.CEntity):
                         rdb.rdb_link_id, 
                         CASE flag when false then s_rdb else e_rdb END, 
                         CASE flag when false then e_rdb else s_rdb END
-                   from mid_house_number_road    as r
+                   from mid_link_road            as r
                    join mid_address_range        as h
                      on r.id = h.id
                    join tmp_street_hno_id        as s
@@ -220,7 +249,7 @@ class CHouseNumber(entity.CEntity):
                                          srch_hno_prefix(h.first) as f_pre, srch_hno_num(h.first) as f_num, srch_hno_suffix(h.first) as f_suf, 
                                          srch_hno_prefix(h.last)  as l_pre, srch_hno_num(h.last) as l_num,  srch_hno_suffix(h.last) as l_suf,
                                          rdb.*
-                                    from mid_house_number_road    as r
+                                    from mid_link_road            as r
                                     join mid_address_range        as h
                                       on r.id = h.id
                                     join tmp_street_hno_id        as s

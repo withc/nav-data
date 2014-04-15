@@ -25,7 +25,7 @@ class CLink(load.feature.CFeature):
     def _domake_geomtry(self):
         sqlcmd = '''
                     insert into temp_street_geom( key, type, code, geotype, geom )
-                    select fe.feat_key, fe.feat_type, 7000,'L', tr.the_geom
+                    select fe.feat_key, fe.feat_type, 7000,'L', ST_LineMerge(tr.the_geom)
                       from org_l_tran   as tr
                       join mid_feat_key as fe
                         on tr.routeid = fe.org_id1 and 2000 = fe.org_id2

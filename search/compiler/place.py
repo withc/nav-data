@@ -40,8 +40,8 @@ class CPlace(entity.CEntity):
         self.logger.info('  do place name')
         
         sqlcmd = '''
-                 insert into tmp_place_name( key, type, nametype, lang, name, tr_lang, tr_name )
-                 select p.key, p.type, pn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name
+                 insert into tmp_place_name( key, type, nametype, lang, name, tr_lang, tr_name, ph_lang, ph_name )
+                 select p.key, p.type, pn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name, n.ph_lang, n.ph_name
                    from mid_place_admin      as p
                    join mid_street_to_name  as pn
                      on p.key = pn.key and p.type = pn.type
@@ -52,9 +52,9 @@ class CPlace(entity.CEntity):
         self.db.createIndex( 'tmp_place_name', 'key' )
         
         sqlcmd = '''
-                 insert into tbl_city_name( level, area0, area1, area2, area3, type, lang, name, tr_lang, tr_name )
+                 insert into tbl_city_name( level, area0, area1, area2, area3, type, lang, name, tr_lang, tr_name, ph_lang, ph_name )
                  select p.level, p.area0, p.area1, p.area2, p.area3, pn.nametype, 
-                        pn.lang, pn.name, pn.tr_lang, pn.tr_name
+                        pn.lang, pn.name, pn.tr_lang, pn.tr_name, pn.ph_lang, pn.ph_name
                    from tmp_place_area    as p
                    join tmp_place_name    as pn
                      on p.key = pn.key

@@ -17,7 +17,7 @@ class CHouseNumber(entity.CEntity):
             from (
                 select r.id, p.country, p.state, p.city, p.district, r.name, hn.scheme, hn.first, hn.last,
                        get_house_number(hn.first) as f, get_house_number(hn.last) as l
-                  from mid_house_number_road    as r
+                  from mid_link_road            as r
                   join mid_address_range        as hn
                     on r.id = hn.id
                   join tmp_feat_lowest_place    as ff
@@ -32,7 +32,7 @@ class CHouseNumber(entity.CEntity):
         sqlcmd = '''
                 insert into tbl_hno_point( id, country, state, city, district, street, num )
                 select r.id, p.country, p.state, p.city, p.district, r.name, hn.num
-                  from mid_house_number_road    as r
+                  from mid_link_road            as r
                   join mid_address_point        as hn
                     on r.id = hn.id
                   join tmp_feat_lowest_place    as ff

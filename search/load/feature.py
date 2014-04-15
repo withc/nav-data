@@ -160,6 +160,9 @@ class CStartProcess(object):
         self.db.run( r'.\load\%s\my.sql' % self.name )
         self.logger.info('do some start work') 
         self._do_my()
+        
+    def _do_my(self):
+        pass
 
 class CEndProcess(object):
     

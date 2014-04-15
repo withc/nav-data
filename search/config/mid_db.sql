@@ -14,7 +14,9 @@ DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 
 DROP TABLE IF EXISTS mid_link               CASCADE;
-DROP TABLE IF EXISTS mid_house_number_road  CASCADE;
+
+DROP TABLE IF EXISTS mid_link_road          CASCADE;
+DROP TABLE IF EXISTS mid_place_road         CASCADE;
 DROP TABLE IF EXISTS mid_address_range      CASCADE;
 DROP TABLE IF EXISTS mid_address_point      CASCADE;
 DROP TABLE IF EXISTS mid_bldg_point         CASCADE;
@@ -151,13 +153,22 @@ create table mid_link
 );
 
 -- house number
-create table mid_house_number_road
+create table mid_link_road
 (
     id         bigint       not null,
     key        bigint       not null,
     type       smallint     not null,
     langcode   char(4)      not null,
     name       varchar(255) not null
+);
+
+create table mid_place_road
+(
+    id          bigint       not null,
+    pkey        bigint       not null,
+    ptype       smallint     not null,
+    lang        char(3)      not null,
+    name        varchar(255) not null
 );
 
 create table mid_address_range

@@ -28,7 +28,7 @@ class CHouseNumber(load.feature.CFeature):
     
     def _domake_feature(self):
         sqlcmd = '''
-                 insert into mid_house_number_road( id, key, type, langcode, name )
+                 insert into mid_link_road( id, key, type, langcode, name )
                  select t.id, f.feat_key, f.feat_type, n.language_code, n.street_name
                    from temp_road_link    as t
                    join mid_feat_key      as f
