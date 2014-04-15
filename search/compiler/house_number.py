@@ -35,7 +35,9 @@ class CHouseNumber(entity.CEntity):
                  select distinct s.id, 0, m.id
                    from mid_place_road        as m
                    join mid_street_name       as n
-                     on (m.lang = n.langcode and m.name = n.name) or (m.lang = n.tr_lang and m.name = n.tr_name)
+                     on (m.lang = n.langcode and m.name = n.name)    or 
+                        (m.lang = n.tr_lang and m.name = n.tr_name)  or
+                        (m.lang = n.tr_lang and m.name||'.' = n.tr_name)
                    join tmp_street            as s
                      on m.pkey = s.pkey   and
                         n.id  = s.nameid
