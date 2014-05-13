@@ -2,6 +2,7 @@
 ----------------------------------------------------
 -- house number
 ----------------------------------------------------
+DROP TABLE IF EXISTS tbl_abbr_word     CASCADE;
 DROP TABLE IF EXISTS tbl_search_meta   CASCADE;
 DROP TABLE IF EXISTS tbl_genre_info    CASCADE;
 DROP TABLE IF EXISTS tbl_city_info     CASCADE;
@@ -10,14 +11,19 @@ DROP TABLE IF EXISTS tbl_postcode_info CASCADE;
 
 DROP TABLE IF EXISTS tbl_street_info   CASCADE;
 DROP TABLE IF EXISTS tbl_street_name   CASCADE;
+DROP TABLE IF EXISTS tbl_street_full_name CASCADE;
 
 DROP TABLE IF EXISTS tbl_poi_info      CASCADE;
 DROP TABLE IF EXISTS tbl_poi_address   CASCADE;
 DROP TABLE IF EXISTS tbl_poi_name      CASCADE;
+DROP TABLE IF EXISTS tbl_poi_full_name CASCADE;
 
 DROP TABLE IF EXISTS tbl_bldg_point          CASCADE;
 DROP TABLE IF EXISTS tbl_street_hno_range    CASCADE;
 DROP TABLE IF EXISTS tbl_street_hno_point    CASCADE;
+DROP TABLE IF EXISTS tbl_dealer_data         CASCADE;
+
+DROP TABLE IF EXISTS tmp_place_admin         CASCADE;
 DROP TABLE IF EXISTS tmp_place_area          CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
 DROP TABLE IF EXISTS tmp_poi                 CASCADE;
@@ -38,6 +44,14 @@ CREATE TABLE tbl_search_meta
     min_lat  int  NOT NULL,
     max_lon  int  NOT NULL,
     max_lat  int  NOT NULL
+);
+
+create table tbl_abbr_word
+(
+    type      char(1)       not null,
+    lang      char(3)       not null,
+    abbr      varchar(128)  not null,
+    full_n    varchar(128)  not null
 );
 
 create table tbl_genre_info
@@ -68,6 +82,7 @@ create table tbl_city_info
     area1  int          not null,
     area2  int          not null,
     area3  int          not null,
+    area4  int          not null,
     lon    int          not null,
     lat    int          not null
 );
@@ -79,6 +94,7 @@ create table tbl_city_name
     area1  int          not null,
     area2  int          not null,
     area3  int          not null,
+    area4  int          not null,
     type     char(2)      not null,
     lang     char(3)      not null,
     name     varchar(128) not null,
@@ -96,6 +112,7 @@ CREATE TABLE tbl_street_info
   area1     int          not null,
   area2     int          not null,
   area3     int          not null,
+  area4     int          not null,
   lon       int          not null,
   lat       int          not null
 );
@@ -112,6 +129,13 @@ create table tbl_street_name
     ph_name  varchar(128) not null
 );
 
+create table tbl_street_full_name
+(
+    id        int          NOT NULL,
+    lang      char(3)      not null,
+    name      varchar(128) not null,
+    full_name varchar(128) not null
+);
 --
 create table tbl_poi_info
 (
@@ -135,6 +159,7 @@ create table tbl_poi_info
   area1     int not null,
   area2     int not null,
   area3     int not null,
+  area4     int not null,
   meshid    int not null
 );
 
@@ -158,6 +183,34 @@ create table tbl_poi_name
     tr_name   varchar(128) not null,
     ph_lang   char(3)      not null,
     ph_name   varchar(128) not null
+);
+
+create table tbl_poi_full_name
+(
+    id        int          NOT NULL,
+    lang      char(3)      not null,
+    name      varchar(128) not null,
+    full_name varchar(128) not null
+);
+
+create table tbl_dealer_data
+(
+    id        int          NOT NULL,
+    area0     int          not null,
+    meshid    int          not null,
+    gen_code  int          not null,
+    lang      char(3)      not null,
+    name      varchar(128) not null,
+    tr_name   varchar(128) not null,
+    postcode  varchar(32)  not null,
+    address   varchar(255) not null,
+    tr_address varchar(255) not null,
+    tel       varchar(255) not null,
+    lon       int          NOT NULL,
+    lat       int          NOT NULL,
+    entry_lon int,
+    entry_lat int
+    
 );
 ---
 create table tbl_street_hno_range
@@ -199,15 +252,16 @@ create table tbl_bldg_point
      area1     int    not null,
      area2     int    not null,
      area3     int    not null,
+     area4     int    not null,
      
-     link_id   bigint       not null,
-     side      smallint     not null,
-     hno       varchar(128) not null,
-     lon       int          not null,
-     lat       int          not null,
-     entry_lon int          not null,
-     entry_lat int          not null,
-     rdb_link_id  bigint    not null    
+     link_id      bigint       not null,
+     side         smallint     not null,
+     hno          varchar(128) not null,
+     lon          int          not null,
+     lat          int          not null,
+     entry_lon    int          not null,
+     entry_lat    int          not null,
+     rdb_link_id  bigint       not null    
 );
 
 create table tmp_street_hno_id
@@ -231,15 +285,28 @@ create table tmp_place_name
     ph_name  varchar(128) not null
 );
 
+create table tmp_place_admin
+(
+    key    bigint    not null PRIMARY KEY,
+    type   smallint  not null,
+    level  smallint  not null,
+    k0     bigint not null,
+    k1     bigint not null,
+    k2     bigint not null,
+    k3     bigint not null,
+    k4     bigint not null
+);
+
 create table tmp_place_area
 (
-    key    bigint    not null,
+    key    bigint    not null PRIMARY KEY,
     type   smallint  not null,
     level  smallint  not null,
     area0  int       not null,
     area1  int       not null,
     area2  int       not null,
-    area3  int       not null
+    area3  int       not null,
+    area4  int       not null
 );
 
 create table tmp_poi

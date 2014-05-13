@@ -1,6 +1,7 @@
 
 DROP TABLE IF EXISTS mid_feat_key         CASCADE;
 DROP TABLE IF EXISTS mid_country_profile  CASCADE;
+DROP TABLE IF EXISTS mid_abbr_word        CASCADE;
 DROP TABLE IF EXISTS mid_full_area        CASCADE;
 DROP TABLE IF EXISTS mid_place            CASCADE;
 DROP TABLE IF EXISTS mid_place_admin      CASCADE;
@@ -12,6 +13,7 @@ DROP TABLE IF EXISTS mid_poi_attr_value  CASCADE;
 DROP TABLE IF EXISTS mid_poi_address     CASCADE;
 DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
+DROP TABLE IF EXISTS mid_poi_dealer      CASCADE;
 
 DROP TABLE IF EXISTS mid_link               CASCADE;
 
@@ -23,6 +25,7 @@ DROP TABLE IF EXISTS mid_bldg_point         CASCADE;
 
 DROP TABLE IF EXISTS mid_feature_to_feature   CASCADE;
 DROP TABLE IF EXISTS temp_postcode            CASCADE;
+DROP TABLE IF EXISTS temp_dealer              CASCADE;
 
 -- for street's name/geom
 DROP TABLE IF EXISTS mid_street_name           CASCADE;
@@ -54,13 +57,12 @@ create table mid_feat_key
     CONSTRAINT  un_item UNIQUE(org_id1,org_id2)  
 );
 
--- place
-create table mid_country_profile
+create table mid_abbr_word
 (
-    iso       char(3)  not null,
-    off_lang  char(3)  not null,
-    key       bigint   not null,
-    type      smallint not null
+    type      char(1)       not null,
+    lang      char(3)       not null,
+    abbr      varchar(128)  not null,
+    full_n    varchar(128)  not null
 );
 
 CREATE TABLE mid_full_area
@@ -69,6 +71,15 @@ CREATE TABLE mid_full_area
     min_lat  int  not null,
     max_lon  int  not null,
     max_lat  int  not null
+);
+
+-- place
+create table mid_country_profile
+(
+    iso       char(3)  not null,
+    off_lang  char(3)  not null,
+    key       bigint   not null,
+    type      smallint not null
 );
 
 create table mid_place
@@ -175,7 +186,7 @@ create table mid_address_range
 (
      id       bigint       not null,
      side     smallint     not null CONSTRAINT valid_sol    CHECK (side IN (1,2)),
-     scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E')),
+     scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E','$')),
      first    varchar(128) not null,
      last     varchar(128) not null
 );
@@ -187,8 +198,8 @@ create table mid_address_point
      num      varchar(128) not null,
      x        int          not null,
      y        int          not null,
-     dis_x    int          not null,
-     dis_y    int          not null    
+     entry_x  int          not null,
+     entry_y  int          not null    
 );
 
 create table mid_bldg_point
@@ -380,8 +391,40 @@ create table temp_org_category
 create table temp_postcode
 (
     id       int         not null,
-    sub      smallint    not null,
+    type     smallint    not null,
     org_code varchar(16) not null
+);
+--
+create table mid_poi_dealer
+(
+    id        int          not null,
+    iso       char(3)      not null,
+    lang      char(3)      not null,
+    name      varchar(128) not null,
+    tr_name   varchar(128) not null,
+    postcode  varchar(32)  not null,
+    full_addr varchar(255) not null,
+    tr_addr   varchar(255) not null,
+    tel       varchar(255) not null,
+    x         int          not null,
+    y         int          not null,
+    entry_x   int          not null,
+    entry_y   int          not null
+);
+
+create table temp_dealer
+(
+    id        int          not null,
+    iso       char(3)      not null,
+    lang      char(3)      not null,
+    name      varchar(128) not null,
+    postcode  varchar(32)  not null,
+    full_addr varchar(255) not null,
+    tel       varchar(255) not null,
+    x         double precision not null,
+    y         double precision not null,
+    entry_x   double precision default 0,
+    entry_y   double precision default 0
 );
 
 

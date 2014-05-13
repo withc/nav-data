@@ -1,12 +1,15 @@
 
 import load.feature
+import load.common_work
+import load.dealer_data
 
 def featureFactory( name, loader ):
+    
     
     if name == 'tomtom':
         import load.tomtom
         loader.add_process( load.tomtom.start_work.CStartWork() )
-        loader.add_process( load.feature.CEndProcess() )
+        loader.add_process( load.common_work.CEndProcess() )
         loader.add_feature( load.tomtom.feat_category.CPoiCategory() )
         loader.add_feature( load.tomtom.feat_place.CPlace( ) )
         loader.add_feature( load.tomtom.feat_postcode.CPostcode( ) )
@@ -18,8 +21,8 @@ def featureFactory( name, loader ):
         
     elif name == 'globetech':
         import  load.globetech 
-        loader.add_process( load.feature.CStartProcess() )
-        loader.add_process( load.feature.CEndProcess() )
+        loader.add_process( load.common_work.CStartProcess() )
+        loader.add_process( load.common_work.CEndProcess() )
         loader.add_feature( load.globetech.feat_category.CPoiCategory() )
         loader.add_feature( load.globetech.feat_place.CPlace( ) )
         loader.add_feature( load.globetech.feat_postcode.CPostcode( ) )
@@ -30,8 +33,8 @@ def featureFactory( name, loader ):
          
     elif name == 'rdf':
         import load.rdf
-        loader.add_process( load.feature.CStartProcess() )
-        loader.add_process( load.feature.CEndProcess() )
+        loader.add_process( load.common_work.CStartProcess() )
+        loader.add_process( load.common_work.CEndProcess() )
         loader.add_feature( load.rdf.feat_category.CPoiCategory() )
         loader.add_feature( load.rdf.feat_place.CPlace( ) )
         loader.add_feature( load.rdf.feat_postcode.CPostcode( ) )
@@ -42,8 +45,8 @@ def featureFactory( name, loader ):
         
     elif name == 'gaode':
         import load.gaode
-        loader.add_process( load.feature.CStartProcess() )
-        loader.add_process( load.feature.CEndProcess() )
+        loader.add_process( load.common_work.CStartProcess() )
+        loader.add_process( load.common_work.CEndProcess() )
         loader.add_feature( load.gaode.feat_place.CPlace( ) )
         loader.add_feature( load.gaode.feat_link.CLink( ) )
         
@@ -51,8 +54,8 @@ def featureFactory( name, loader ):
     
     elif name == 'mmi':
         import load.mmi
-        loader.add_process( load.feature.CStartProcess() )
-        loader.add_process( load.feature.CEndProcess() ) 
+        loader.add_process( load.common_work.CStartProcess() )
+        loader.add_process( load.common_work.CEndProcess() ) 
         loader.add_feature( load.mmi.feat_category.CPoiCategory() )
         loader.add_feature( load.mmi.feat_place.CPlace( ) ) 
         loader.add_feature( load.mmi.feat_postcode.CPostcode( ) )
@@ -63,3 +66,4 @@ def featureFactory( name, loader ):
     else:
         print '---- unkonw vendor %s' % name
         
+    loader.add_part3( load.dealer_data.CDealerData() )    

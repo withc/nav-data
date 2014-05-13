@@ -154,6 +154,29 @@ create table rdb_link_nameset
     nmid  int     not null
 );
 
+create table rdb_link_hno_range
+(
+    link_id  int          not null,
+    nmid     int          not null,
+    side     smallint     not null CONSTRAINT valid_sol    CHECK (side IN (1,2)),
+    scheme   char(1)      not null CONSTRAINT valid_scheme CHECK (scheme IN ('M', 'O', 'E','$')),
+    format   char(1)      not null,
+    first    varchar(128) not null,
+    last     varchar(128) not null
+);
+
+create table rdb_link_hno_point
+(
+    link_id  int          not null,
+    nmid     int          not null,
+    side     smallint     not null CONSTRAINT valid_sol    CHECK (side IN (1,2)),
+    format   char(1)      not null,
+    hno      varchar(128) not null,
+    x        int          not null,
+    y        int          not null,
+    en_x     int          ,
+    en_y     int              
+);
 --------------------------------------------------
 -- road
 -------------------------------------------------

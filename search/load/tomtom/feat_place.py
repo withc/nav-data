@@ -89,14 +89,15 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         sqlcmd = '''
                     insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
-                    select feat_key, feat_type, nametype, namelc, name, '', '', ph_lang, ph_name
+                    select feat_key, feat_type, nametyp, namelc, name, '', '', 
+                           COALESCE(ph_lang, ''), COALESCE(ph_name,'')
                       from (
                     select fe.feat_key, fe.feat_type, 
                            case 
                              when an.nametyp='ON' and an.namelc = o.namelc  then 'ON'
                              when an.nametyp='ON' and an.namelc <> o.namelc then 'AN'
                              else an.nametyp
-                           end as nametype, 
+                           end as nametyp, 
                            an.namelc, an.name, ph.ph_lang, ph.ph_name, 
                            row_number() over (partition by fe.feat_key, fe.feat_type, an.namelc, an.name 
                                               order by case 
@@ -122,7 +123,7 @@ class CPlace(load.feature.CFeature):
                              select id, feattyp, namelc from org_a9
                            ) as o
                          on an.id = o.id and an.feattyp = o.feattyp
-                       join temp_phoneme as ph
+                  left join temp_phoneme as ph
                          on an.feattyp = ph.featclass  and
                             an.id      = ph.shapeid    and
                             an.namelc  = ph.lang       and

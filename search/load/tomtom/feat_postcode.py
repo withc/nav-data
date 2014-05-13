@@ -6,8 +6,8 @@ class CPostcode(load.feature.CFeature):
  
     def _domake_key(self):
         sqlcmd = '''
-                    insert into temp_postcode( id, sub, org_code )
-                    select row_number() over( order by zipcode ), 0, zipcode
+                    insert into temp_postcode( id, type, org_code )
+                    select row_number() over( order by zipcode ), 3136, zipcode
                       from (
                             select postcode as zipcode
                               from org_pi where postcode is not null
@@ -21,20 +21,13 @@ class CPostcode(load.feature.CFeature):
         
         sqlcmd = '''
                  insert into mid_feat_key( feat_type, org_id1, org_id2 )
-                 select 3200, id, sub
+                 select 3200, id, type
                    from temp_postcode
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
-        sqlcmd = '''
-                 insert into mid_postcode( key, type, sub, pocode )
-                 select f.feat_key, f.feat_type, p.sub, p.org_code
-                   from temp_postcode as p
-                   join mid_feat_key  as f
-                     on p.id = f.org_id1 and p.sub = f.org_id2
-                 '''
-        self.db.do_big_insert( sqlcmd )
+        self._domake_common_postcode()
     
     def _domake_geomtry(self):
         pass

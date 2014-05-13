@@ -16,16 +16,22 @@ class CPoi(load.feature.CFeature):
     def _domake_feature(self):
         sqlcmd = '''
                     insert into mid_poi( key, type, gen_code, imp )
-                    select f.feat_key, f.feat_type, c.per_code, 
+                    select f.feat_key, f.feat_type, 
+                           COALESCE(sc.per_code, c.per_code), 
                            case national_importance 
                              when 'Y' then 1
                              else 0 
                            end
-                      from rdf_poi       as p
-                      join mid_feat_key  as f
-                        on p.poi_id = f.org_id1 and 1000 = f.org_id2
-                      join temp_org_category as c
+                      from rdf_poi              as p
+                      join mid_feat_key         as f
+                        on p.poi_id = f.org_id1 and
+                           1000     = f.org_id2
+                      join temp_org_category    as c
                         on p.cat_id = c.org_code
+                 left join rdf_poi_subcategory  as s
+                        on p.poi_id = s.poi_id and s.seq_num = 1
+                 left join temp_org_category    as sc
+                        on (p.cat_id*1000+s.subcategory) = sc.org_code
                  '''
         self.db.do_big_insert( sqlcmd )
     
@@ -120,7 +126,7 @@ class CPoi(load.feature.CFeature):
                     join temp_postcode as z
                       on COALESCE( p.postal_code, p.actual_postal_code) = z.org_code 
                     join mid_feat_key  as fz
-                      on z.id = fz.org_id1 and z.sub = fz.org_id2
+                      on z.id = fz.org_id1 and z.type = fz.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
         

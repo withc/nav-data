@@ -41,12 +41,20 @@ class CLink(load.feature.CFeature):
                            join mid_feat_key as fe
                              on l.routeid = fe.org_id1 and 2000 = fe.org_id2
                        )
-                    select key, type, 'ON', 'THA', nav_namt, 'ENG', nav_name from tr where nav_namt is not null
-                    union
-                    select key, type, 'AN', 'THA', alt_namt, 'ENG', alt_name from tr where alt_namt is not null
-                    union
-                    select key, type, 'BU', 'THA', brdnamt,  'ENG', brdname  from tr where brdnamt is not null
-                    
+                    select *
+                      from (
+                            select key, type, 'ON', 'THA', srch_adjust_name(nav_namt) as nt, 
+                                   'ENG', srch_adjust_name(nav_name) as ne
+                              from tr where nav_namt is not null
+                            union
+                            select key, type, 'AN', 'THA', srch_adjust_name(alt_namt) as nt, 
+                                   'ENG', srch_adjust_name(alt_name) as ne
+                              from tr where alt_namt is not null
+                            union
+                            select key, type, 'BU', 'THA', srch_adjust_name(brdnamt) as nt,  
+                                   'ENG', srch_adjust_name(brdname) as ne
+                              from tr where brdnamt is not null
+                      ) as t1 where ne <> ''
                  '''
         self.db.do_big_insert( sqlcmd )
     
@@ -61,10 +69,10 @@ class CLink(load.feature.CFeature):
                     join mid_feat_key    as f0
                       on tr.routeid  = f0.org_id1 and f0.org_id2 = 2000
                     join temp_admincode  as ta
-                      on 3            = ta.type
-                     and tr.prov_code = ta.prov_code
-                     and tr.amp_code  = ta.amp_code
-                     and tr.tam_code  = ta.tam_code
+                      on 3            = ta.type       and
+                         tr.prov_code = ta.prov_code  and
+                         tr.amp_code  = ta.amp_code   and
+                         tr.tam_code  = ta.tam_code
                     join mid_feat_key     as f1
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''

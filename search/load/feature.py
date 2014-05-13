@@ -7,10 +7,17 @@ class CFeature(object):
         self.name   = name
         self.logger = common.logger.sub_log( self.name )
         self.logger.info('init')
-        
-    def attach_db(self, database):
+   
+    def attach_db(self, database, vendor=''):
         self.db = database
-         
+        self.vendor = vendor
+        
+    def run(self):
+        self.make_key()
+        self.make_feature()
+        self.make_attribute()
+        self.make_relation()
+            
     def make_key(self):
         self.logger.info('make key')
         self._domake_key()
@@ -74,29 +81,72 @@ class CFeature(object):
                  '''
         self.db.do_big_insert( sqlcmd )
         
+    def _domake_common_postcode(self):
+        sqlcmd = '''
+                 insert into mid_postcode( key, type, sub, pocode )
+                 select f.feat_key, f.feat_type, 
+                        case p.type
+                          when 3136 then 0
+                          else 1
+                        end, p.org_code
+                   from temp_postcode as p
+                   join mid_feat_key  as f
+                     on p.id = f.org_id1 and p.type = f.org_id2
+                 '''
+        self.db.do_big_insert( sqlcmd )
+            
     def _gen_nameid( self, feat = None ):
         if not feat:
             return 0
         
         self.logger.info('generate %s name id' % feat) 
-        sqlcmd = '''
+       
+        if feat == 'street':
+            # gen id according to name, we will adjust the tr_name to same spelling.
+            sqlcmd = '''
                    insert into temp_<f>_name_gen_id( gid, nameid )
-                   select gid, dense_rank() over ( order by tr_lang, tr_name, langcode, name ) 
+                   select gid, dense_rank() over ( order by langcode, (name)::bytea ) 
                      from temp_<f>_name
                  '''  
+        else:
+            sqlcmd = '''
+                   insert into temp_<f>_name_gen_id( gid, nameid )
+                   select gid, dense_rank() over ( order by langcode, (name)::bytea, tr_lang, tr_name ) 
+                     from temp_<f>_name
+                 '''
+               
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
         sqlcmd = '''
                    insert into mid_<f>_name( id, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
-                   select nameid, langcode, name, tr_lang, tr_name, ph_lang, ph_name
-                     from (
-                   select nameid, langcode, name, tr_lang, tr_name, ph_lang, ph_name,
-                          row_number() over (partition by nameid order by ph_name desc ) as seq
+                   with p as (
+                   select distinct nameid, langcode, name, tr_lang, tr_name, ph_lang, ph_name, 
+                          count( tr_name ) over ( partition by nameid, tr_name ) as cnt
                      from temp_<f>_name         as n
                      join temp_<f>_name_gen_id  as g
                        on n.gid = g.gid
-                          ) as t
-                    where seq = 1
+                    )
+                   select t1.*, t2.ph_lang, t2.ph_name
+                     from (
+                            select nameid, langcode, name, tr_lang, tr_name 
+                             from (
+                                   select nameid, langcode, name, tr_lang, tr_name,
+                                          row_number() over ( partition by nameid order by cnt desc, tr_name desc ) as seq
+                                     from p
+                                   ) as t
+                            where seq = 1
+                          ) as t1
+                     join (
+                            select nameid, ph_lang, ph_name
+                             from (
+                                   select nameid, ph_lang, ph_name,
+                                          row_number() over ( partition by nameid order by ph_name desc ) as seq
+                                     from p
+                                  ) as t
+                            where seq = 1
+
+                          ) as t2
+                       on t1.nameid = t2.nameid
                     order by nameid
                  ''' 
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
@@ -147,51 +197,17 @@ class CFeature(object):
                  '''
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
-class CStartProcess(object):
-    
-    def __init__(self):
-        self.logger = common.logger.sub_log( 'start_pro' )
+class CWork(object):
+    def __init__(self, name='work'):
+        self.logger = common.logger.sub_log( name )
+        
     def attach_db(self, database,vendor):
         self.db   = database
         self.name = vendor
-    def do(self):
-        self.logger.info('create mid table and function') 
-        self.db.run( r'.\config\mid_db.sql' )
-        self.db.run( r'.\load\%s\my.sql' % self.name )
-        self.logger.info('do some start work') 
-        self._do_my()
         
-    def _do_my(self):
+    def do(self):
         pass
-
-class CEndProcess(object):
-    
-    def __init__(self):
-        self.logger = common.logger.sub_log( 'end_pro' )
-        
-    def attach_db(self, database, vendor):
-        self.db = database
-        self.name = vendor
-    def do(self):
-        self._create_index()
-
-    def _create_index(self):
-        self.logger.info('create index for mid table')
-        self.db.createIndex('mid_poi_attr_value',      'key'    )
-        self.db.createIndex('mid_feature_to_feature',  'fkey'   )
-        self.db.createIndex('mid_feature_to_feature',  'tkey'   ) 
-        
-        self.db.createIndex('mid_street_name',        'name'   )
-        self.db.createIndex('mid_street_to_name',     'key'    )
-        self.db.createIndex('mid_street_to_name',     'nameid' )
-        self.db.createIndex('mid_street_to_geometry', 'key'    )
-
-        #self.db.createIndex('mid_poi_name',        'name' )
-        self.db.createIndex('mid_poi_to_name',     'key'    )
-        self.db.createIndex('mid_poi_to_name',     'nameid' )
-        self.db.createIndex('mid_poi_to_geometry', 'key'    )
-
-        
+              
         
        
         

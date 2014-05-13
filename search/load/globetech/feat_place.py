@@ -5,11 +5,6 @@ class CPlace(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'place')
  
     def _domake_key(self):
-        # add country by myself
-        sqlcmd = ''' insert into mid_feat_key( feat_type, org_id1, org_id2 ) 
-                     values( 3001, 0, 0 )
-                 '''
-        self.db.do_big_insert( sqlcmd )
         sqlcmd = '''
                     insert into temp_admincode( type, prov_code, amp_code, tam_code, org_id1, org_id2 )
                     select distinct 
@@ -22,16 +17,20 @@ class CPlace(load.feature.CFeature):
         
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
-                    select case org_id2
-                             when 1 then 3002
-                             when 2 then 3009
-                             when 3 then 3010
-                             else 0
+                    select 3001, id, type
+                      from org_country
+                    union all
+                    (select case org_id2
+                              when 1 then 3002
+                              when 2 then 3009
+                              when 3 then 3010
+                              else 0
                             end,
                             org_id1,
                             org_id2
                        from temp_admincode
                       order by type, prov_code, amp_code, tam_code
+                      )
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -46,10 +45,12 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
-        # add the country point by myself
+        # add the country point
         self.db.do_big_insert( ''' insert into temp_street_geom( key, type, code, geotype, geom )
-                             select key, type, 7379, 'P',  ST_SetSRID(st_makepoint(100.5018272, 13.7541276), 4326)
-                               from mid_place where type = 3001
+                             select f.feat_key, f.feat_type, 7379, 'P',  ST_SetSRID(st_makepoint(c.lon, c.lat), 4326)
+                               from org_country  as c
+                               join mid_feat_key as f
+                                 on f.feat_type = 3001 and c.id = f.org_id1 and c.type = f.org_id2
                          ''' )
         # there  are more then one point for some city, we just select the first one
         sqlcmd = '''
@@ -75,8 +76,10 @@ class CPlace(load.feature.CFeature):
         # add the country name by myself
         self.db.do_big_insert( ''' 
                       insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
-                      select key, type, 'ON', 'THA', '\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2', 'ENG', 'Thailand'
-                        from mid_place where type = 3001
+                      select f.feat_key, f.feat_type, 'ON', 'THA', c.namt, 'ENG', c.name
+                        from org_country  as c
+                        join mid_feat_key as f
+                          on f.feat_type = 3001 and c.id = f.org_id1 and c.type = f.org_id2
                       ''' )
         
         sqlcmd = '''

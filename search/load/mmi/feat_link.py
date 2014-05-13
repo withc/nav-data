@@ -24,7 +24,7 @@ class CLink(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_street_geom( key, type, code, geotype, geom )
                     select fe.feat_key, fe.feat_type, 7000,'L', nw.the_geom
                       from org_city_nw_gc_polyline  as nw
                       join mid_feat_key             as fe
@@ -34,7 +34,7 @@ class CLink(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                  insert into temp_feat_name( key, type, nametype, langcode, name )
+                  insert into temp_street_name( key, type, nametype, langcode, name )
                     with f ( key, type, namelc, name, pop_name, alt_name, routenum )
                     as ( select fe.feat_key, fe.feat_type, namelc, name, pop_name, alt_name, routenum
                            from org_city_nw_gc_polyline  as nw
@@ -83,7 +83,9 @@ class CLink(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
         #link to post code
-        
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'street' )
+        self._gen_geomid( 'street' ) 
         
         
         

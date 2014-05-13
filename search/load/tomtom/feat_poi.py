@@ -9,7 +9,7 @@ class CPoi(load.feature.CFeature):
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
                     select 1000, id, feattyp 
                       from org_pi as pi
-                     where feattyp <> 9920
+                     where feattyp <> 9920 and name is not null
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -60,13 +60,32 @@ class CPoi(load.feature.CFeature):
     def _domake_name(self):
         # poi name
         sqlcmd = '''
-                  insert into temp_poi_name( key, type, nametype, langcode, name )
-                  select fe.feat_key, fe.feat_type, p.nametyp, p.namelc, p.name
-                    from org_pinm     as p
-                    join mid_feat_key as fe
-                      on p.nametyp in ('ON', 'AN', 'BN', '1Q', '8Y') and
-                         p.id      = fe.org_id1                      and
-                         p.feattyp = fe.org_id2
+                  insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                  select feat_key, feat_type, nametyp, namelc, name, '', '', 
+                         COALESCE(ph_lang, ''), COALESCE(ph_name,'')
+                    from (
+                          select fe.feat_key, fe.feat_type, p.nametyp, p.namelc, p.name,
+                                 ph.ph_lang, ph.ph_name, 
+                                 row_number() over (partition by fe.feat_key, fe.feat_type, p.namelc, p.name 
+                                                    order by case 
+                                                               when p.namelc = ph.ph_lang then 1
+                                                               else 3
+                                                             end, ph.ph_name
+                                                    ) as seq
+                            from org_pinm     as p
+                            join mid_feat_key as fe
+                              on p.nametyp in ('ON', 'AN', 'BN', '1Q', '8Y') and
+                                 p.id      = fe.org_id1                      and
+                                 p.feattyp = fe.org_id2
+                       left join temp_phoneme as ph
+                              on p.feattyp  = ph.featclass  and
+                                 p.id       = ph.shapeid    and
+                                 p.namelc   = ph.lang       and
+                                 p.name     = ph.name
+                        ) as t
+                  where t.seq = 1  
+                  order by feat_key
+                    
                  '''
         self.db.do_big_insert( sqlcmd )
        
@@ -122,6 +141,19 @@ class CPoi(load.feature.CFeature):
                       on sa.areid = f1.org_id1 and sa.aretyp = f1.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
+        # poi to postcode
+        sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select fe.feat_key, fe.feat_type, 7004, fz.feat_key, fz.feat_type
+                    from org_pi       as pi
+                    join mid_feat_key as fe
+                      on pi.id = fe.org_id1 and pi.feattyp = fe.org_id2
+                    join temp_postcode as z
+                      on pi.postcode = z.org_code 
+                    join mid_feat_key  as fz
+                      on z.id = fz.org_id1 and z.type = fz.org_id2  
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
         # poi to link
         sqlcmd = '''
@@ -134,6 +166,7 @@ class CPoi(load.feature.CFeature):
                       on pi.cltrpelid = f1.org_id1 and f1.org_id2 in (4110,4130)
                  '''
         self.db.do_big_insert( sqlcmd )
+        
         
     def _domake_name_geom(self): 
         self._gen_nameid( 'poi' )

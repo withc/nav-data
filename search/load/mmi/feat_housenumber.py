@@ -19,7 +19,7 @@ class CHouseNumber(load.feature.CFeature):
                    from (
                            select bldg_num, stt_id, city_id, loc_id, edge_id, edge_side, lon, lat, lon_1, lat_1
                              from org_bldg_numeric_point where bldg_num is not null
-                           union
+                           union all
                            select bldg_num, stt_id, city_id, loc_id, edge_id, edge_side, lon, lat, lon_1, lat_1
                              from org_bldg_alphanumeric_point where bldg_num is not null
                            order by stt_id, city_id, loc_id, bldg_num

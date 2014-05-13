@@ -35,7 +35,7 @@ class CPoi(load.feature.CFeature):
     
     def _domake_geomtry(self):
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_poi_geom( key, type, code, geotype, geom )
                     select f.feat_key, f.feat_type, 7000, 'P', ST_SetSRID(st_makepoint(p.lon,p.lat), 4326)
                       from org_poi_point as p
                       join temp_poi_uid  as t
@@ -45,7 +45,7 @@ class CPoi(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         sqlcmd = '''
-                    insert into temp_feat_geom( key, type, code, geotype, geom )
+                    insert into temp_poi_geom( key, type, code, geotype, geom )
                     select f.feat_key, f.feat_type, 9920, 'P', ST_SetSRID(st_makepoint(p.lon_1,p.lat_1), 4326)
                       from org_poi_point as p
                       join temp_poi_uid  as t
@@ -57,7 +57,7 @@ class CPoi(load.feature.CFeature):
 
     def _domake_name(self):
         sqlcmd = '''
-               insert into temp_feat_name( key, type, nametype, langcode, name )
+               insert into temp_poi_name( key, type, nametype, langcode, name )
                with pn ( key, type, on_n, an_n, br_n )
                as ( select f.feat_key, f.feat_type, p.std_name, p.alt_name, p.brand_nme
                       from org_poi_point as p
@@ -140,6 +140,10 @@ class CPoi(load.feature.CFeature):
                     join temp_postcode as z
                       on p.zipcode = z.org_code
                     join mid_feat_key  as fz
-                      on z.id = fz.org_id1 and z.sub = fz.org_id2
+                      on z.id = fz.org_id1 and z.type = fz.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
+        
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'poi' )
+        self._gen_geomid( 'poi' )

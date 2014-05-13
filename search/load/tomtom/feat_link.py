@@ -37,18 +37,37 @@ class CLink(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                    insert into temp_street_name( key, type, nametype, langcode, name )
-                    select fe.feat_key, fe.feat_type,  
-                            CASE  
-                              WHEN gc.nametyp&1 <> 0 THEN 'ON'
-                              WHEN gc.nametyp&4 <> 0 THEN 'RN'
-                              WHEN gc.nametyp&8 <> 0 THEN 'BU'
-                              ELSE 'AN'
-                            END as nametype,
-                           gc.namelc, gc.fullname
-                    from org_gc       as gc
-                    join mid_feat_key as fe
-                      on gc.id = fe.org_id1 and gc.feattyp = fe.org_id2
+                    insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                    select feat_key, feat_type, nametyp, namelc, name, '', '', 
+                           COALESCE(ph_lang, ''), COALESCE(ph_name,'')
+                      from (
+                            select fe.feat_key, fe.feat_type,  
+                                    CASE  
+                                      WHEN gc.nametyp&1 <> 0 THEN 'ON'
+                                      WHEN gc.nametyp&4 <> 0 THEN 'RN'
+                                      WHEN gc.nametyp&8 <> 0 THEN 'BU'
+                                      ELSE 'AN'
+                                    END as nametyp,
+                                    gc.namelc, gc.fullname as name,
+                                    ph.ph_lang, ph.ph_name, 
+                                    row_number() over (partition by fe.feat_key, fe.feat_type, gc.namelc, gc.fullname 
+                                                       order by case 
+                                                                 when gc.namelc    = ph.ph_lang then 1
+                                                                 when gc.l_laxonlc = ph.ph_lang then 2
+                                                                 else 3
+                                                                end, ph.ph_name
+                                                        ) as seq
+                            from org_gc       as gc
+                            join mid_feat_key as fe
+                              on gc.id = fe.org_id1 and gc.feattyp = fe.org_id2
+                       left join temp_phoneme as ph
+                              on gc.feattyp  = ph.featclass  and
+                                 gc.id       = ph.shapeid    and
+                                 gc.namelc   = ph.lang       and
+                                 gc.fullname = ph.name
+                            ) as t
+                      where t.seq = 1  
+                      order by feat_key
                  '''
         self.db.do_big_insert( sqlcmd )
     

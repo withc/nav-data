@@ -1,8 +1,8 @@
-import load.feature
+import load.common_work
 
-class CStartWork(load.feature.CStartProcess):
+class CStartWork(load.common_work.CStartProcess):
     def __init__(self ):
-        load.feature.CStartProcess.__init__(self)
+        load.common_work.CStartProcess.__init__(self)
         
     def _do_my(self):
         sqlcmd = '''

@@ -45,7 +45,7 @@ class CPlace(load.feature.CFeature):
     def _domake_geomtry(self):
         # get the country point for india
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 insert into temp_street_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from temp_admincode        as t 
                    join mid_feat_key          as f
@@ -58,7 +58,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # get the state point
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 insert into temp_street_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from org_capital_indicator as ca
                    join temp_admincode        as t
@@ -74,7 +74,7 @@ class CPlace(load.feature.CFeature):
         
         # get the city point
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 insert into temp_street_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from temp_admincode        as t 
                    join mid_feat_key          as f
@@ -89,7 +89,7 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         
         sqlcmd = '''
-                 insert into temp_feat_name( key, type, nametype, langcode, name )
+                 insert into temp_street_name( key, type, nametype, langcode, name )
                  with ad ( key, type, name, alt ) as
                  (
                  select f.feat_key, f.feat_type, a.name, a.names

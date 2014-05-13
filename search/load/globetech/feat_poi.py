@@ -52,13 +52,19 @@ class CPoi(load.feature.CFeature):
     def _domake_name(self):
         sqlcmd = '''
               insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name )
-                with pn ( key, type, namt, name )
-                as ( select fe.feat_key, fe.feat_type, p.nav_namt, p.nav_name
-                       from org_landmark   as p
+                with pn ( key, type, namt, name, seq )
+                as (
+                     select fe.feat_key, fe.feat_type, p.nav_namt, p.nav_name,
+                            row_number() over ( partition by fe.feat_key order by p.gid ) as seq
+                       from (
+                               select objectid, nav_namt, nav_name, min(gid) as gid
+                                 from org_landmark
+                                 group by objectid, nav_namt, nav_name
+                            ) as p
                        join mid_feat_key   as fe
                          on p.objectid = fe.org_id1 and fe.org_id2 = 1000
                     )
-                select key, type, 'ON', 'THA', namt, 'ENG', name from pn
+                select key, type, case seq when 1 then 'ON' else 'AN' end, 'THA', namt, 'ENG', name from pn
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -88,7 +94,7 @@ class CPoi(load.feature.CFeature):
         # poi to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
-                  select  f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
+                  select distinct f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
                     from org_landmark    as p
                     join mid_feat_key    as f0
                       on p.objectid = f0.org_id1 and f0.org_id2 = 1000
@@ -101,6 +107,20 @@ class CPoi(load.feature.CFeature):
                       on ta.org_id1 = f1.org_id1 and ta.org_id2 = f1.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
+        # poi to postcode
+        sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select distinct f0.feat_key, f0.feat_type, 7004, po.key, po.type
+                    from org_landmark    as p
+                    join mid_feat_key    as f0
+                      on p.objectid = f0.org_id1 and f0.org_id2 = 1000
+                    join mid_postcode  as po
+                      on p.postcode = po.pocode
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
+        # poi to link
+        
         
     def _domake_name_geom(self): 
         self._gen_nameid( 'poi' )

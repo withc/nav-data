@@ -15,6 +15,8 @@ class CPoiCategory(load.feature.CFeature):
                       insert into temp_org_category values(%s,%s,%s,%s,%s,%s,%s,%s)
                      '''
             self.db.execute( sqlcmd, fields )
+        self.db.commit()
+        self.db.analyze('temp_org_category')
         fp.close()
 
     def _domake_feature(self):

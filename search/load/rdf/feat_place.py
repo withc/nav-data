@@ -91,6 +91,8 @@ class CPlace(load.feature.CFeature):
                    )
                 select distinct f.feat_key, f.feat_type, pp.geom
                   from (
+                         select 1 as t, a1 as a, geom from p
+                         union 
                          select 2 as t, a2 as a, geom from p
                          union 
                          select 8 as t, a8 as a, geom from p
@@ -101,23 +103,42 @@ class CPlace(load.feature.CFeature):
                     on pp.a = f.org_id1 and pp.t = f.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
-        ## a8, a9
+        ## a2, a8, a9
         sqlcmd = '''
                insert into temp_place_point( key, type, geom )
-               select f.feat_key,  f.feat_type, geom
-                 from (  
-                      select p.order8_id as a_id, ST_GeometryFromText(l.location, 4326) as geom, row_number() over ( partition by p.order8_id ) as seq
+               select f.feat_key, f.feat_type, ST_GeometryFromText(l.location, 4326) as geom
+                 from (
+                      select p.order2_id as a_id, p.location_id,
+                             row_number() over ( partition by p.order2_id 
+                                                 order by case 
+                                                             when population is null then 0
+                                                             else population 
+                                                          end desc, street_name
+                                                ) as seq
                         from rdf_city_poi  as p
-                        join wkt_location  as l
-                          on p.location_id = l.location_id 
+                      union 
+                      select p.order8_id as a_id, p.location_id,
+                             row_number() over ( partition by p.order8_id 
+                                                 order by case 
+                                                             when population is null then 0
+                                                             else population 
+                                                          end desc, street_name
+                                                ) as seq
+                        from rdf_city_poi  as p
                        union
-                       select p.builtup_id as a_id, ST_GeometryFromText(l.location, 4326) as geom, row_number() over ( partition by p.builtup_id ) as seq
+                       select p.builtup_id as a_id, p.location_id,
+                              row_number() over ( partition by p.builtup_id 
+                                                  order by case 
+                                                             when population is null then 0
+                                                             else population 
+                                                           end desc, street_name
+                                                 ) as seq
                         from rdf_city_poi  as p
-                        join wkt_location  as l
-                          on p.location_id = l.location_id 
                           ) as t
                      join mid_feat_key  as f
                        on t.a_id = f.org_id1 and t.seq = 1 
+                     join wkt_location  as l
+                       on t.location_id = l.location_id  
                      where f.feat_key not in ( select key from temp_place_point )
                  '''
         self.db.do_big_insert( sqlcmd )
@@ -128,11 +149,22 @@ class CPlace(load.feature.CFeature):
                 select fk.feat_key,  fk.feat_type, ST_Centroid( st_union( ST_GeometryFromText(w.face, 4326) ))
                   from rdf_carto as c
                   join ( 
-                         select *  
-                         from rdf_admin_hierarchy
-                         where admin_place_id not in ( select distinct order8_id from rdf_city_poi )
+                        select *  
+                          from rdf_admin_hierarchy
+                         where admin_place_id not in
+                          ( 
+                            select  country_id from rdf_city_poi
+                            union
+                            select  order1_id from rdf_city_poi
+                            union
+                            select  order2_id from rdf_city_poi
+                            union
+                            select  order8_id from rdf_city_poi
+                            union
+                            select  builtup_id from rdf_city_poi 
+                           )
                        ) as a
-                    on c.named_place_id = a.admin_place_id and a.admin_order = 8
+                    on c.named_place_id = a.admin_place_id
                   join rdf_carto_face as f
                     on c.carto_id = f.carto_id
                   join wkt_face       as w

@@ -47,6 +47,7 @@ class CHouseNumber(load.feature.CFeature):
     def _domake_attribute(self):
         self._make_hn_by_link()
         self._make_hn_by_point()
+        self._make_irregular_hno_range()
         
     def _domake_relation(self):
         pass
@@ -67,13 +68,13 @@ class CHouseNumber(load.feature.CFeature):
     
     def _make_hn_by_point(self):
         sqlcmd = '''
-                insert into mid_address_point( id, side, num, x, y, dis_x, dis_y )
+                insert into mid_address_point( id, side, num, x, y, entry_x, entry_y )
                 select t.id, 
                        case
                           when p.side = 'R' then 2
                           else 1
                        end, 
-                       p.address, p.lon, p.lat, p.display_lon, p.display_lat
+                       p.address, p.display_lon, p.display_lat, p.lon, p.lat
                   from rdf_address_point as p
                   join rdf_road_link     as l
                     on p.road_link_id= l.road_link_id
@@ -81,4 +82,38 @@ class CHouseNumber(load.feature.CFeature):
                        on l.link_id = t.linkid and l.road_name_id = t.nameid 
                 '''
         self.db.do_big_insert( sqlcmd )
+        
+    def _make_irregular_hno_range(self):
+        #some hno range have different prefix between first and last
+        #we will divide it into some point address
+        sqlcmd = '''
+                insert into mid_address_point( id, side, num, x, y, entry_x, entry_y )
+                with p ( id, side, first, last, geom )
+                    as (
+                        select r.id, r.side, r.first, r.last, w.link::geometry as geom
+                          from mid_address_range  as r
+                          join temp_road_link     as l
+                            on srch_hno_prefix(first) <> srch_hno_prefix(last) and
+                               r.id = l.id
+                          join wkt_link           as w
+                            on l.linkid = w.link_id 
+                       )
+                select id, side, first, 
+                       (st_x(ST_StartPoint( geom ))*100000)::int,
+                       (st_y(ST_StartPoint( geom ))*100000)::int, 0, 0
+                  from p
+                union
+                select id, side, last, 
+                       (st_x(ST_EndPoint( geom ))*100000)::int,
+                       (st_y(ST_EndPoint( geom ))*100000)::int, 0, 0
+                  from p
+                '''
+        self.db.do_big_insert( sqlcmd )
+        # delete such range
+        sqlcmd = '''
+                 delete from mid_address_range
+                 where srch_hno_prefix(first) <> srch_hno_prefix(last)
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
         

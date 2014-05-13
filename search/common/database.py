@@ -35,6 +35,7 @@ class CDB(object):
      
     def do_big_insert(self, sqlcmd ): 
         self.execute( sqlcmd )
+        self.commit()
         m=re.match( '\s*?(insert)\s+?(into)\s+?(.*?)\s*?\(', sqlcmd,  re.IGNORECASE )
         if m:
             self.analyze( m.group(3) )
@@ -46,13 +47,17 @@ class CDB(object):
                 self.cur.execute(sqlcmd, parameters)
             else:
                 self.cur.execute(sqlcmd)
-            self.conn.commit()
+            #self.conn.commit()
             return 0
         except Exception,ex:
             print '%s:%s' % (Exception, ex)
             print 'SQL execute error:' + sqlcmd 
             raise
         
+    def commit(self):
+        self.conn.commit()
+        return 0
+            
     def createIndex(self, table, column ):
         sqlcmd = '''
                   CREATE INDEX idx_%s_%s
