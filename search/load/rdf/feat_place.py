@@ -192,12 +192,12 @@ class CPlace(load.feature.CFeature):
            
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                 insert into temp_street_name( key, type, nametype, grp, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                  select p.key, p.type, 
                         case  
                           when ns.name_type = 'B' and ns.is_exonym = 'N' then 'ON'
                           else 'AN'
-                        end,
+                        end, row_number() over ( partition by p.key, p.type ),
                         n.language_code, n.name,
                         COALESCE(tr.transliteration_type, ''),   COALESCE( tr.name,''),
                         COALESCE(ph.phonetic_language_code, ''), COALESCE( ph.phonetic_string, '')

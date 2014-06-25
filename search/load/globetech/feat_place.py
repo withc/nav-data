@@ -75,11 +75,16 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         # add the country name by myself
         self.db.do_big_insert( ''' 
-                      insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
-                      select f.feat_key, f.feat_type, 'ON', 'THA', c.namt, 'ENG', c.name
+                      insert into temp_street_name( key, type, group, nametype, langcode, name )
+                      with tb (key, type, group, nametype, lang, name, tr_lang, tr_name )as (
+                      select f.feat_key, f.feat_type, 1, 'ON', 'THA', c.namt, 'ENG', c.name
                         from org_country  as c
                         join mid_feat_key as f
                           on f.feat_type = 3001 and c.id = f.org_id1 and c.type = f.org_id2
+                          )
+                          select key, type, group, nametype, lang, name from tb
+                          union
+                          select key, type, group, 'TN', tr_lang, tr_name from tb
                       ''' )
         
         sqlcmd = '''

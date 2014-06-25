@@ -101,20 +101,32 @@ class CFeature(object):
         
         self.logger.info('generate %s name id' % feat) 
        
+        sqlcmd = '''
+                   insert into temp_<f>_name_gen_id( gid, key, grp, namesetid, nameid )
+                   with t 
+                    as  (
+                           select gid, key, grp, dense_rank() over ( order by <order> ) as nameid
+                             from temp_<f>_name
+                        )
+                    select t.gid, t.key, t.grp, t3.setid, t.nameid
+                      from t
+                      join (
+                            select distinct key, grp, dense_rank() over ( order by nameset ) as setid
+                              from (
+                                     select key, grp, array_agg( nameid ) as nameset
+                                       from ( select * from t order by key, grp, nameid ) as t1
+                                      group by key, grp
+                                   ) t2
+                            ) as t3
+                         on t.key = t3.key and t.grp = t3.grp
+                 '''  
+        
         if feat == 'street':
             # gen id according to name, we will adjust the tr_name to same spelling.
-            sqlcmd = '''
-                   insert into temp_<f>_name_gen_id( gid, nameid )
-                   select gid, dense_rank() over ( order by langcode, (name)::bytea ) 
-                     from temp_<f>_name
-                 '''  
+            sqlcmd = sqlcmd.replace( '<order>', 'langcode, (name)::bytea' )
         else:
-            sqlcmd = '''
-                   insert into temp_<f>_name_gen_id( gid, nameid )
-                   select gid, dense_rank() over ( order by langcode, (name)::bytea, tr_lang, tr_name ) 
-                     from temp_<f>_name
-                 '''
-               
+            sqlcmd = sqlcmd.replace( '<order>', 'langcode, (name)::bytea, tr_lang, tr_name' )
+            
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
         sqlcmd = '''
@@ -152,12 +164,21 @@ class CFeature(object):
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
         sqlcmd = '''
-                   insert into mid_<f>_to_name( key, type, nametype, nameid)
-                   select distinct key, type, nametype, nameid
+                   insert into mid_<f>_nameset( id, nameid)
+                   select distinct  namesetid, nameid
                      from temp_<f>_name         as n
                      join temp_<f>_name_gen_id  as g
                        on n.gid = g.gid
-                    order by key
+                 '''
+        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        sqlcmd = '''
+                   insert into mid_<f>_to_name( key, type, nametype, namesetid)
+                   select distinct n.key, n.type, nametype, namesetid
+                     from temp_<f>_name         as n
+                     join temp_<f>_name_gen_id  as g
+                       on n.gid = g.gid
+                    order by n.key
                  '''
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
     
