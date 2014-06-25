@@ -1,0 +1,56 @@
+#type,langcode,abbr,full
+R;THA;ตร.;ตรอก
+R;THA;ซ.;ซอย
+R;THA;ถ.;ถนน
+R;THA;ทล.;ทางหลวงแผ่นดินหมายเลข
+R;THA;ทช.;ทางหลวงชนบท
+R;THA;ทางคู่ขนานทล.;ทางคู่ขนานทางหลวงแผ่นดินหมายเลข
+R;THA;ทางคู่ขนานถ.;ทางคู่ขนานถนน
+R;ENG;Rd.;Road
+R;ENG;Exp.;Expressway
+P;THA;อบต.;ที่ทำการองค์การบริหารส่วนตำบล
+P;THA;ททท.;การท่องเที่ยวแห่งประเทศไทย
+P;THA;สนง.;สำนักงาน
+P;THA;ตชด.;ตำรวจตระเวนชายแดน
+P;THA;อบจ.;ที่ทำการองค์การบริหารส่วนจังหวัด
+P;THA;รพช.;เร่งรัดพัฒนาชนบท
+P;THA;กกต.;คณะกรรมการการเลือกตั้งประจำจังหวัด
+P;THA;บ.;บริษัท
+P;THA;จก.;จำกัด
+P;THA;ต.;ตำบล
+P;THA;ธ.;ธนาคาร
+P;THA;สภ.;สถานีตำรวจภูธร
+P;THA;สน.;สถานีตำรวจนครบาล
+P;THA;จ.;จังหวัด
+P;THA;อ.;อำเภอ
+P;THA;ต.;ตำบล
+P;THA;สดพ.;สถานีตำรวจดับเพลิง
+P;THA;สดพ.;สถานีดับเพลิงและกู้ภัย
+P;THA;สดพ.;สถานีดับเพลิง
+P;THA;ม.;มหาวิทยาลัย
+P;THA;ว.;วิทยาลัย
+P;ENG;TAT.;Tourism Authority of Thailand
+P;ENG;Dept.;Department
+P;ENG;CPF.;Charoen Phokkhaphan Food
+P;ENG;CP.;Charoen Phokkhaphan
+P;ENG;SFX;Sfx Cinema
+P;ENG;SF;Sf Cinema
+P;ENG;U.;University
+P;ENG;Inst.;Institute of Technology
+P;ENG;Bldg.;Building
+P;ENG;Apt.;Apartment
+P;ENG;HM.;His Majesty The King
+P;ENG;Assoc.;Association
+P;ENG;C.D.C.;Crystal Design Center
+P;ENG;C.P.;Charoen Phokkhaphan
+P;ENG;CIMB;Cimb Thai Bank
+P;ENG;GHB;Government Housing Bank
+P;ENG;GSB;Government Savings Bank
+P;ENG;ISLAM;Islamic Bank of Thailand
+P;ENG;KBANK;Kasikorn Bank
+P;ENG;KKB;Kiatnakin Bank
+P;ENG;KTB;Krung Thai Bank
+P;ENG;LHBANK;Land and Houses Retail Bank
+P;ENG;UOB;Uob Bank
+P;ENG;S.C.G.;Siam Cement Group
+P;ENG;S.C.B.;Siam Commercial Bank

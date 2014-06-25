@@ -174,7 +174,31 @@ class CPlace(load.feature.CFeature):
                  group by fk.feat_key,  fk.feat_type
                  '''
         self.db.do_big_insert( sqlcmd )
-        ##
+        ##get point from link for a9
+        sqlcmd = '''
+                 insert into temp_place_point( key, type, geom )
+                 select feat_key, feat_type, ST_ClosestPoint( geom, ST_Centroid(geom) )
+                   from (
+                         select fk.feat_key, fk.feat_type, ST_Collect( ST_GeometryFromText( w.link, 4326) ) as geom
+                           from (
+                                  select link_id, left_admin_place_id as place_id from rdf_link
+                                  union
+                                  select link_id, right_admin_place_id as place_id from rdf_link
+                                ) as l
+                           join wkt_link      as w
+                             on l.link_id = w.link_id
+                           join mid_feat_key  as fk
+                             on l.place_id = fk.org_id1 and  fk.org_id2 = 9
+                          where fk.feat_key not in 
+                                 (
+                                   select key from temp_place_point where type = 3010
+                                   union
+                                   select key from temp_street_geom where type = 3010
+                                 )
+                           group by fk.feat_key,  fk.feat_type
+                         ) as t
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
     def _update_geomtry(self):
         sqlcmd = '''

@@ -23,7 +23,7 @@ class CStartProcess(load.feature.CWork):
         
         for line in fp:
             line = line.strip()
-            if line[0] == '#':
+            if not line or line[0] == '#':
                 continue
             fields = line.split(';')
             sqlcmd = '''
@@ -42,12 +42,39 @@ class CEndProcess(load.feature.CWork):
         load.feature.CWork.__init__(self, 'end_pro' )
         
     def do(self):
+        self._build_postcode_city_by_poi()
         self._create_index()
 
+    def _build_postcode_city_by_poi(self):
+        #add relationship between postcode and city.
+        #we can build it according poi infor
+        #if a poi belong to a place and a postcode, we think the postcode refer to the place
+        self.logger.info('build relationship ( postcode X city ) from poi')
+        sqlcmd = '''
+                 insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                 select distinct po.tkey, po.ttype, 7001, pl.tkey, pl.ttype
+                   from mid_feature_to_feature as po
+                   join mid_feature_to_feature as pl
+                     on po.ftype = 1000    and
+                        po.code  = 7004    and
+                        po.fkey  = pl.fkey and
+                        pl.code  = 7001
+                  where not exists (
+                        select 1 
+                          from mid_feature_to_feature as pp
+                         where pp.fkey = po.tkey and 
+                               pp.tkey = pl.tkey and 
+                               pp.code = 7001
+                        )
+                  order by po.tkey
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
+        
     def _create_index(self):
         self.logger.info('create index for mid table')
         self.db.createIndex('mid_poi_attr_value',      'key'    )
-        self.db.createIndex('mid_feature_to_feature',  'fkey'   )
+        self.db.createIndex('mid_feature_to_feature', ['fkey','code']   )
         self.db.createIndex('mid_feature_to_feature',  'tkey'   ) 
         
         self.db.createIndex('mid_street_name',        'name'   )

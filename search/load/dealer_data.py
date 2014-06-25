@@ -31,17 +31,19 @@ class CDealerData(load.feature.CFeature):
                                              full_addr, tr_addr, tel, 
                                              x, y, entry_x, entry_y )
                      select t.gid, 'THA', 'THA',
-                            case when branch_t is not null then nav_namt||' '||branch_t
-                                 else nav_namt
+                            case 
+                               when branch_t is not null then nav_namt||' '||branch_t
+                               else nav_namt
                             end,
-                            case when branch_e is not null then nav_name||' '||branch_e
-                                 else nav_name
+                            case 
+                              when branch_e is not null then nav_name||' '||branch_e
+                              else nav_name
                             end, 
                             postcode,
                             address_t||', '||t, 
                             address_e||', '||e, 
-                            tel, (st_x(the_geom)*100000)::int, (st_y(the_geom)*100000)::int, 0, 0
-                       from org_toyota       as t
+                            tel, st_x(the_geom), st_y(the_geom), 0, 0
+                       from  org_toyota as t
                        join (
                                select distinct prov_code,amp_code,tam_code, 
                                       tam_namt || ', ' || amp_namt || ', ' || prov_namt as t,
@@ -58,9 +60,8 @@ class CDealerData(load.feature.CFeature):
                  insert into mid_poi_dealer( id, iso, lang, name, tr_name, postcode, 
                                              full_addr, tr_addr, tel, 
                                              x, y, entry_x, entry_y )
-                 select d.id, d.iso, d.lang, d.name, '',d.postcode, d.full_addr, '', d.tel, 
-                        (x*100000)::int,       (y*100000)::int, 
-                        (entry_x*100000)::int, (entry_y*100000)::int
+                 select d.id, d.iso, d.lang, d.name, '', d.postcode, d.full_addr, '', d.tel, 
+                        x, y, entry_x, entry_y
                    from temp_dealer          as d
                    join mid_country_profile  as c
                      on d.iso = c.iso

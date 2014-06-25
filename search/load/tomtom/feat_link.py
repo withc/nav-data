@@ -75,6 +75,7 @@ class CLink(load.feature.CFeature):
         pass
         
     def _domake_relation(self):
+        #link to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
                   select  fe.feat_key, fe.feat_type, 7001, f1.feat_key, f1.feat_type

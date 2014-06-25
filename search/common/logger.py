@@ -18,7 +18,7 @@ def init_log( file='' ):
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter( "%(asctime)s - %(levelname)s: %(name)-16s >> %(message)s" )
+    formatter = logging.Formatter( "%(asctime)s - %(levelname)s: %(name)-20s >> %(message)s" )
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
 

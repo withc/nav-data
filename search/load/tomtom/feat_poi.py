@@ -10,8 +10,12 @@ class CPoi(load.feature.CFeature):
                     select 1000, id, feattyp 
                       from org_pi as pi
                      where feattyp <> 9920 and name is not null
+                     order by id
                  '''
-        self.db.do_big_insert( sqlcmd )
+        #if there is mnpoi, we should ignore the this poi .
+        #the core product version will be overwritten by MultiNet POI
+        
+        #self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''

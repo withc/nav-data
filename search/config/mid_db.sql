@@ -107,6 +107,7 @@ create table mid_postcode
 (
     key    bigint      not null PRIMARY KEY,
     type   smallint    not null,
+    iso    char(3)     not null,
     sub    smallint    not null,
     pocode varchar(16) not null
 );
@@ -414,6 +415,7 @@ create table temp_postcode
 (
     id       int         not null,
     type     smallint    not null,
+    iso      char(3)     not null,
     org_code varchar(16) not null
 );
 --
@@ -428,10 +430,10 @@ create table mid_poi_dealer
     full_addr varchar(255) not null,
     tr_addr   varchar(255) not null,
     tel       varchar(255) not null,
-    x         int          not null,
-    y         int          not null,
-    entry_x   int          not null,
-    entry_y   int          not null
+    x         float8       not null,
+    y         float8       not null,
+    entry_x   float8       not null,
+    entry_y   float8       not null
 );
 
 create table temp_dealer
@@ -443,10 +445,10 @@ create table temp_dealer
     postcode  varchar(32)  not null,
     full_addr varchar(255) not null,
     tel       varchar(255) not null,
-    x         double precision not null,
-    y         double precision not null,
-    entry_x   double precision default 0,
-    entry_y   double precision default 0
+    x         float8       not null,
+    y         float8       not null,
+    entry_x   float8       default 0,
+    entry_y   float8       default 0
 );
 
 

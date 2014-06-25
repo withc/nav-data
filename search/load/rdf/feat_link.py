@@ -83,6 +83,29 @@ class CLink(load.feature.CFeature):
                          ( fp.feat_type between 3001 and 3010)
                  '''
         self.db.do_big_insert( sqlcmd )
+        #link to postcode
+        sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select f.feat_key, f.feat_type, 7004, fz.feat_key, fz.feat_type
+                    from ( 
+                           select link_id, left_postal_area_id as postal_id
+                             from rdf_link
+                             where left_postal_area_id is not null
+                         union 
+                           select link_id, right_postal_area_id as postal_id
+                             from rdf_link  
+                            where right_postal_area_id is not null 
+                         ) as l
+                    join mid_feat_key  as f
+                      on l.link_id = f.org_id1 and f.org_id2 = 2000
+                    join rdf_postal_area as po
+                      on l.postal_id = po.postal_area_id
+                    join temp_postcode as z
+                      on po.postal_code = z.org_code 
+                    join mid_feat_key  as fz
+                      on z.id = fz.org_id1 and z.type = fz.org_id2  
+                 '''
+        self.db.do_big_insert( sqlcmd )
         
     def _domake_name_geom(self): 
         self._gen_nameid( 'street' )

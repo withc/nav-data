@@ -71,20 +71,23 @@ class CFeature(object):
         sqlcmd = '''
                  insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name, tr_name)
                  select per_code, gen1, gen2, gen3, level, imp, name, tr_name
-                   from temp_org_category
+                   from ( 
+                          select distinct per_code, gen1, gen2, gen3, level, imp, name, tr_name
+                          from temp_org_category
+                         ) as t
                    order by level, case level 
                                       when 1 then  0
                                       when 2 then  gen1
                                       else   (gen1<<8) + gen2
                                     end,
-                              name
+                             name
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_common_postcode(self):
         sqlcmd = '''
-                 insert into mid_postcode( key, type, sub, pocode )
-                 select f.feat_key, f.feat_type, 
+                 insert into mid_postcode( key, type, iso, sub, pocode )
+                 select f.feat_key, f.feat_type, p.iso,
                         case p.type
                           when 3136 then 0
                           else 1

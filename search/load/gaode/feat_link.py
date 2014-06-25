@@ -7,30 +7,62 @@ class CLink(load.feature.CFeature):
  
     def _domake_key(self):
         sqlcmd = '''
+                 insert into mid_feat_key( feat_type, org_id1, org_id2 )
+                 select 2000, meshid, road 
+                   from org_roadsegment
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
+                 insert into mid_link( key, type )
+                 select f.feat_key, f.feat_type
+                   from org_roadsegment   as r
+                   join mid_feat_key      as f
+                     on r.meshid = f.org_id1 and r.road = f.org_id2     
                  '''
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
         sqlcmd = '''
+                    insert into temp_street_geom( key, type, code, geotype, geom )
+                    select f.feat_key, f.feat_type, 7000,'L', ST_LineMerge(r.the_geom)
+                      from org_roadsegment   as r
+                      join mid_feat_key      as f
+                        on r.meshid = f.org_id1 and r.road = f.org_id2
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_name(self):
         sqlcmd = '''
-  
+                 insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+                 select f.feat_key, f.feat_type, 'ON', 'CHI', name_chn, 'PYN', name_py
+                   from org_roadsegment   as r
+                   join mid_feat_key      as f
+                     on r.meshid = f.org_id1 and r.road = f.org_id2
+                  where name_chn is not null
+    
                  '''
         self.db.do_big_insert( sqlcmd )
-    
+        
     def _domake_attribute(self):
         pass
-        
+    
     def _domake_relation(self):
+        # link to place
         sqlcmd = '''
+                  insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype )
+                  select f0.feat_key, f0.feat_type, 7001, f1.feat_key, f1.feat_type
+                    from org_roadsegmentplus   as r
+                    join mid_feat_key          as f0
+                      on r.meshid = f0.org_id1 and r.road = f0.org_id2
+                    join mid_feat_key as f1
+                      on r.ad_codes::int = f1.org_id1 and f1.feat_type between 3001 and 3010
                  '''
         self.db.do_big_insert( sqlcmd )
+        # link to postcode
+       
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'street' )
+        self._gen_geomid( 'street' )
         

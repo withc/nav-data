@@ -39,7 +39,30 @@ class CDB(object):
         m=re.match( '\s*?(insert)\s+?(into)\s+?(.*?)\s*?\(', sqlcmd,  re.IGNORECASE )
         if m:
             self.analyze( m.group(3) )
-       
+            
+    def do_execute(self, sqlcmd):
+        self.execute( sqlcmd )
+        self.commit()
+    
+    def existTable(self, table ):
+        sql = '''
+              select * from pg_tables where tablename = '%s'
+              ''' % table
+        count = self.getResultCount(sql)
+        
+        return (0 != count)
+    
+    def existTableColumn(self, table, column ):
+        sql = '''
+              select * 
+                from information_schema.columns  
+               where table_name   = '%s' and 
+                     column_name = '%s'
+              ''' % (table, column)
+        count = self.getResultCount(sql)
+        
+        return (0 != count)
+     
     def execute(self, sqlcmd, parameters = []):
         '''execute commands '''
         try:
@@ -59,13 +82,22 @@ class CDB(object):
         return 0
             
     def createIndex(self, table, column ):
-        sqlcmd = '''
+        if isinstance( column, str ):
+            sqlcmd = '''
                   CREATE INDEX idx_%s_%s
                   ON %s
                   USING btree
                   (%s);
               ''' % (table, column, table, column )
-        self.execute(sqlcmd)
+        else:
+            sqlcmd = '''
+                  CREATE INDEX idx_%s_%s
+                  ON %s
+                  USING btree
+                  (%s);
+              ''' % (table, '_'.join(column), table, ','.join(column) )
+
+        self.do_execute(sqlcmd)
         self.analyze( table )
          
     def analyze(self, table):
@@ -77,7 +109,8 @@ class CDB(object):
         fp.close()
       
     def getResultCount(self, sqlcmd):
-        self.execute(sqlcmd)
+        sql = 'select count(*) from ( ' + sqlcmd + ' ) as zz'
+        self.execute(sql)
         rows = self.cur.fetchone()
         if rows:
             return rows[0]

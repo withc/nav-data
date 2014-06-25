@@ -1,3 +1,5 @@
+---------------------------------------------------------------
+---------------------------------------------------------------
 CREATE OR REPLACE FUNCTION srch_hno_num( hn character varying)
   RETURNS integer 
   LANGUAGE plpgsql 
@@ -137,6 +139,15 @@ as $$
 declare   
 begin
     return (v/100000.0*256*3600)::integer;
+end;
+$$ language 'plpgsql';
+
+create or replace function srch_coord( v float8 ) 
+returns int
+as $$
+declare   
+begin
+    return (v*256*3600)::integer;
 end;
 $$ language 'plpgsql';
 
@@ -285,11 +296,12 @@ create or replace function srch_full_name( in_type char,  in_lang character vary
 returns character varying
 as $$
 declare  
-    curs refcursor; 
+    curs      refcursor; 
     abbr_w    character varying;
     full_w    character varying;
-    full_name character varying = '';
+    ischange  bool  = false;
     pos       int;
+    len       int;
 begin
     OPEN curs FOR SELECT abbr, full_n
 			        FROM mid_abbr_word
@@ -302,11 +314,13 @@ begin
 		--RAISE NOTICE 'POS = %', pos;
 		
 		if pos <> 0 and ( pos = 1 or srch_punctuation( substr(in_name, pos-1, 1) ) ) then
-		   pos = pos+length(abbr_w);
-		   if pos = length(in_name)+1  or srch_punctuation( substr(in_name, pos, 1) ) then
-		       full_name = replace( in_name, abbr_w, full_w );
+
+		   len = length(abbr_w);
+		   if pos+len = length(in_name)+1  or srch_punctuation( substr(in_name, pos+len, 1) ) then
+		       in_name = overlay( in_name placing full_w from pos for len );
+		       ischange = true;
 		       --RAISE NOTICE 'FULL = %', full_name;
-		       exit;
+		       --exit;
 		   end if;
 		end if;
 		
@@ -315,7 +329,11 @@ begin
 	END LOOP;
 	close curs;
     
-    return full_name;
+    if ischange then
+       return in_name;
+    else
+       return '';
+    end if;       
 end;
 $$ language 'plpgsql';
 
@@ -324,16 +342,25 @@ returns bigint
 LANGUAGE plpgsql 
 as $$
 declare
+   new_ids  bigint[];
+   new_len  int; 
 BEGIN
      FOR i IN 1..array_length(ary,1)
      LOOP
          if ary[i] <> 0 then
-            idx=idx-1;
-            if idx = 0 then
-               return ary[i];
-            end if;
+            new_ids = new_ids||ary[i];
          end if;
-     END LOOP; 
+     END LOOP;
+     new_len = array_length(new_ids,1);
+     
+     if 0 < idx and idx <= new_len then
+         return new_ids[idx];
+     end if;
+     
+     if 0 < -idx and -idx <= new_len  then
+         return new_ids[new_len+idx+1];
+     end if;
+     
      return 0;
 END;
 $$;
@@ -398,3 +425,48 @@ BEGIN
 END;
 $$;
 
+create or replace function srch_error_char( lang varchar, name varchar ) 
+returns bool
+LANGUAGE plpgsql 
+as $$
+declare
+  len int = length( name );
+  ch  int;
+  eng bool = (lang = 'ENG' or lang = 'IND');
+BEGIN
+
+	  for i in 1 .. len loop
+		    ch = ascii( substring( name, i, 1) );
+		    if ( 0 <= ch and ch <= 31 ) or (ch = 127) then
+		         return true;
+		    end if;	
+		    
+		    if ch > 127 and eng then
+		         return true;
+		    end if;    
+	  end loop;
+     
+     return false;
+END;
+$$;
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+create or replace function mid_globetech_eng_name( name varchar ) 
+returns varchar
+LANGUAGE plpgsql 
+as $$
+declare
+  chs  varchar[] = array[ E'\xe2\x80\x93', E'\xe2\x80\x99', E'H\x7fc', E'\xc2\xa0'];
+  che  varchar[] = array[ '-', E'\'', 'C', '' ];
+BEGIN
+
+    FOR i IN 1..array_length(chs,1)
+     LOOP
+         if strpos( name, chs[i] ) > 0 then
+            return replace( name, chs[i], che[i] );
+         end if;
+     END LOOP; 
+
+	return name;
+END;
+$$;

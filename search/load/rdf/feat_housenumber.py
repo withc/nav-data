@@ -55,13 +55,25 @@ class CHouseNumber(load.feature.CFeature):
     def _make_hn_by_link(self):
         sqlcmd = '''
                    insert into mid_address_range( id, side, scheme, first, last )
-                   select t.id, %d, h.scheme, h.first_address, h.last_address
-                     from temp_road_link     as t
-                     join rdf_road_link      as l
-                       on t.linkid = l.link_id and t.nameid = l.road_name_id 
-                     join rdf_address_range as h
-                       on l.%s_address_range_id = h.address_range_id and 
-                          h.first_address is not null
+                   select id, %d, scheme, first_address, last_address
+                     from (
+                           select t.id, h.scheme, h.first_address, h.last_address, h.address_range_id, 
+                                  h.address_level, row_number() over ( partition by t.id, h.address_range_id 
+                                                                       order by 
+                                                                                case address_level 
+                                                                                   when 'L' then 1
+                                                                                   when 'A' then 2
+                                                                                   else 3
+                                                                                end 
+                                                                       ) as seq
+                             from temp_road_link     as t
+                             join rdf_road_link      as l
+                               on t.linkid = l.link_id and t.nameid = l.road_name_id 
+                             join rdf_address_range  as h
+                               on l.%s_address_range_id = h.address_range_id and 
+                                  h.first_address is not null 
+                          ) as t 
+                     where seq = 1                
                  '''
         self.db.do_big_insert( sqlcmd % (1, 'left' ) )
         self.db.do_big_insert( sqlcmd % (2, 'right') )
@@ -98,15 +110,19 @@ class CHouseNumber(load.feature.CFeature):
                           join wkt_link           as w
                             on l.linkid = w.link_id 
                        )
-                select id, side, first, 
-                       (st_x(ST_StartPoint( geom ))*100000)::int,
-                       (st_y(ST_StartPoint( geom ))*100000)::int, 0, 0
-                  from p
-                union
-                select id, side, last, 
-                       (st_x(ST_EndPoint( geom ))*100000)::int,
-                       (st_y(ST_EndPoint( geom ))*100000)::int, 0, 0
-                  from p
+                select * 
+                  from (
+                        select id, side, first as num, 
+                               (st_x(ST_StartPoint( geom ))*100000)::int,
+                               (st_y(ST_StartPoint( geom ))*100000)::int, 0, 0
+                          from p
+                        union
+                        select id, side, last as num, 
+                               (st_x(ST_EndPoint( geom ))*100000)::int,
+                               (st_y(ST_EndPoint( geom ))*100000)::int, 0, 0
+                          from p
+                      ) as t
+                where (id, side, num) not in ( select id, side, num from mid_address_point )
                 '''
         self.db.do_big_insert( sqlcmd )
         # delete such range

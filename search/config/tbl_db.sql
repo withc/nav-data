@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS tbl_genre_info    CASCADE;
 DROP TABLE IF EXISTS tbl_city_info     CASCADE;
 DROP TABLE IF EXISTS tbl_city_name     CASCADE;
 DROP TABLE IF EXISTS tbl_postcode_info CASCADE;
+DROP TABLE IF EXISTS tbl_postcode_city CASCADE;
 
 DROP TABLE IF EXISTS tbl_street_info   CASCADE;
 DROP TABLE IF EXISTS tbl_street_name   CASCADE;
@@ -27,6 +28,9 @@ DROP TABLE IF EXISTS tmp_place_admin         CASCADE;
 DROP TABLE IF EXISTS tmp_place_area          CASCADE;
 DROP TABLE IF EXISTS tmp_place_name          CASCADE;
 DROP TABLE IF EXISTS tmp_poi                 CASCADE;
+DROP TABLE IF EXISTS tmp_poi_duplicate       CASCADE;
+DROP TABLE IF EXISTS tmp_postcode            CASCADE;
+
 DROP TABLE IF EXISTS tmp_street              CASCADE;
 DROP TABLE IF EXISTS tmp_poi_attr            CASCADE;
 DROP TABLE IF EXISTS tmp_poi_geom            CASCADE;
@@ -63,16 +67,27 @@ create table tbl_genre_info
     level      smallint     not null,
     imp        smallint     not null,
     name       varchar(128) not null,
-    tr_name    varchar(128) not null
+    tr_name    varchar(128) not null,
+    cnt        int          not null
 );
 
 create table tbl_postcode_info
 (
+    id      int         PRIMARY KEY,
     area0   int         not null,
-    id      int         not null, 
     pocode  varchar(32) not null,
     lon     int,
     lat     int    
+);
+
+create table tbl_postcode_city
+(
+    id     int          not null,
+    area0  int          not null,
+    area1  int          not null,
+    area2  int          not null,
+    area3  int          not null,
+    area4  int          not null
 );
 
 create table tbl_city_info
@@ -84,7 +99,8 @@ create table tbl_city_info
     area3  int          not null,
     area4  int          not null,
     lon    int          not null,
-    lat    int          not null
+    lat    int          not null,
+    PRIMARY KEY ( area0, area1, area2, area3, area4 ) 
 );
 
 create table tbl_city_name
@@ -106,7 +122,7 @@ create table tbl_city_name
 
 CREATE TABLE tbl_street_info
 (
-  id        int          not null,
+  id        int          PRIMARY KEY,
   level     int          not null,
   area0     int          not null,
   area1     int          not null,
@@ -139,7 +155,7 @@ create table tbl_street_full_name
 --
 create table tbl_poi_info
 (
-  id        int  NOT NULL,
+  id        int  PRIMARY KEY,
   
   lon       int  NOT NULL,
   lat       int  NOT NULL,
@@ -210,7 +226,6 @@ create table tbl_dealer_data
     lat       int          NOT NULL,
     entry_lon int,
     entry_lat int
-    
 );
 ---
 create table tbl_street_hno_range
@@ -309,11 +324,25 @@ create table tmp_place_area
     area4  int       not null
 );
 
-create table tmp_poi
+create table tmp_postcode
 (
     key    bigint    not null,
     type   smallint  not null,
     id     int       not null
+);
+
+create table tmp_poi
+(
+    key    bigint    not null,
+    type   smallint  not null,
+    pkey   bigint    not null,
+    id     int       not null
+);
+
+create table tmp_poi_duplicate
+( 
+    key       bigint  not null,
+    save      char(1) not null
 );
 
 create table tmp_poi_attr
@@ -328,10 +357,10 @@ create table tmp_poi_attr
 create table tmp_poi_geom
 ( 
     id        int not null,
-    lon       int not null,
-    lat       int not null,
-    entry_lon int not null,
-    entry_lat int not null
+    mlon       int not null,
+    mlat       int not null,
+    entry_mlon int not null,
+    entry_mlat int not null
 );
 
 create table tmp_street

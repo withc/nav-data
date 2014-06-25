@@ -4,8 +4,7 @@ import load.common_work
 import load.dealer_data
 
 def featureFactory( name, loader ):
-    
-    
+
     if name == 'tomtom':
         import load.tomtom
         loader.add_process( load.tomtom.start_work.CStartWork() )
@@ -40,6 +39,7 @@ def featureFactory( name, loader ):
         loader.add_feature( load.rdf.feat_postcode.CPostcode( ) )
         loader.add_feature( load.rdf.feat_link.CLink( ) )
         
+        loader.add_feature( load.rdf.feat_extpoi.CExtPoi() )
         loader.add_feature( load.rdf.feat_poi.CPoi( ) )
         loader.add_feature( load.rdf.feat_housenumber.CHouseNumber())
         

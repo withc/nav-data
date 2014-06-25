@@ -10,6 +10,7 @@ class CPoi(load.feature.CFeature):
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
                     select distinct 1000, poi_id, 1000  
                       from rdf_poi
+                     order by poi_id
                  '''
         self.db.do_big_insert( sqlcmd )
         

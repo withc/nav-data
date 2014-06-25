@@ -8,7 +8,9 @@ class CPoi(load.feature.CFeature):
         sqlcmd = '''
                     insert into mid_feat_key( feat_type, org_id1, org_id2 )
                     select distinct 1000, objectid, 1000 
-                    from org_landmark
+                      from org_landmark
+                     where prov_code is not null
+                     order by objectid
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -54,7 +56,7 @@ class CPoi(load.feature.CFeature):
               insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                 with pn ( key, type, namt, name, seq )
                 as (
-                     select fe.feat_key, fe.feat_type, p.nav_namt, p.nav_name,
+                     select fe.feat_key, fe.feat_type, p.nav_namt, mid_globetech_eng_name(p.nav_name),
                             row_number() over ( partition by fe.feat_key order by p.gid ) as seq
                        from (
                                select objectid, nav_namt, nav_name, min(gid) as gid
