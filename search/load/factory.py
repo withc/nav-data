@@ -37,6 +37,7 @@ def featureFactory( name, loader ):
         loader.add_feature( load.rdf.feat_category.CPoiCategory() )
         loader.add_feature( load.rdf.feat_place.CPlace( ) )
         loader.add_feature( load.rdf.feat_postcode.CPostcode( ) )
+        loader.add_feature( load.rdf.feat_link.CNode( ) )
         loader.add_feature( load.rdf.feat_link.CLink( ) )
         
         loader.add_feature( load.rdf.feat_extpoi.CExtPoi() )
