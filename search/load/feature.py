@@ -69,18 +69,13 @@ class CFeature(object):
     
     def _domake_common_category(self):
         sqlcmd = '''
-                 insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name, tr_name)
-                 select per_code, gen1, gen2, gen3, level, imp, name, tr_name
+                 insert into mid_poi_category(id, level, parent_id, class, name)
+                 select id, level, parent_id, class, name
                    from ( 
-                          select distinct per_code, gen1, gen2, gen3, level, imp, name, tr_name
+                          select distinct id, level, parent_id, class, name
                           from temp_org_category
                          ) as t
-                   order by level, case level 
-                                      when 1 then  0
-                                      when 2 then  gen1
-                                      else   (gen1<<8) + gen2
-                                    end,
-                             name
+                   order by id
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -104,32 +99,20 @@ class CFeature(object):
         
         self.logger.info('generate %s name id' % feat) 
        
-        sqlcmd = '''
-                   insert into temp_<f>_name_gen_id( gid, key, grp, namesetid, nameid )
-                   with t 
-                    as  (
-                           select gid, key, grp, dense_rank() over ( order by <order> ) as nameid
-                             from temp_<f>_name
-                        )
-                    select t.gid, t.key, t.grp, t3.setid, t.nameid
-                      from t
-                      join (
-                            select distinct key, grp, dense_rank() over ( order by nameset ) as setid
-                              from (
-                                     select key, grp, array_agg( nameid ) as nameset
-                                       from ( select * from t order by key, grp, nameid ) as t1
-                                      group by key, grp
-                                   ) t2
-                            ) as t3
-                         on t.key = t3.key and t.grp = t3.grp
-                 '''  
-        
         if feat == 'street':
             # gen id according to name, we will adjust the tr_name to same spelling.
-            sqlcmd = sqlcmd.replace( '<order>', 'langcode, (name)::bytea' )
+            sqlcmd = '''
+                   insert into temp_<f>_name_gen_id( gid, nameid )
+                   select gid, dense_rank() over ( order by langcode, replace( name, E'\\\\','')::bytea ) 
+                     from temp_<f>_name
+                  '''  
         else:
-            sqlcmd = sqlcmd.replace( '<order>', 'langcode, (name)::bytea, tr_lang, tr_name' )
-            
+            sqlcmd = '''
+                   insert into temp_<f>_name_gen_id( gid, nameid )
+                   select gid, dense_rank() over ( order by langcode, replace(name,E'\\\\','')::bytea, tr_lang, tr_name ) 
+                     from temp_<f>_name
+                 '''
+               
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
         sqlcmd = '''
@@ -167,21 +150,22 @@ class CFeature(object):
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
         
         sqlcmd = '''
-                   insert into mid_<f>_nameset( id, nameid)
-                   select distinct  namesetid, nameid
-                     from temp_<f>_name         as n
-                     join temp_<f>_name_gen_id  as g
-                       on n.gid = g.gid
-                 '''
-        self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
-        
-        sqlcmd = '''
-                   insert into mid_<f>_to_name( key, type, nametype, namesetid)
-                   select distinct n.key, n.type, nametype, namesetid
-                     from temp_<f>_name         as n
-                     join temp_<f>_name_gen_id  as g
-                       on n.gid = g.gid
-                    order by n.key
+                   insert into mid_<f>_to_name( key, type, nametype, nameid)
+                   select key, type, nametype, nameid
+                     from (
+                           select key, type, nametype, nameid, 
+                                  row_number() over ( partition by key, type, nameid
+                                                      order by case nametype
+                                                                  when 'ON' then 1
+                                                                  when 'RN' then 2
+                                                                  else 3
+                                                                end ) as seq
+                             from temp_<f>_name         as n
+                             join temp_<f>_name_gen_id  as g
+                               on n.gid = g.gid
+                           ) as tt
+                     where seq = 1        
+                     order by key
                  '''
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
     

@@ -2,7 +2,6 @@ import load.feature
 
 class CPlace(load.feature.CFeature):
     def __init__(self ):
-        print "gaode's place"
         load.feature.CFeature.__init__(self, 'place')
  
     def _domake_key(self):
@@ -16,9 +15,9 @@ class CPlace(load.feature.CFeature):
                               when 3 then 3009
                               when 4 then 3010
                               else 0
-                           end, ad_code::int, ad_level
+                           end, ad_code::int, ad_level*10
                       from org_adminarea where ad_level < 5
-                      order by ad_level, ad_code
+                      order by ad_level*10, ad_code
                  '''
         self.db.do_big_insert( sqlcmd )
         
@@ -45,7 +44,8 @@ class CPlace(load.feature.CFeature):
                         )  as ad
                    join mid_feat_key   as f
                      on ad.code     = f.org_id1 and 
-                        ad.ad_level = f.org_id2
+                        ad.ad_level = f.org_id2/10 and
+                        f.org_id2%10 = 0
                  ''' 
         self.db.do_big_insert( sqlcmd )
         
@@ -61,7 +61,8 @@ class CPlace(load.feature.CFeature):
                         )  as ad
                    join mid_feat_key   as f
                      on ad.code     = f.org_id1 and 
-                        ad.ad_level = f.org_id2
+                        ad.ad_level = f.org_id2/10 and
+                        f.org_id2%10 = 0
                  '''
         self.db.do_big_insert( sqlcmd )
     
@@ -89,7 +90,38 @@ class CPlace(load.feature.CFeature):
     def _domake_relation(self):
         sqlcmd = '''
                 insert into mid_place_admin( key, type, a0, a1, a2, a7, a8, a9 )
+                select feat_key, feat_type, feat_key, 0, 0, 0, 0, 0
+                  from mid_feat_key
+                 where feat_type = 3001
+               union
+                select a1.feat_key, a1.feat_type, a0.feat_key, a1.feat_key, 0, 0, 0, 0
+                  from mid_feat_key  as a1
+                  join mid_feat_key  as a0
+                    on a1.feat_type = 3002 and
+                       a0.feat_type = 3001 
+                union
+                select a8.feat_key, a8.feat_type, a0.feat_key, a1.feat_key, 0, 0, a8.feat_key, 0
+                  from mid_feat_key  as a8
+                  join mid_feat_key  as a1
+                    on a8.feat_type = 3009 and
+                       a1.feat_type = 3002 and
+                       a8.org_id1/10000  = a1.org_id1/10000
+                  join mid_feat_key  as a0
+                    on a0.feat_type = 3001  
+                union
+                select a9.feat_key, a9.feat_type, a0.feat_key, a1.feat_key, 0, 0, a8.feat_key, a9.feat_key
+                  from mid_feat_key  as a9
+                  join mid_feat_key  as a8
+                    on a9.feat_type = 3010 and
+                       a8.feat_type = 3009 and
+                       a9.org_id1/100  = a8.org_id1/100
+                  join mid_feat_key  as a1
+                    on a8.feat_type = 3009 and
+                       a1.feat_type = 3002 and
+                       a8.org_id1/10000  = a1.org_id1/10000
+                  join mid_feat_key  as a0
+                    on a0.feat_type = 3001
                 '''
-        #self.db.do_big_insert( sqlcmd )
+        self.db.do_big_insert( sqlcmd )
         
         

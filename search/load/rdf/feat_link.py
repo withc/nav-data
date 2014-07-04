@@ -43,13 +43,13 @@ class CLink(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                    insert into temp_street_name( key, type, nametype, grp, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                    insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                     select f.feat_key, f.feat_type, 
                            case 
                              when n.route_type is not null then 'RN'
                              when n.name_type = 'B' and n.is_exonym = 'N' then 'ON'
                              else 'AN'
-                           end, row_number() over ( partition by f.feat_key, f.feat_type ),
+                           end,
                            n.language_code,n.street_name,
                            COALESCE(tr.transliteration_type, ''),   COALESCE( tr.name,''),
                            COALESCE(ph.phonetic_language_code, ''), COALESCE( ph.phonetic_string, '') 

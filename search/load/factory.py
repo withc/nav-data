@@ -47,7 +47,9 @@ def featureFactory( name, loader ):
         import load.gaode
         loader.add_process( load.common_work.CStartProcess() )
         loader.add_process( load.common_work.CEndProcess() )
+        loader.add_feature( load.gaode.feat_category.CPoiCategory() )
         loader.add_feature( load.gaode.feat_place.CPlace( ) )
+        loader.add_feature( load.gaode.feat_postcode.CPostcode( ) )
         loader.add_feature( load.gaode.feat_link.CLink( ) )
         
         loader.add_feature( load.gaode.feat_poi.CPoi( ) )

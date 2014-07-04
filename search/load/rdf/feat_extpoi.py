@@ -32,8 +32,8 @@ class CExtPoi(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_poi( key, type, gen_code, imp )
-                    select f.feat_key, f.feat_type, c.per_code, 0
+                    insert into mid_poi( key, type, cat_id, imp )
+                    select f.feat_key, f.feat_type, c.id, 0
                       from temp_ext_poi          as p
                       join mid_feat_key          as f
                         on p.poi_source = f.org_id2 and

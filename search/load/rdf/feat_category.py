@@ -12,7 +12,7 @@ class CPoiCategory(load.feature.CFeature):
                 continue
             fields = line.split(';')
             sqlcmd = '''
-                      insert into temp_org_category values(%s,%s,%s,%s,%s,%s,%s,%s)
+                      insert into temp_org_category values(%s,%s,%s,%s,%s,%s)
                      '''
             self.db.execute( sqlcmd, fields )
         self.db.commit()

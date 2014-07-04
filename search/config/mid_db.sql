@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS mid_poi_address     CASCADE;
 DROP TABLE IF EXISTS mid_poi_category    CASCADE;
 DROP TABLE IF EXISTS mid_poi_children    CASCADE;
 DROP TABLE IF EXISTS mid_poi_dealer      CASCADE;
+DROP TABLE IF EXISTS mid_poi_rel_cat     CASCADE;
 
 DROP TABLE IF EXISTS mid_link               CASCADE;
 
@@ -28,7 +29,6 @@ DROP TABLE IF EXISTS temp_postcode            CASCADE;
 DROP TABLE IF EXISTS temp_dealer              CASCADE;
 
 -- for street's name/geom
-DROP TABLE IF EXISTS mid_street_nameset        CASCADE;
 DROP TABLE IF EXISTS mid_street_name           CASCADE;
 DROP TABLE IF EXISTS mid_street_geometry       CASCADE;
 DROP TABLE IF EXISTS mid_street_to_name        CASCADE;
@@ -38,8 +38,7 @@ DROP TABLE IF EXISTS temp_street_name_gen_id   CASCADE;
 DROP TABLE IF EXISTS temp_street_geom          CASCADE;
 DROP TABLE IF EXISTS temp_street_geom_gen_id   CASCADE;
 
--- for poi's name/geom 
-DROP TABLE IF EXISTS mid_poi_nameset          CASCADE;
+-- for poi's name/geom
 DROP TABLE IF EXISTS mid_poi_name             CASCADE;
 DROP TABLE IF EXISTS mid_poi_geometry         CASCADE;
 DROP TABLE IF EXISTS mid_poi_to_name          CASCADE;
@@ -115,14 +114,12 @@ create table mid_postcode
 -- category
 create table mid_poi_category
 (
-    per_code   bigint       not null PRIMARY KEY,
-    gen1       int          not null,
-    gen2       int          not null,
-    gen3       int          not null,
+    id         int          not null PRIMARY KEY,
     level      smallint     not null,
-    imp        smallint     not null,
-    name       varchar(128) not null,
-    tr_name    varchar(128) not null default ''
+    parent_id  int          not null,
+    class      smallint     not null,
+    name       varchar(128) not null
+   
 );
 
 -- poi
@@ -130,8 +127,15 @@ create table mid_poi
 (
     key       bigint   not null PRIMARY KEY,
     type      smallint not null,
-    gen_code  bigint   not null,
+    cat_id    bigint   not null,
     imp       smallint not null
+);
+
+create table mid_poi_rel_cat
+(
+    key        bigint   not null,
+    type       smallint not null,
+    cat_id     int      not null
 );
 
 create table mid_poi_attr_value
@@ -222,12 +226,6 @@ create table mid_bldg_point
      entry_y  int          not null    
 );
 -- name
-create table mid_street_nameset
-(
-    id        bigint      not null,
-    nameid    bigint      not null
-);
-
 create table mid_street_name
 (
     id        bigint       not null PRIMARY KEY,
@@ -237,12 +235,6 @@ create table mid_street_name
     tr_name   varchar(128) not null,
     ph_lang   char(3)      not null,
     ph_name   varchar(128) not null
-);
-
-create table mid_poi_nameset
-(
-    id        bigint      not null,
-    nameid    bigint      not null
 );
 
 create table mid_poi_name
@@ -284,10 +276,10 @@ create table mid_feature_to_feature
 
 create table mid_street_to_name
 (
-    key        bigint   not null,
-    type       smallint not null,
-    nametype   char(2)  not null,
-    namesetid  bigint   not null
+    key       bigint   not null,
+    type      smallint not null,
+    nametype  char(2)  not null,
+    nameid    bigint   not null
 );
 
 create table mid_street_to_geometry
@@ -303,7 +295,7 @@ create table mid_poi_to_name
     key       bigint   not null,
     type      smallint not null,
     nametype  char(2)  not null,
-    namesetid    bigint   not null
+    nameid    bigint   not null
 );
 
 create table mid_poi_to_geometry
@@ -321,7 +313,6 @@ create table temp_street_name
     key       bigint   not null,
     type      smallint not null,
     nametype  char(2)  not null,
-    grp       smallint not null,
     
     langcode  char(3)      not null,
     name      varchar(128) not null,
@@ -334,9 +325,6 @@ create table temp_street_name
 create table temp_street_name_gen_id
 (
     gid       int      not null,
-    key       bigint   not null, 
-    grp       smallint not null, 
-    namesetid int      not null,
     nameid    int      not null
 );
 
@@ -362,7 +350,6 @@ create table temp_poi_name
     key       bigint   not null,
     type      smallint not null,
     nametype  char(2)  not null,
-    grp       smallint not null,
     
     langcode  char(3)      not null,
     name      varchar(128) not null,
@@ -375,9 +362,6 @@ create table temp_poi_name
 create table temp_poi_name_gen_id
 (
     gid       int      not null,
-    key       bigint   not null, 
-    grp       smallint not null, 
-    namesetid int      not null,
     nameid    int      not null
 );
 
@@ -399,15 +383,13 @@ create table temp_poi_geom_gen_id
 
 create table temp_org_category
 (
-    per_code   bigint       not null,
-    gen1       int          not null,
-    gen2       int          not null,
-    gen3       int          not null,
+    
+    id         int          not null,
     level      smallint     not null,
-    name       varchar(128) not null,
-    imp        smallint     not null,
+    parent_id  int          not null,
+    class      smallint     not null,
     org_code   bigint       not null,
-    tr_name    varchar(128) not null default ''
+    name       varchar(128) not null
 );
 
 --

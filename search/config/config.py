@@ -3,7 +3,7 @@ class Config( object ):
     __instance = None
     _vendor  ='rdf'
     _host    ='172.26.179.187'
-    _dbname  ='14tmap_idn_rdf_2014Q4'
+    _dbname  ='test_sgp_rdf'
     _user    ='postgres'
     _password=''
 

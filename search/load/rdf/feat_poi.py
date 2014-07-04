@@ -16,9 +16,9 @@ class CPoi(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_poi( key, type, gen_code, imp )
+                    insert into mid_poi( key, type, cat_id, imp )
                     select f.feat_key, f.feat_type, 
-                           COALESCE(sc.per_code, c.per_code), 
+                           COALESCE(sc.id, c.id), 
                            case national_importance 
                              when 'Y' then 1
                              else 0 
@@ -53,12 +53,12 @@ class CPoi(load.feature.CFeature):
         
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_poi_name( key, type, nametype, grp, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                 insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                  select f.feat_key, f.feat_type, 
                         case  
                              when p.name_type = 'B' and p.is_exonym = 'N' then 'ON'
                              else 'AN'
-                           end, row_number() over ( partition by f.feat_key, f.feat_type ),
+                           end,
                         n.language_code,n.name,
                         COALESCE(tr.transliteration_type, ''),   COALESCE( tr.name,''),
                         COALESCE(ph.phonetic_language_code, ''), COALESCE( ph.phonetic_string, '') 
