@@ -19,8 +19,8 @@ class CLink(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_link( key, type )
-                    select fe.feat_key, fe.feat_type
+                    insert into mid_link( key, type, frc, fow, fnode, tnode )
+                    select fe.feat_key, fe.feat_type, -1, -1, 0, 0
                       from ( 
                            select distinct link_id
                              from rdf_road_link

@@ -182,7 +182,7 @@ create table mid_link
     fow    smallint not null,
     
     fnode  bigint   not null,
-    tnode  bigint   not null,
+    tnode  bigint   not null
 );
 
 -- house number

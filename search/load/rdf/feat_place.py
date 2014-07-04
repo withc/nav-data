@@ -17,8 +17,8 @@ class CPlace(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                 insert into  mid_place( key, type )
-                      select  feat_key, feat_type 
+                 insert into  mid_place( key, type, pop, cap )
+                      select  feat_key, feat_type, 0, 'N' 
                         from  mid_feat_key
                        where  3001 <= feat_type and feat_type <= 3010
                     order by  feat_type, feat_key

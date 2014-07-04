@@ -25,8 +25,8 @@ class CNode(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_link( key, type )
-                    select fe.feat_key, fe.feat_type
+                    insert into mid_node( key, type )
+                    select fe.feat_key, fe.feat_type 
                       from rdf_node       as n
                       join mid_feat_key   as fe
                         on n.node_id = fe.org_id1 and  fe.org_id2 = 1002
