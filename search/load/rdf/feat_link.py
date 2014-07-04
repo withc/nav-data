@@ -27,7 +27,7 @@ class CLink(load.feature.CFeature):
                             order by link_id
                            )              as l
                       join mid_feat_key   as fe
-                        on l.link_id = fe.org_id1 and   fe.org_id2 = 2000
+                        on l.link_id = fe.org_id1 and fe.org_id2 = 2000
                  '''
         self.db.do_big_insert( sqlcmd )
     

@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS mid_poi_dealer      CASCADE;
 DROP TABLE IF EXISTS mid_poi_rel_cat     CASCADE;
 
 DROP TABLE IF EXISTS mid_link               CASCADE;
+DROP TABLE IF EXISTS mid_node               CASCADE;
 
 DROP TABLE IF EXISTS mid_link_road          CASCADE;
 DROP TABLE IF EXISTS mid_place_road         CASCADE;
@@ -77,16 +78,19 @@ CREATE TABLE mid_full_area
 -- place
 create table mid_country_profile
 (
-    iso       char(3)  not null,
-    off_lang  char(3)  not null,
-    key       bigint   not null,
-    type      smallint not null
+    iso           char(3)  not null,
+    off_lang      char(3)  not null,
+    key           bigint   not null,
+    type          smallint not null,
+    driving_side  char(1)  not null
 );
 
 create table mid_place
 (
     key   bigint   not null PRIMARY KEY,
-    type  smallint not null
+    type  smallint not null,
+    pop   smallint not null,
+    cap   char(1)  not null
 );
 
 create table mid_place_admin
@@ -164,10 +168,21 @@ create table mid_poi_children
 );
 
 -- street
-create table mid_link
+create table mid_node
 (
     key   bigint   not null PRIMARY KEY,
     type  smallint not null
+);
+
+create table mid_link
+(
+    key    bigint   not null PRIMARY KEY,
+    type   smallint not null,
+    frc    smallint not null,
+    fow    smallint not null,
+    
+    fnode  bigint   not null,
+    tnode  bigint   not null,
 );
 
 -- house number

@@ -1,9 +1,10 @@
 featury type:
 --point
 1000: poi
+1002: node
 
 --line
-2000:road element
+2000:road element( link )
 
 --area
 3001:country
