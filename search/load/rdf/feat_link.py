@@ -9,25 +9,27 @@ class CLink(load.feature.CFeature):
         sqlcmd = '''
                  insert into mid_feat_key( feat_type, org_id1, org_id2 )
                  select 2000, link_id, 2000
-                   from ( 
-                         select distinct link_id
-                           from rdf_road_link
-                          order by link_id
-                        ) as l
+                   from rdf_nav_link 
+                  order by link_id
                  '''
         self.db.do_big_insert( sqlcmd )
         
     def _domake_feature(self):
         sqlcmd = '''
                     insert into mid_link( key, type, frc, fow, fnode, tnode )
-                    select fe.feat_key, fe.feat_type, -1, -1, 0, 0
-                      from ( 
-                           select distinct link_id
-                             from rdf_road_link
-                            order by link_id
-                           )              as l
+                    select fe.feat_key, fe.feat_type, functional_class, -1, ff.feat_key , ft.feat_key
+                      from rdf_nav_link   as nl
+                      join rdf_link       as l
+                        on nl.link_id = l.link_id
                       join mid_feat_key   as fe
-                        on l.link_id = fe.org_id1 and fe.org_id2 = 2000
+                        on nl.link_id = fe.org_id1      and
+                           fe.org_id2 = 2000
+                      join mid_feat_key   as ff
+                        on l.ref_node_id = ff.org_id1   and
+                           ff.org_id2    = 1002
+                      join mid_feat_key   as ft
+                        on l.nonref_node_id = ft.org_id1 and
+                           ft.org_id2       = 1002
                  '''
         self.db.do_big_insert( sqlcmd )
     

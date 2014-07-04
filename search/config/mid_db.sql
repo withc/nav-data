@@ -81,8 +81,8 @@ create table mid_country_profile
     iso           char(3)  not null,
     off_lang      char(3)  not null,
     key           bigint   not null,
-    type          smallint not null,
-    driving_side  char(1)  not null
+    type          smallint not null
+    -- driving_side  char(1)  not null
 );
 
 create table mid_place
