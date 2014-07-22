@@ -20,14 +20,10 @@ class CCompiler(object):
         self.logger.info('------------ end -------------')
             
     def _prepare(self):
-        self.logger.info('create rdb table and function') 
-        fp = open(r'.\config\rdb_db.sql','r')
-        self.db.execute( fp.read() )
-        fp.close()
-        fp = open(r'.\config\rdb_function.sql','r')
-        self.db.execute( fp.read() )
-        fp.close()
-        
+        self.logger.info('create dest table and function') 
+        self.db.run( r'.\config\des_db.sql' )
+        self.db.run( r'.\config\rdb_function.sql' )
+
     def _addEntity(self):
         self.entity.append( place.CPlace(self.db) )
         #self.entity.append( link.CLink(self.db) )

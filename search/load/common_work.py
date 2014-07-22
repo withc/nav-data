@@ -69,8 +69,7 @@ class CEndProcess(load.feature.CWork):
                   order by po.tkey
                  '''
         self.db.do_big_insert( sqlcmd )
-        
-        
+
     def _create_index(self):
         self.logger.info('create index for mid table')
         self.db.createIndex('mid_poi_attr_value',      'key'    )

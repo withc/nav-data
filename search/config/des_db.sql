@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS des_place          CASCADE;
+DROP TABLE IF EXISTS des_place           CASCADE;
 DROP TABLE IF EXISTS des_place_name      CASCADE;
 DROP TABLE IF EXISTS des_place_nameset   CASCADE;
 DROP TABLE IF EXISTS des_place_admin     CASCADE;
