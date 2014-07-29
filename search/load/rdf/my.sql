@@ -25,7 +25,7 @@ create table temp_ext_poi
     cat_id   int          not null,
     lang     char(3)      not null,
     name     varchar(128) not null,
-    
+    iso      char(3)      not null,
     pl2      varchar(128),
     pl3      varchar(128),
     pl4      varchar(128),

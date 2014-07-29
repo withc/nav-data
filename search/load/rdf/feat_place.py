@@ -89,25 +89,38 @@ class CPlace(load.feature.CFeature):
                        on p.location_id = l.location_id 
                      where p.capital_country = 'Y' or p.capital_order1 = 'Y'
                    )
-                select distinct f.feat_key, f.feat_type, pp.geom
+                select feat_key, feat_type, geom
                   from (
-                         select 1 as t, a1 as a, geom from p
-                         union 
-                         select 2 as t, a2 as a, geom from p
-                         union 
-                         select 8 as t, a8 as a, geom from p
-                         union  
-                         select 9 as t, a9 as a, geom from p
-                       ) as pp
-                  join mid_feat_key  as f
-                    on pp.a = f.org_id1 and pp.t = f.org_id2
+                        select f.feat_key, f.feat_type, pp.geom, row_number() over ( partition by f.feat_key ) as seq 
+                          from (
+                                 select 1 as t, a1 as a, geom from p
+                                 union 
+                                 select 2 as t, a2 as a, geom from p
+                                 union 
+                                 select 8 as t, a8 as a, geom from p
+                                 union  
+                                 select 9 as t, a9 as a, geom from p
+                               ) as pp
+                          join mid_feat_key  as f
+                            on pp.a = f.org_id1 and pp.t = f.org_id2
+                       ) as tt
+                       where seq = 1
                  '''
         self.db.do_big_insert( sqlcmd )
-        ## a2, a8, a9
+        ## a1, a2, a8, a9
         sqlcmd = '''
                insert into temp_place_point( key, type, geom )
                select f.feat_key, f.feat_type, ST_GeometryFromText(l.location, 4326) as geom
                  from (
+                     select p.order1_id as a_id, p.location_id,
+                             row_number() over ( partition by p.order1_id 
+                                                 order by case 
+                                                             when population is null then 0
+                                                             else population 
+                                                          end desc, street_name
+                                                ) as seq
+                        from rdf_city_poi  as p
+                    union
                       select p.order2_id as a_id, p.location_id,
                              row_number() over ( partition by p.order2_id 
                                                  order by case 
@@ -136,7 +149,7 @@ class CPlace(load.feature.CFeature):
                         from rdf_city_poi  as p
                           ) as t
                      join mid_feat_key  as f
-                       on t.a_id = f.org_id1 and t.seq = 1 
+                       on t.a_id = f.org_id1 and ( f.feat_type between 3001 and 3010 ) and t.seq = 1 
                      join wkt_location  as l
                        on t.location_id = l.location_id  
                      where f.feat_key not in ( select key from temp_place_point )
@@ -151,18 +164,22 @@ class CPlace(load.feature.CFeature):
                   join ( 
                         select *  
                           from rdf_admin_hierarchy
-                         where admin_place_id not in
-                          ( 
-                            select  country_id from rdf_city_poi
-                            union
-                            select  order1_id from rdf_city_poi
-                            union
-                            select  order2_id from rdf_city_poi
-                            union
-                            select  order8_id from rdf_city_poi
-                            union
-                            select  builtup_id from rdf_city_poi 
-                           )
+                         where admin_place_id  not  in
+                              ( 
+                               select id 
+                                 from (
+                                        select  country_id as id from rdf_city_poi
+                                        union
+                                        select  order1_id as id from rdf_city_poi
+                                        union
+                                        select  order2_id as id from rdf_city_poi
+                                        union
+                                        select  order8_id as id from rdf_city_poi
+                                        union
+                                        select  builtup_id as id from rdf_city_poi 
+                                      ) as tt 
+                                  where id is not null
+                                )
                        ) as a
                     on c.named_place_id = a.admin_place_id
                   join rdf_carto_face as f
@@ -188,12 +205,12 @@ class CPlace(load.feature.CFeature):
                            join wkt_link      as w
                              on l.link_id = w.link_id
                            join mid_feat_key  as fk
-                             on l.place_id = fk.org_id1 and  fk.org_id2 = 9
+                             on l.place_id = fk.org_id1 and  ( fk.feat_type between 3001 and 3010 ) 
                           where fk.feat_key not in 
                                  (
-                                   select key from temp_place_point where type = 3010
+                                   select key from temp_place_point where type between 3001 and 3010
                                    union
-                                   select key from temp_street_geom where type = 3010
+                                   select key from temp_street_geom where type between 3001 and 3010
                                  )
                            group by fk.feat_key,  fk.feat_type
                          ) as t
@@ -240,7 +257,11 @@ class CPlace(load.feature.CFeature):
                  select distinct a0.iso_country_code, a0.language_code, f.feat_key, f.feat_type
                    from mid_feat_key    as f
                    join rdf_country     as a0
-                     on a0.country_id = f.org_id1 and  0 = f.org_id2
+                     on a0.country_id = f.org_id1 and
+                        0 = f.org_id2
+                   --join rdf_country_profile  as c
+                   --  on a0.iso_country_code = c.iso_country_code
+                  order by a0.iso_country_code
                  '''
         self.db.do_big_insert( sqlcmd )
         sqlcmd = '''
@@ -270,17 +291,18 @@ class CPlace(load.feature.CFeature):
                        COALESCE( f9.feat_key, 0 )
                   from rdf_admin_hierarchy as a
              left join mid_feat_key        as fe
-                    on a.admin_place_id = fe.org_id1
+                    on a.admin_place_id = fe.org_id1 and 3001 <= fe.feat_type and fe.feat_type <= 3010
              left join mid_feat_key        as f0
-                    on a.country_id = f0.org_id1
+                    on a.country_id = f0.org_id1 and f0.feat_type = 3001
              left join mid_feat_key        as f1
-                    on a.order1_id = f1.org_id1
+                    on a.order1_id = f1.org_id1  and f1.feat_type = 3002
              left join mid_feat_key        as f2
-                    on a.order2_id = f2.org_id1
-             left join mid_feat_key        as f8
-                    on a.order8_id = f8.org_id1
+                    on a.order2_id = f2.org_id1  and f2.feat_type = 3003
+             left join mid_feat_key        as f8 
+                    on a.order8_id = f8.org_id1  and f8.feat_type = 3009
              left join mid_feat_key        as f9
-                    on a.builtup_id = f9.org_id1
+                    on a.builtup_id = f9.org_id1 and f9.feat_type = 3010
+                 order by fe.feat_type, fe.feat_key
                 '''
         self.db.do_big_insert( sqlcmd )
         

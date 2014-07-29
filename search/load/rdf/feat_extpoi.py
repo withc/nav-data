@@ -6,10 +6,10 @@ class CExtPoi(load.feature.CFeature):
  
     def _domake_key(self):
         sqlcmd = '''
-                 insert into temp_ext_poi ( poi_source, poi_key, cat_id, lang, name,
+                 insert into temp_ext_poi ( poi_source, poi_key, cat_id, lang, name, iso,
                                             pl2, pl3, pl4, pl5, postcode,
                                             st, hno, tel, lon, lat )
-                 select %s, poi_key, category_id_text::int, poi_name_lan_code, text_text,
+                 select %s, poi_key, category_id_text::int, poi_name_lan_code, text_text, countrycode_text,
                         plclvl2_text, plclvl3_text, plclvl4_text, plclvl5_text, nt_postal_text,
                         case sttype_before
                            when 'true'  then sttype_text||' '||stname_text
@@ -32,8 +32,12 @@ class CExtPoi(load.feature.CFeature):
         
     def _domake_feature(self):
         sqlcmd = '''
-                    insert into mid_poi( key, type, cat_id, imp )
-                    select f.feat_key, f.feat_type, c.id, 0
+                    insert into mid_poi( key, type, gen_code, imp )
+                    select f.feat_key, f.feat_type, 
+                           case
+                             when c.per_code = 440532992 then srch_place_worship(p.name)+c.per_code
+                             else c.per_code
+                           end, 0
                       from temp_ext_poi          as p
                       join mid_feat_key          as f
                         on p.poi_source = f.org_id2 and
@@ -91,12 +95,16 @@ class CExtPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         
     def _domake_relation(self):
+        #the next sql is so slow in some database, we have analyze table when call do_big_insert, 
+        #but it is fail to analyze table in some database.
+        #anyway, analyze table mid_street_name again here.
+        self.db.analyze('mid_street_name')
         #poi to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype ) 
                   with pl 
                   as (
-                  select k.key, k.type, n1.nameid as n1, n2.nameid as n2, n3.nameid as n3, COALESCE( n4.nameid, 0 ) as n4
+                  select k.key, k.type, n0.iso, n1.nameid as n1, n2.nameid as n2, n3.nameid as n3, COALESCE( n4.nameid, 0 ) as n4
                     from (
                          select key, type, 
                                 srch_get_admin( ary, 1 ) as k0,
@@ -107,9 +115,11 @@ class CExtPoi(load.feature.CFeature):
                            from (
                                  select key, type, array[ a0, a1, a2, a7, a8, a9] as ary
                                    from mid_place_admin
-                                   where a9 > 0
+                                   where a8 > 0 or a9 > 0
                                 ) as t
                             ) as k
+                         join mid_country_profile as n0
+                           on k.k0 = n0.key
                          join mid_street_to_name as n1
                            on k.k1 = n1.key and n1.nametype = 'ON'
                          join mid_street_to_name as n2
@@ -133,9 +143,10 @@ class CExtPoi(load.feature.CFeature):
                left join mid_street_name  as n4
                       on p.pl5 = n4.name and p.lang = n4.langcode
                left join pl
-                      on n1.id = pl.n1 and 
-                         n2.id = pl.n2 and 
-                         n3.id = pl.n3 and 
+                      on p.iso = pl.iso and
+                         n1.id = pl.n1  and 
+                         n2.id = pl.n2  and 
+                         n3.id = pl.n3  and 
                          COALESCE( n4.id, 0 ) = pl.n4
                  '''
         self.db.do_big_insert( sqlcmd )
@@ -149,7 +160,7 @@ class CExtPoi(load.feature.CFeature):
                       on p.poi_source = f.org_id2 and
                          p.poi_key    = f.org_id1
                     join temp_postcode as z
-                      on p.postcode = z.org_code 
+                      on p.postcode = z.org_code and p.iso = z.iso
                     join mid_feat_key  as fz
                       on z.id = fz.org_id1 and z.type = fz.org_id2 
                  '''

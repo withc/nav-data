@@ -6,8 +6,8 @@ class CPostcode(load.feature.CFeature):
  
     def _domake_key(self):
         sqlcmd = '''
-                    insert into temp_postcode( id, type, org_code )
-                    select row_number() over( order by zipcode ), 3136, zipcode
+                    insert into temp_postcode( id, type, iso, org_code )
+                    select row_number() over( order by zipcode ), 3136, 'IND', zipcode
                       from (
                             select distinct zipcode from org_city_nw_gc_polyline
                              union

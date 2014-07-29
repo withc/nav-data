@@ -86,12 +86,13 @@ class CHouseNumber(load.feature.CFeature):
                           when p.side = 'R' then 2
                           else 1
                        end, 
-                       p.address, p.display_lon, p.display_lat, p.lon, p.lat
+                       p.address, COALESCE( p.display_lon, p.lon ), COALESCE( p.display_lat, p.lat ), p.lon, p.lat
                   from rdf_address_point as p
                   join rdf_road_link     as l
                     on p.road_link_id= l.road_link_id
                   join temp_road_link    as t
-                       on l.link_id = t.linkid and l.road_name_id = t.nameid 
+                       on l.link_id = t.linkid and l.road_name_id = t.nameid
+                 where p.address is not null
                 '''
         self.db.do_big_insert( sqlcmd )
         

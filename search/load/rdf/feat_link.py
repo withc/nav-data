@@ -98,13 +98,15 @@ class CLink(load.feature.CFeature):
                              from rdf_link  
                             where right_postal_area_id is not null 
                          ) as l
-                    join mid_feat_key  as f
+                    join mid_feat_key    as f
                       on l.link_id = f.org_id1 and f.org_id2 = 2000
                     join rdf_postal_area as po
                       on l.postal_id = po.postal_area_id
-                    join temp_postcode as z
-                      on po.postal_code = z.org_code 
-                    join mid_feat_key  as fz
+                    join rdf_country     as c
+                      on po.country_id = c.country_id
+                    join temp_postcode   as z
+                      on po.postal_code = z.org_code and c.iso_country_code = z.iso
+                    join mid_feat_key    as fz
                       on z.id = fz.org_id1 and z.type = fz.org_id2  
                  '''
         self.db.do_big_insert( sqlcmd )

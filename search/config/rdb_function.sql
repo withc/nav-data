@@ -449,6 +449,27 @@ BEGIN
      return false;
 END;
 $$;
+
+create or replace function srch_extract_num( name varchar ) 
+returns varchar
+LANGUAGE plpgsql 
+as $$
+declare
+  len    int = length( name );
+  ch     char;
+  numstr varchar = '';
+BEGIN
+
+	  for i in 1 .. len loop
+		   ch = substring( name, i, 1);
+	       if '0' <= ch and ch <= '9' then
+	          numstr = numstr||ch;
+	       end if;   
+	  end loop;
+     
+     return numstr;
+END;
+$$;
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 create or replace function mid_globetech_eng_name( name varchar ) 
@@ -468,5 +489,43 @@ BEGIN
      END LOOP; 
 
 	return name;
+END;
+$$;
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+create or replace function srch_place_worship( name varchar  ) 
+returns int
+LANGUAGE plpgsql 
+as $$
+declare
+
+BEGIN
+     return case
+        when 1 = strpos(name, 'Al-')      then 3
+        when 1 = strpos(name, 'Baitul ')  then 3
+        when 1 = strpos(name, 'Gereja')   then 2
+        when 1 = strpos(name, 'Klenteng') then 5
+        when 1 = strpos(name, 'Masjid')   then 3
+        when 1 = strpos(name, 'Masjd')    then 3
+        when 1 = strpos(name, 'Musholla')    then 3
+        when 1 = strpos(name, 'Mushola')    then 3
+        when 1 = strpos(name, 'Mushol ')    then 3
+        when 1 = strpos(name, 'Pura')       then 5
+        when 1 = strpos(name, 'Vihara')     then 5
+        else 6
+     end;
+END;
+$$;
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+create or replace function choose_addr( tm_addr varchar, gt_addr varchar ) 
+returns varchar
+LANGUAGE plpgsql 
+as $$
+declare
+
+BEGIN
+ 
+     return gt_addr;
 END;
 $$;

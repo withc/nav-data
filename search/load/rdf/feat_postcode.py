@@ -7,6 +7,7 @@ class CPostcode(load.feature.CFeature):
     def _domake_key(self):
         #get postcode from extern table
         if self.db.existTable('xpostal_code'):
+            self.logger.info('  have xpostal_code')
             sqlcmd = '''
                     insert into temp_postcode( id, type, iso, org_code )
                     select row_number() over( order by iso_ctry, post_full ), 3136, iso_ctry, post_full

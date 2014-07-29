@@ -18,7 +18,7 @@ class CPoi(load.feature.CFeature):
         sqlcmd = '''
                     insert into mid_poi( key, type, cat_id, imp )
                     select f.feat_key, f.feat_type, 
-                           COALESCE(sc.id, c.id), 
+                           COALESCE(sc2.id, sc.id, c.id), 
                            case national_importance 
                              when 'Y' then 1
                              else 0 
@@ -33,6 +33,10 @@ class CPoi(load.feature.CFeature):
                         on p.poi_id = s.poi_id and s.seq_num = 1
                  left join temp_org_category    as sc
                         on (p.cat_id*1000+s.subcategory) = sc.org_code
+                left join rdf_poi_place_of_worship  as pw
+                        on p.poi_id = pw.poi_id
+                 left join temp_org_category    as sc2
+                        on (p.cat_id*1000+pw.building_type) = sc2.org_code
                  '''
         self.db.do_big_insert( sqlcmd )
     
@@ -106,7 +110,7 @@ class CPoi(load.feature.CFeature):
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype ) 
                   select f.feat_key, f.feat_type, 7001, 
                          COALESCE( a9.feat_key,  a8.feat_key ),
-                         COALESCE( a9.feat_type, a8.feat_key )
+                         COALESCE( a9.feat_type, a8.feat_type )
                     from rdf_poi_address as p
                     join mid_feat_key    as f
                       on p.poi_id = f.org_id1 and 1000 = f.org_id2
@@ -124,8 +128,11 @@ class CPoi(load.feature.CFeature):
                     from rdf_poi_address as p
                     join mid_feat_key    as f
                       on p.poi_id = f.org_id1 and 1000 = f.org_id2
+                    join rdf_country     as c
+                      on p.country_id = c.country_id
                     join temp_postcode as z
-                      on COALESCE( p.postal_code, p.actual_postal_code) = z.org_code 
+                      on COALESCE( p.postal_code, p.actual_postal_code) = z.org_code and 
+                         c.iso_country_code = z.iso
                     join mid_feat_key  as fz
                       on z.id = fz.org_id1 and z.type = fz.org_id2
                  '''
