@@ -27,6 +27,7 @@ def featureFactory( name, loader ):
         loader.add_feature( load.globetech.feat_postcode.CPostcode( ) )
         loader.add_feature( load.globetech.feat_link.CLink( ) )
         
+        loader.add_feature( load.globetech.feat_poi_dealer.CPoiDealer( ) )
         loader.add_feature( load.globetech.feat_poi.CPoi( ) )
         loader.add_feature( load.globetech.feat_housenumber.CHouseNumber())
          
@@ -41,6 +42,7 @@ def featureFactory( name, loader ):
         loader.add_feature( load.rdf.feat_link.CLink( ) )
         
         loader.add_feature( load.rdf.feat_extpoi.CExtPoi() )
+        loader.add_feature( load.rdf.feat_poi_dealer.CPoiDealer( ) )
         loader.add_feature( load.rdf.feat_poi.CPoi( ) )
         loader.add_feature( load.rdf.feat_housenumber.CHouseNumber())
         
@@ -69,4 +71,5 @@ def featureFactory( name, loader ):
     else:
         print '---- unkonw vendor %s' % name
         
-    loader.add_part3( load.dealer_data.CDealerData() )    
+
+    #loader.add_part3( load.dealer_data.CDealerData() )

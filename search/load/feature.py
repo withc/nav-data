@@ -168,6 +168,9 @@ class CFeature(object):
                      order by key
                  '''
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        if 'poi' != feat:
+            self.db.createIndex( 'mid_<f>_name'.replace( '<f>', feat ), 'name' )
     
     def _gen_geomid(self,feat = None):
         if not feat:
@@ -204,6 +207,8 @@ class CFeature(object):
                     order by key
                  '''
         self.db.do_big_insert( sqlcmd.replace( '<f>', feat ) )
+        
+        self.db.createGisIndex( 'mid_<f>_geometry'.replace( '<f>', feat ), 'geom' )
         
 class CWork(object):
     def __init__(self, name='work'):

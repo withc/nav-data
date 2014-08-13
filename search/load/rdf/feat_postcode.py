@@ -60,7 +60,7 @@ class CPostcode(load.feature.CFeature):
     def _domake_geomtry(self):
         if self.db.existTable('xpostal_code'):
             sqlcmd = '''
-                    insert into temp_street_geom( key, type, code, geotype, geom )
+                    insert into temp_place_geom( key, type, code, geotype, geom )
                     select pc.key , pc.type, 7379, 'P', 
                            ST_SetSRID(st_makepoint( x.lon, x.lat ), 4326)  
                       from xpostal_code  as x
@@ -70,7 +70,7 @@ class CPostcode(load.feature.CFeature):
             self.db.do_big_insert( sqlcmd )
             
         sqlcmd = '''
-                 insert into temp_street_geom( key, type, code, geotype, geom )
+                 insert into temp_place_geom( key, type, code, geotype, geom )
                  select pc.key, pc.type, 7379, 'P', 
                         ST_SetSRID(st_makepoint( p.lon/100000.0, p.lat/100000.0 ), 4326)
                    from rdf_postal_code_midpoint as p
@@ -78,7 +78,7 @@ class CPostcode(load.feature.CFeature):
                      on p.full_postal_code = pc.pocode and p.iso_country_code = pc.iso
                   where not exists
                          ( select 1 
-                             from temp_street_geom
+                             from temp_place_geom
                              where key  = pc.key  and
                                    type = pc.type and
                                    code = 7379
@@ -87,7 +87,7 @@ class CPostcode(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         #get more point from poi
         sqlcmd = '''
-                 insert into temp_street_geom( key, type, code, geotype, geom )
+                 insert into temp_place_geom( key, type, code, geotype, geom )
                  select pc.key , pc.type, 7379, 'P', 
                         ST_SetSRID(st_makepoint( p.lon/100000.0, p.lat/100000.0 ), 4326)
                    from (
@@ -109,7 +109,7 @@ class CPostcode(load.feature.CFeature):
                       on p.zipcode = pc.pocode and p.iso = pc.iso
                    where not exists
                          ( select 1 
-                             from temp_street_geom
+                             from temp_place_geom
                              where key  = pc.key  and
                                    type = pc.type and
                                    code = 7379
@@ -152,5 +152,9 @@ class CPostcode(load.feature.CFeature):
                    order by pc.key, fe.feat_key
                   '''
         self.db.do_big_insert( sqlcmd )
+    
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'place' )
+        self._gen_geomid( 'place' )
         
         

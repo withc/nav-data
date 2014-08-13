@@ -26,10 +26,18 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
     
     def _domake_geomtry(self):
+        self._get_place_polygon()
+        self._get_place_center()
+        #get no point place, we will complete later.
+        #get more point
+        self._get_more_center()
+        self._update_center()
+        
+    def _get_place_center(self):
         # we could miss lots of points for place!!!!
         # get country, state point 
         sqlcmd = '''
-             insert into temp_street_geom( key, type, code, geotype, geom )
+             insert into temp_place_geom( key, type, code, geotype, geom )
                with p ( a0, a1, a0_c, a1_c, geom )
                as (
                    select country_id, order1_id, 
@@ -52,7 +60,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # get a8 point
         sqlcmd = '''
-             insert into temp_street_geom( key, type, code, geotype, geom )
+             insert into temp_place_geom( key, type, code, geotype, geom )
              select f.feat_key, f.feat_type, 7379, 'P', ST_GeometryFromText(l.location, 4326)
                from rdf_city_poi  as p
                join wkt_location  as l
@@ -63,7 +71,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # get a9 point
         sqlcmd = '''
-             insert into temp_street_geom( key, type, code, geotype, geom )
+             insert into temp_place_geom( key, type, code, geotype, geom )
              select f.feat_key, f.feat_type, 7379, 'P', ST_GeometryFromText(l.location, 4326)
                from rdf_city_poi  as p
                join wkt_location  as l
@@ -72,12 +80,9 @@ class CPlace(load.feature.CFeature):
                  on p.builtup_id = f.org_id1 and 9 = f.org_id2
                  ''' 
         self.db.do_big_insert( sqlcmd )
-        #get no point place, we will complete later.
-        #get more point
-        self._get_more_geomtry()
-        self._update_geomtry()
         
-    def _get_more_geomtry(self):
+        
+    def _get_more_center(self):
         ##
         sqlcmd = '''
              insert into temp_place_point( key, type, geom )
@@ -210,30 +215,50 @@ class CPlace(load.feature.CFeature):
                                  (
                                    select key from temp_place_point where type between 3001 and 3010
                                    union
-                                   select key from temp_street_geom where type between 3001 and 3010
+                                   select key from temp_place_geom where type between 3001 and 3010
                                  )
                            group by fk.feat_key,  fk.feat_type
                          ) as t
                  '''
         self.db.do_big_insert( sqlcmd )
         
-    def _update_geomtry(self):
+    def _update_center(self):
         sqlcmd = '''
-                 insert into temp_street_geom( key, type, code, geotype, geom )
+                 insert into temp_place_geom( key, type, code, geotype, geom )
                  select tp.key, tp.type, 7379, 'P', geom
                    from temp_place_point as tp
                    where not exists
                          (
                             select key 
-                              from temp_street_geom
+                              from temp_place_geom
                               where key = tp.key and code = 7379
                          )
                  '''
         self.db.do_big_insert( sqlcmd )
-           
+        
+    def _get_place_polygon(self):
+        sqlcmd = '''
+                insert into temp_place_geom( key, type, code, geotype, geom )
+                select feat_key,  feat_type, 7000, 'F', st_union(geom)
+                  from (
+                    select fe.feat_key, fe.feat_type, ST_GeometryFromText(w.face, 4326) as geom
+                      from rdf_admin_place  as p
+                      join mid_feat_key     as fe 
+                        on fe.org_id1 = p.admin_place_id and  3001 <= fe.feat_type and fe.feat_type <= 3010 
+                      join rdf_carto as c
+                        on p.admin_place_id = c.named_place_id and c.named_place_type = 'A'
+                      join rdf_carto_face as f
+                        on c.carto_id = f.carto_id
+                      join wkt_face as w
+                        on f.face_id = w.face_id
+                       ) as t
+                 group by feat_key,  feat_type
+                 '''
+        self.db.do_big_insert( sqlcmd )
+            
     def _domake_name(self):
         sqlcmd = '''
-                 insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
+                 insert into temp_place_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )
                  select p.key, p.type, 
                         case  
                           when ns.name_type = 'B' and ns.is_exonym = 'N' then 'ON'
@@ -246,7 +271,7 @@ class CPlace(load.feature.CFeature):
                    join mid_feat_key            as f
                      on p.key = f.feat_key and p.type = f.feat_type
                    join rdf_feature_names       as ns
-                     on f.org_id1  = ns.feature_id
+                     on f.org_id1  = ns.feature_id and ns.owner = 'A'
                 ''' + attribute_sql.sql_all_name( 'ns', 'name_id', 'feature' )
 
         self.db.do_big_insert( sqlcmd )

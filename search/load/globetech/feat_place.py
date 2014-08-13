@@ -58,7 +58,8 @@ class CPlace(load.feature.CFeature):
     
     def _domake_geomtry(self):
         # add the country point
-        self.db.do_big_insert( ''' insert into temp_street_geom( key, type, code, geotype, geom )
+        self.db.do_big_insert( 
+                         ''' insert into temp_place_geom( key, type, code, geotype, geom )
                              select f.feat_key, f.feat_type, 7379, 'P',  ST_SetSRID(st_makepoint(c.lon, c.lat), 4326)
                                from org_country  as c
                                join mid_feat_key as f
@@ -66,7 +67,7 @@ class CPlace(load.feature.CFeature):
                          ''' )
         # there  are more then one point for some city, we just select the first one
         sqlcmd = '''
-             insert into temp_street_geom( key, type, code, geotype, geom )
+             insert into temp_place_geom( key, type, code, geotype, geom )
              select feat_key, feat_type, 7379, 'P', the_geom
                from (
                   select fe.feat_key, fe.feat_type,  a.the_geom,
@@ -87,7 +88,7 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         # add the country name by myself
         self.db.do_big_insert( ''' 
-                      insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+                      insert into temp_place_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                       select f.feat_key, f.feat_type, 'ON', 'THA', c.namt, 'ENG', c.name
                         from org_country  as c
                         join mid_feat_key as f
@@ -95,7 +96,7 @@ class CPlace(load.feature.CFeature):
                       ''' )
         
         sqlcmd = '''
-              insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+              insert into temp_place_name( key, type, nametype, langcode, name, tr_lang, tr_name )
               select feat_key, feat_type, case seq when 1 then 'ON' else 'AN' end, 'THA', namt, 'ENG', name 
                 from (
                   select fe.feat_key, fe.feat_type,  a.namt, a.name,

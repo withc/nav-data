@@ -98,12 +98,12 @@ class CExtPoi(load.feature.CFeature):
         #the next sql is so slow in some database, we have analyze table when call do_big_insert, 
         #but it is fail to analyze table in some database.
         #anyway, analyze table mid_street_name again here.
-        self.db.analyze('mid_street_name')
+        #self.db.analyze('mid_place_name')
         #poi to place
         sqlcmd = '''
                   insert into mid_feature_to_feature( fkey, ftype, code, tkey, ttype ) 
-                  with pl 
-                  as (
+                  with 
+                  pl as (
                   select k.key, k.type, n0.iso, n1.nameid as n1, n2.nameid as n2, n3.nameid as n3, COALESCE( n4.nameid, 0 ) as n4
                     from (
                          select key, type, 
@@ -120,34 +120,38 @@ class CExtPoi(load.feature.CFeature):
                             ) as k
                          join mid_country_profile as n0
                            on k.k0 = n0.key
-                         join mid_street_to_name as n1
+                         join mid_place_to_name as n1
                            on k.k1 = n1.key and n1.nametype = 'ON'
-                         join mid_street_to_name as n2
+                         join mid_place_to_name as n2
                            on k.k2 = n2.key and  n2.nametype = 'ON'
-                         join mid_street_to_name as n3
+                         join mid_place_to_name as n3
                            on k.k3 = n3.key and  n3.nametype = 'ON'
-                    left join mid_street_to_name as n4
+                    left join mid_place_to_name as n4
                            on k.k4 = n4.key and  n4.nametype = 'ON'
-                     )
-                  select f.feat_key, f.feat_type, 7001, pl.key, pl.type
+                     ),
+                 p as (
+                  select f.feat_key, f.feat_type, p.iso, n1.id as id1, n2.id as id2, n3.id as id3, COALESCE( n4.id, 0 ) as id4 
                     from temp_ext_poi          as p
                     join mid_feat_key          as f
                       on p.poi_source = f.org_id2 and
                          p.poi_key    = f.org_id1
-                    join mid_street_name  as n1
+                    join mid_place_name  as n1
                       on p.pl2 = n1.name and p.lang = n1.langcode
-                    join mid_street_name  as n2
+                    join mid_place_name  as n2
                       on p.pl3 = n2.name and p.lang = n2.langcode
-                    join mid_street_name  as n3
+                    join mid_place_name  as n3
                       on p.pl4 = n3.name and p.lang = n3.langcode
-               left join mid_street_name  as n4
+                   left join mid_place_name  as n4
                       on p.pl5 = n4.name and p.lang = n4.langcode
-               left join pl
+                     )
+                  select p.feat_key, p.feat_type, 7001, pl.key, pl.type
+                    from p
+                    join pl
                       on p.iso = pl.iso and
-                         n1.id = pl.n1  and 
-                         n2.id = pl.n2  and 
-                         n3.id = pl.n3  and 
-                         COALESCE( n4.id, 0 ) = pl.n4
+                         p.id1 = pl.n1  and 
+                         p.id2 = pl.n2  and 
+                         p.id3 = pl.n3  and 
+                         p.id4 = pl.n4
                  '''
         self.db.do_big_insert( sqlcmd )
         

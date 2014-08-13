@@ -34,7 +34,7 @@ class CPlace(load.feature.CFeature):
     def _domake_geomtry(self):
 
         sqlcmd = '''
-                 insert into temp_street_geom( key, type, code, geotype, geom ) 
+                 insert into temp_place_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', ST_SetSRID(st_makepoint( lon, lat), 4326)
                    from ( 
                           select distinct ad_code::int as code, ad_level, 
@@ -52,7 +52,7 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         
         sqlcmd = '''
-                 insert into temp_street_name( key, type, nametype, langcode, name, tr_lang, tr_name )
+                 insert into temp_place_name( key, type, nametype, langcode, name, tr_lang, tr_name )
                  select f.feat_key, f.feat_type, 'ON',  'CHI', name_chn, 'PYN', name_py
                    from ( 
                           select distinct ad_code::int as code, ad_level, name_chn, name_py, name_eng 

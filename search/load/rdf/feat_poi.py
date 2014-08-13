@@ -55,6 +55,29 @@ class CPoi(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # poi's entry point
         
+        # poi's polygon
+        sqlcmd = '''
+                    insert into temp_poi_geom( key, type, code, geotype, geom )
+                    select feat_key,  feat_type, 7010, 'F', 
+                           ST_ConvexHull(st_collect(geom))
+                      from (
+                            select fe.feat_key, fe.feat_type, ST_GeometryFromText(w.face, 4326) as geom
+                              from rdf_poi_feature  as p
+                              join mid_feat_key     as fe
+                                on p.poi_id = fe.org_id1 and 1000 = fe.org_id2
+                              join rdf_cf          as c
+                                on p.owner = 'V' and p.feature_id = c.cf_id
+                              join rdf_cf_building as b
+                                on c.cf_id = b.cf_id
+                              join rdf_building_face  as f
+                                on b.building_id = f.building_id
+                              join wkt_face as w
+                                on f.face_id = w.face_id
+                           ) as t
+                     group by feat_key, feat_type
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
     def _domake_name(self):
         sqlcmd = '''
                  insert into temp_poi_name( key, type, nametype, langcode, name, tr_lang, tr_name, ph_lang, ph_name )

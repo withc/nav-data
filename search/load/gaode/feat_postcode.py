@@ -60,3 +60,6 @@ class CPostcode(load.feature.CFeature):
                  '''
         self.db.do_big_insert( sqlcmd )
         
+    def _domake_name_geom(self): 
+        self._gen_nameid( 'place' )
+        self._gen_geomid( 'place' )
