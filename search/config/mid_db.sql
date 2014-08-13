@@ -29,6 +29,16 @@ DROP TABLE IF EXISTS mid_feature_to_feature   CASCADE;
 DROP TABLE IF EXISTS temp_postcode            CASCADE;
 DROP TABLE IF EXISTS temp_dealer              CASCADE;
 
+-- for place's name/geom
+DROP TABLE IF EXISTS mid_place_name           CASCADE;
+DROP TABLE IF EXISTS mid_place_geometry       CASCADE;
+DROP TABLE IF EXISTS mid_place_to_name        CASCADE;
+DROP TABLE IF EXISTS mid_place_to_geometry    CASCADE;
+DROP TABLE IF EXISTS temp_place_name          CASCADE;
+DROP TABLE IF EXISTS temp_place_name_gen_id   CASCADE;
+DROP TABLE IF EXISTS temp_place_geom          CASCADE;
+DROP TABLE IF EXISTS temp_place_geom_gen_id   CASCADE;
+
 -- for street's name/geom
 DROP TABLE IF EXISTS mid_street_name           CASCADE;
 DROP TABLE IF EXISTS mid_street_geometry       CASCADE;
@@ -155,16 +165,16 @@ create table mid_poi_address
     key         bigint       not null,
     type        smallint     not null,
     lang        char(3)      not null,
-    name        varchar(128) not null,
+    name        varchar(255) not null,
     tr_lang     char(3)      not null,
-    tr_name     varchar(128) not null,
+    tr_name     varchar(255) not null,
     hno         varchar(32)  not null     
 );
 
 create table mid_poi_children
 (
-    c_k      bigint   not null,
-    f_k      bigint   not null
+    parent_key     bigint   not null,
+    child_key      bigint   not null 
 );
 
 -- street
@@ -241,29 +251,47 @@ create table mid_bldg_point
      entry_y  int          not null    
 );
 -- name
+create table mid_place_name
+(
+    id        bigint       not null PRIMARY KEY,
+    langcode  char(3)      not null,
+    name      varchar(255) not null,
+    tr_lang   char(3)      not null,
+    tr_name   varchar(255) not null,
+    ph_lang   char(3)      not null,
+    ph_name   varchar(255) not null
+);
+
 create table mid_street_name
 (
     id        bigint       not null PRIMARY KEY,
     langcode  char(3)      not null,
-    name      varchar(128) not null,
+    name      varchar(255) not null,
     tr_lang   char(3)      not null,
-    tr_name   varchar(128) not null,
+    tr_name   varchar(255) not null,
     ph_lang   char(3)      not null,
-    ph_name   varchar(128) not null
+    ph_name   varchar(255) not null
 );
 
 create table mid_poi_name
 (
     id        bigint       not null PRIMARY KEY,
     langcode  char(3)      not null,
-    name      varchar(128) not null,
+    name      varchar(255) not null,
     tr_lang   char(3)      not null,
-    tr_name   varchar(128) not null,
+    tr_name   varchar(255) not null,
     ph_lang   char(3)      not null,
-    ph_name   varchar(128) not null  
+    ph_name   varchar(255) not null  
 );
 
 -- geometry
+create table mid_place_geometry
+(
+    id    bigint   not null PRIMARY KEY,
+    type  char     not null,
+    geom  geometry not null
+);
+
 create table mid_street_geometry
 (
     id    bigint   not null PRIMARY KEY,
@@ -289,6 +317,24 @@ create table mid_feature_to_feature
     ttype     smallint not null
 );
 
+-- place
+create table mid_place_to_name
+(
+    key       bigint   not null,
+    type      smallint not null,
+    nametype  char(2)  not null,
+    nameid    bigint   not null
+);
+
+create table mid_place_to_geometry
+(
+    key       bigint   not null,
+    type      smallint not null,
+    code      smallint not null,
+    geomid    bigint   not null
+);
+
+-- street
 create table mid_street_to_name
 (
     key       bigint   not null,
@@ -304,7 +350,7 @@ create table mid_street_to_geometry
     code      smallint not null,
     geomid    bigint   not null
 );
---
+-- poi
 create table mid_poi_to_name
 (
     key       bigint   not null,
@@ -322,6 +368,45 @@ create table mid_poi_to_geometry
 );
 
 -- temp table
+-- for place
+create table temp_place_name
+(
+    gid       serial   PRIMARY KEY,
+    key       bigint   not null,
+    type      smallint not null,
+    nametype  char(2)  not null,
+    
+    langcode  char(3)      not null,
+    name      varchar(255) not null,
+    tr_lang   char(3)      not null default '',
+    tr_name   varchar(255) not null default '',
+    ph_lang   char(3)      not null default '',
+    ph_name   varchar(255) not null default ''
+);
+
+create table temp_place_name_gen_id
+(
+    gid       int      not null,
+    nameid    int      not null
+);
+
+create table temp_place_geom
+(
+    gid      serial   PRIMARY KEY,
+    key      bigint   not null,
+    type     smallint not null,
+    code     smallint not null,
+    geotype  char     not null,
+    geom     geometry not null
+);
+
+create table temp_place_geom_gen_id
+(
+    gid      int      not null,
+    geomid   int      not null
+);
+
+-- for street
 create table temp_street_name
 (
     gid       serial   PRIMARY KEY,
@@ -330,11 +415,11 @@ create table temp_street_name
     nametype  char(2)  not null,
     
     langcode  char(3)      not null,
-    name      varchar(128) not null,
+    name      varchar(255) not null,
     tr_lang   char(3)      not null default '',
-    tr_name   varchar(128) not null default '',
+    tr_name   varchar(255) not null default '',
     ph_lang   char(3)      not null default '',
-    ph_name   varchar(128) not null default ''
+    ph_name   varchar(255) not null default ''
 );
 
 create table temp_street_name_gen_id
@@ -367,11 +452,11 @@ create table temp_poi_name
     nametype  char(2)  not null,
     
     langcode  char(3)      not null,
-    name      varchar(128) not null,
+    name      varchar(255) not null,
     tr_lang   char(3)      not null default '',
-    tr_name   varchar(128) not null default '',
+    tr_name   varchar(255) not null default '',
     ph_lang   char(3)      not null default '',
-    ph_name   varchar(128) not null default ''
+    ph_name   varchar(255) not null default ''
 );
 
 create table temp_poi_name_gen_id

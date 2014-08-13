@@ -151,12 +151,20 @@ begin
 end;
 $$ language 'plpgsql';
 
-create or replace function srch_base_coord( v integer ) 
+create or replace function srch_base_coord( v integer,  islon bool ) 
 returns int
 as $$
-declare   
+declare 
+   rv   int;  
 begin
-    return (((v/100000.0*256*3600)::integer>>16)-1)<<16;
+    rv = (((v/100000.0*256*3600)::integer>>16)-1)<<16;
+    
+    if islon = true and rv < -165888000 then
+       rv = -165888000;
+    elsif islon = false and rv < -82944000 then
+       rv = -82944000;
+    end if;
+    return rv;
 end;
 $$ language 'plpgsql';
 
