@@ -45,7 +45,7 @@ class CPlace(load.feature.CFeature):
     def _domake_geomtry(self):
         # get the country point for india
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 insert into temp_place_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from temp_admincode        as t 
                    join mid_feat_key          as f
@@ -58,7 +58,7 @@ class CPlace(load.feature.CFeature):
         self.db.do_big_insert( sqlcmd )
         # get the state point
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 insert into temp_place_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from org_capital_indicator as ca
                    join temp_admincode        as t
@@ -74,7 +74,7 @@ class CPlace(load.feature.CFeature):
         
         # get the city point
         sqlcmd = '''
-                 insert into temp_feat_geom( key, type, code, geotype, geom ) 
+                 insert into temp_place_geom( key, type, code, geotype, geom ) 
                  select f.feat_key, f.feat_type, 7379, 'P', st_geometryn(c.the_geom,1)
                    from temp_admincode        as t 
                    join mid_feat_key          as f
@@ -89,7 +89,7 @@ class CPlace(load.feature.CFeature):
     def _domake_name(self):
         
         sqlcmd = '''
-                 insert into temp_feat_name( key, type, nametype, langcode, name )
+                 insert into temp_place_name( key, type, nametype, langcode, name )
                  with ad ( key, type, name, alt ) as
                  (
                  select f.feat_key, f.feat_type, a.name, a.names
@@ -114,10 +114,27 @@ class CPlace(load.feature.CFeature):
     def _domake_attribute(self):
         
         sqlcmd = '''
-                 insert into mid_full_area()
+                 insert into mid_country_profile( iso, off_lang, key, type )
+                 select 'IND', 'ENG', f.feat_key, f.feat_type
+                   from mid_feat_key    as f
+                  where f.feat_type = 3001
+                 '''
+        self.db.do_big_insert( sqlcmd )
+        
+        sqlcmd = '''
+                 insert into mid_full_area( min_lon, min_lat, max_lon, max_lat )
                  select st_xmin(geom)*100000, st_ymin(geom)*100000, 
                         st_xmax(geom)*100000, st_ymax(geom)*100000
-                   from ( select ST_extent(the_geom) as geom from org_state_region ) as a
+                   from ( 
+                          select ST_extent(the_geom) as geom 
+                            from ( 
+                                   select the_geom
+                                     from org_state_region
+                                   union all
+                                   select the_geom
+                                     from org_state_islands_region
+                                  ) as i
+                        ) as a
                  '''
         self.db.do_big_insert( sqlcmd )
         

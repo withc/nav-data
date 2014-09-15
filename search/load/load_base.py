@@ -9,6 +9,7 @@ class CLoader(object):
         self.db = database
         self.proces = []
         self.feats  = []
+        self.part3  = []
         
     def load(self ):
 
@@ -26,7 +27,11 @@ class CLoader(object):
     def add_feature(self, feat):
         feat.attach_db( self.db )
         self.feats.append( feat )
-            
+        
+    def add_part3(self, feat ):
+        feat.attach_db( self.db, self.vendor )
+        self.part3.append( feat )
+               
     def _prepare(self):
         self.proces[0].do()
      
@@ -36,6 +41,12 @@ class CLoader(object):
         self._copy_common_attribute()
         self._copy_attribute()
         self._copy_relationship()
+        #other data
+        self._pro_part3()
+        
+    def _pro_part3(self):
+        for p in self.part3:
+            p.run()
         
     def _finish(self):
         self.proces[1].do()
@@ -55,10 +66,11 @@ class CLoader(object):
             f.make_feature()
         
     def _copy_common_attribute(self):
-        self.logger.info( '--copy_geomtry' )
+        self.logger.info( '--copy_name_geomtry' )
         for f in self.feats:
             f.make_geomtry()
             f.make_name()
+            f.gen_name_geom()
     
     def _copy_attribute(self):
         self.logger.info( '--copy_attribute' )

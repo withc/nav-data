@@ -18,8 +18,8 @@ BEGIN
 END;
 $BODY$;
 -----------------------------------------------------------
-DROP TABLE IF EXISTS temp_admincode      CASCADE;
-DROP TABLE IF EXISTS temp_org_category   CASCADE;
+DROP TABLE IF EXISTS temp_admincode         CASCADE;
+DROP TABLE IF EXISTS temp_address_point      CASCADE;
 create table temp_admincode
 (
     type       smallint    not null,
@@ -30,15 +30,15 @@ create table temp_admincode
     org_id2    bigint      not null
 );
 
-create table temp_org_category
+create table temp_address_point
 (
-    per_code   bigint       not null,
-    gen1       int          not null,
-    gen2       int          not null,
-    gen3       int          not null,
-    level      smallint     not null,
-    name       varchar(128) not null,
-    imp        smallint     not null,
-    org_code   bigint       not null,
-    name2      varchar(128) not null
+    id          int          not null,
+    pkey        bigint       not null,
+    ptype       smallint     not null,
+    lang        char(3)      not null,
+    name        varchar(255) not null,
+    hno         varchar(20)  not null,
+    x           int          not null,
+    y           int          not null
 );
+

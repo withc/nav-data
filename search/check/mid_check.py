@@ -1,58 +1,32 @@
 import common.logger
+import place_check
+import poi_check
+import street_check
 
 class CMid_check(object):
     def __init__(self, database):
         self.db     = database
         self.name   = 'mid_check'
         self.logger = common.logger.sub_log( self.name )
-    
-    def run(self):
-        self._check_name()
-        self._check_place_point()
+        self.objs   = []
         
-    def _check_name(self):
-        sql = '''
-              select * 
-                from temp_feat_name
-               where name = ''
-              '''
-        rows = self.db.getOneResult(sql )
-        if 0 != rows:
-            self.logger.info( 'temp_feat_name have empty name:' + str(rows) )
-            
-    def _check_place_point(self):
-        sql = '''
-              select p.key, p.type 
-                from mid_place               as p
-           left join mid_feature_to_geometry as g
-                  on p.key = g.key and g.code = 7379
-               where g.key is null
-              '''
-        rows = self.db.getOneResult(sql )
-        if 0 != rows:
-            self.logger.info( 'some place do not set center point:' + str(rows) )
-            
-        sql = '''
-              select p.key, p.type, count(*)
-                from mid_place               as p
-                join mid_feature_to_geometry as g
-                  on p.key = g.key and g.code = 7379
-               group by p.key, p.type having count(*) > 1
-              '''
-        rows = self.db.getOneResult(sql )
-        if 0 != rows:
-            self.logger.info( 'some place have more than one center point:' + str(rows) )
-            
-    def _check_poi_point(self):
-        sql = '''
-              select p.key, p.type 
-                from mid_poi                 as p
-           left join mid_feature_to_geometry as g
-                  on p.key = g.key and g.code = 7000
-               where g.key is null
-              '''
-        rows = self.db.getOneResult(sql )
-        if 0 != rows:
-            self.logger.info( 'some poi do not set point:' + str(rows) )
+    def run(self):
+        self._add_module()
+        self._run_module()
+        
+    def _add_module(self):
+        self.objs.append(place_check.CPlace_check(self.db))
+        self.objs.append(poi_check.CPOI_check(self.db))
+        self.objs.append(street_check.CStreet_check(self.db))
+        
+    def _run_module(self):
+        self.logger.info('-- start check work')
+        for o in self.objs:
+            o.do_check()
+        self.logger.info('-- end check work')
+                
+    
+                  
+    
 
         

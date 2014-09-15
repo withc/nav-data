@@ -1,11 +1,12 @@
 featury type:
 --point
 1000: poi
+1002: node
 
 --line
-2000:road element
+2000:road element( link )
 
---area
+--face
 3001:country
 3002:order1
 3003:order2
@@ -28,6 +29,7 @@ featury type:
 7002:poi to link
 7003:place in place
 7004:feature to postcode
+7010:poi's polygon
 7379:center of settlement
 9920:entry point
 
@@ -45,3 +47,6 @@ TX:Fax Number
 8L:Internet Address
 6T:Street Name
 9H:House Number
+
+--place class
+A:municipalities for city

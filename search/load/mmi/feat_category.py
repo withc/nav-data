@@ -5,6 +5,24 @@ class CPoiCategory(load.feature.CFeature):
         load.feature.CFeature.__init__(self, 'category')
  
     def _domake_key(self):
+        # for mmi, the org_code is character.
+        sqlcmd = '''
+                    DROP TABLE IF EXISTS temp_org_category   CASCADE;
+                    create table temp_org_category
+                    (
+                        per_code   bigint       not null,
+                        gen1       int          not null,
+                        gen2       int          not null,
+                        gen3       int          not null,
+                        level      smallint     not null,
+                        name       varchar(128) not null,
+                        imp        smallint     not null,
+                        org_code   varchar(16)  not null,
+                        tr_name    varchar(128) not null default ''
+                    );
+                 '''
+        self.db.execute(sqlcmd)
+        
         fp = open(r'.\load\mmi\category.txt','r')
         for line in fp:
             line = line.strip()
@@ -15,23 +33,12 @@ class CPoiCategory(load.feature.CFeature):
                       insert into temp_org_category values(%s,%s,%s,%s,%s,%s,%s,%s)
                      '''
             self.db.execute( sqlcmd, fields )
+        self.db.commit()
+        self.db.analyze('temp_org_category')
         fp.close()
-        
-        sqlcmd = '''
-                 insert into mid_poi_category(per_code, gen1, gen2, gen3, level, imp, name)
-                 select per_code, gen1, gen2, gen3, level, imp, name
-                   from temp_org_category
-                   order by level, case level 
-                                      when 1 then  0
-                                      when 2 then  gen1
-                                      else    gen1<<8 + gen2
-                                    end,
-                              name
-                 '''
-        self.db.do_big_insert( sqlcmd )
-        
+
     def _domake_feature(self):
-        pass
+        self._domake_common_category()
     
     def _domake_geomtry(self):
         pass

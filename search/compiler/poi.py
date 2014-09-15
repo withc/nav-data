@@ -16,7 +16,7 @@ class CPoi(entity.CEntity):
         self.logger.info('  do gen id')
         sqlcmd = '''
                  insert into tmp_poi( key, type, id)
-                 select p.key, p.type, row_number() over (order by pa.area0, pa.area1, p.key )
+                 select p.key, p.type, row_number() over ( order by pa.area0, pa.area1, p.key )
                    from mid_poi               as p
                    join mid_feature_to_feature as lp
                      on p.key = lp.fkey and lp.code = 7001
@@ -71,15 +71,11 @@ class CPoi(entity.CEntity):
     def _do_poi_address(self):
         self.logger.info('  do poi address')
         sqlcmd = '''
-                 insert into tbl_poi_address( id, lang, street, hno )
-                 select p.id, '', 
-                        COALESCE(st.attr_value, ''), 
-                        COALESCE(hn.attr_value, '')
-                   from tmp_poi            as p
-              left join mid_poi_attr_value as st
-                     on p.key = st.key and st.attr_type = '6T'
-              left join mid_poi_attr_value as hn
-                     on p.key = hn.key and hn.attr_type = '9H'
+                 insert into tbl_poi_address( id, lang, street, tr_lang, tr_street, hno )
+                 select p.id, pa.lang, pa.name, pa.tr_lang, pa.tr_name, pa.hno  
+                   from tmp_poi             as p
+                   join mid_poi_address     as pa
+                     on p.key = pa.key
                   order by p.id
                  ''' 
         self.db.do_big_insert(sqlcmd)
@@ -87,13 +83,13 @@ class CPoi(entity.CEntity):
     def _do_poi_name(self):
         self.logger.info('  do poi name')
         sqlcmd = '''
-                 insert into tbl_poi_name( id, type, lang, name )
-                 select p.id, fn.nametype, n.langcode, n.name
+                 insert into tbl_poi_name( id, type, lang, name, tr_lang, tr_name, ph_lang, ph_name)
+                 select p.id, fn.nametype, n.langcode, n.name, n.tr_lang, n.tr_name, n.ph_lang, n.ph_name
                    from tmp_poi             as p
-                   join mid_feature_to_name as fn
+                   join mid_poi_to_name     as fn
                      on p.key = fn.key
-                   join mid_name            as n
-                     on fn.nameid = n.id
+                   join mid_poi_name        as n
+                     on fn.nameid = n.id and fn.nametype <> '6T'
                   order by p.id
                  '''
         self.db.do_big_insert(sqlcmd)
@@ -148,13 +144,13 @@ class CPoi(entity.CEntity):
                            else st_y(g2.geom)*100000
                         end
                    from tmp_poi                  as p
-                   join mid_feature_to_geometry  as fg
+                   join mid_poi_to_geometry  as fg
                      on p.key = fg.key and fg.code = 7000
-                   join mid_geometry             as g
+                   join mid_poi_geometry             as g
                      on fg.geomid = g.id
-              left join mid_feature_to_geometry  as fg2
+              left join mid_poi_to_geometry  as fg2
                      on p.key = fg2.key and fg2.code = 9920
-              left join mid_geometry             as g2
+              left join mid_poi_geometry             as g2
                      on fg2.geomid = g2.id
                  '''
         self.db.do_big_insert(sqlcmd)

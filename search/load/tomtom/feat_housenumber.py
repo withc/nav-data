@@ -2,7 +2,6 @@ import load.feature
 
 class CHouseNumber(load.feature.CFeature):
     def __init__(self ):
-        print "tomtom's house number"
         load.feature.CFeature.__init__(self, 'house_num')
  
     def _domake_key(self):
@@ -17,7 +16,7 @@ class CHouseNumber(load.feature.CFeature):
     
     def _domake_feature(self):
         sqlcmd = '''
-                 insert into mid_house_number_road( id, key, type, langcode, name )
+                 insert into mid_link_road( id, key, type, langcode, name )
                  select t.id, f.feat_key, f.feat_type, t.langcode, t.name
                    from temp_road_link    as t
                    join mid_feat_key      as f
@@ -56,14 +55,16 @@ class CHouseNumber(load.feature.CFeature):
                          case 
                            when l = 2 then 'E'
                            when l = 3 then 'O'
-                           else 'M'
+                           when l = 4 then 'M'
+                           else '$'
                          end, l_f, l_t from hn where l not in (0,1)
                  union
                  select id, 2, 
                          case 
                            when r = 2 then 'E'
                            when r = 3 then 'O'
-                           else 'M'
+                           when r = 4 then 'M'
+                           else '$'
                          end, r_f, r_t from hn where r not in (0,1)
                  '''
         self.db.do_big_insert( sqlcmd  )
