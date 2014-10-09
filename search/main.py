@@ -4,10 +4,11 @@
 import common.database
 import common.logger
 import config.config
-import load.load_base
+import load.load_db
+import convert.convert_db
 import check.mid_check
 import compiler.compile
-import dataprocess.compile
+
 
 if __name__ == "__main__":
     cfg = config.config.Config.get_instance()
@@ -19,9 +20,14 @@ if __name__ == "__main__":
     db_instance.connect()
     
     logger.info( cfg.getDBPath() )
-    logger.info( " ---- start load search data ---- " )
-    loader = load.load_base.CLoader( db_instance, cfg.getVendor() )
-    loader.load()
+    
+    logger.info( " ---- start load  data ---- " )
+    loader = load.load_db.CLoader( db_instance, cfg.getVendor() )
+    loader.run()
+    
+    logger.info( " ---- start convert search data ---- " )
+    #converter = convert.convert_db.CConverter( db_instance, cfg.getVendor() )
+    #converter.run()
     
     logger.info( " ---- start check mid search data ---- " )
     #checker = check.mid_check.CMid_check( db_instance )

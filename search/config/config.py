@@ -1,9 +1,9 @@
 
 class Config( object ):
     __instance = None
-    _vendor  ='rdf'
-    _host    ='172.26.179.187'
-    _dbname  ='test_sgp_rdf'
+    _vendor  ='siwei'
+    _host    ='localhost'
+    _dbname  ='shanghai'
     _user    ='postgres'
     _password=''
 
