@@ -99,7 +99,16 @@ class CDB(object):
 
         self.do_execute(sqlcmd)
         self.analyze( table )
-         
+        
+    def createGist(self, table, column ):
+        sqlcmd = '''
+                 create index gist_%s_%s
+                 on %s
+                 using gist
+                 (%s);
+                 ''' % (table, column, table, column )
+        self.do_execute(sqlcmd)
+           
     def analyze(self, table):
         self.cur.execute( 'ANALYZE %s' % table )
         

@@ -18,3 +18,21 @@ class CTable(object):
     
     def _do_all(self):
         pass
+    
+    def _insert_sql(self, num ):
+        sqlcmd = 'insert into ' + self.name + ' values(' + ','.join([ '%s' for x in range(num) ]) +')'
+        return sqlcmd
+        
+    def _shape_value(self, attr, geom ):
+        if 1 == geom.shapeType:
+            geomstr = 'POINT(%s)' % ( ' '.join( [ str(x) for x in  geom.points[0] ] ) )
+        elif 3 == geom.shapType:
+            geomstr = 'LINE(%s)' % geom.points 
+        elif 5 == geom.shapType:
+            geomstr = 'POLY(%s)' % geom.points
+        else:
+            geomstr = ''
+
+        item = [ str(x).strip()  for x in attr ]
+        item.append( geomstr )
+        return item
