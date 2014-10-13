@@ -80,7 +80,10 @@ class CDB(object):
     def commit(self):
         self.conn.commit()
         return 0
-            
+    def dropTable(self, table):
+        sqlcmd = "DROP TABLE IF EXISTS %s CASCADE;" % table
+        self.execute( sqlcmd )
+                
     def createIndex(self, table, column ):
         if isinstance( column, str ):
             sqlcmd = '''

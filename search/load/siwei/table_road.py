@@ -4,15 +4,24 @@ import load.table
 class CbrTable(load.table.CTable):
     def __init__(self ):
         load.table.CTable.__init__(self, 'br')
+        self.sf = None
     
     def _do_all(self):
+        self.sf = common.shapefile.Reader(r"D:\my\shanghai\shanghai\road\Brshanghai")
+        
         self._create_table( )
         self._read_file()
         self._create_index()     
         
     def _create_table(self):
+        self.db.dropTable( self.name )
+        sqlcmd = 'create table ' + self.name + '\n'
+        sqlcmd += '(\n'
+        for f in self.sf.fields:
+            sqlcmd +=  self._field_sql( f )
+        sqlcmd += ');'
+
         sqlcmd = '''
-                DROP TABLE IF EXISTS  <t>    CASCADE;
                 create table <t>
                 (
                   --gid       serial PRIMARY KEY,
@@ -35,9 +44,9 @@ class CbrTable(load.table.CTable):
         self.db.do_execute( sqlcmd )
         
     def _read_file(self):
-        sf = common.shapefile.Reader(r"D:\my\shanghai\shanghai\road\Brshanghai")
-        shapes  = sf.shapes()
-        records = sf.records()
+        
+        shapes  = self.sf.shapes()
+        records = self.sf.records()
         
         sqlcmd = self._insert_sql( len(records[0])+1 )
         for ( attr, geo ) in zip( records, shapes ):

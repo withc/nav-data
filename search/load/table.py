@@ -18,6 +18,41 @@ class CTable(object):
     
     def _do_all(self):
         pass
+
+    def _field_sql(self, field, isEnd = False ):
+        ''' 
+        /************************************************************************/
+        /*                       DBFGetNativeFieldType()                        */
+        /*                                                                      */
+        /*      Return the DBase field type for the specified field.            */
+        /*                                                                      */
+        /*      Value can be one of: 'C' (String), 'D' (Date), 'F' (Float),     */
+        /*                           'N' (Numeric, with or without decimal),    */
+        /*                           'L' (Logical),                             */
+        /*                           'M' (Memo: 10 digits .DBT block ptr)       */
+        /************************************************************************/ 
+        '''
+        sqlcmd = field[0].lower()
+        if 'C' == field[1]:
+            sqlcmd += '  varchar(%d)' % field[2]
+        elif 'L' == field[1]:
+            sqlcmd += '  bool'
+        elif 'D' == field[1]:
+            pass
+        elif 'N' == field[1]:
+            if field[3] > 0:
+                sqlcmd += '  int8'
+            else: 
+                sqlcmd += '  float8'
+        elif 'F' == field[1]:
+            sqlcmd += '  float8'
+        else:
+            pass
+        if  isEnd:
+            sqlcmd += '\n'
+        else:
+            sqlcmd += ',\n'
+        return sqlcmd
     
     def _insert_sql(self, num ):
         sqlcmd = 'insert into ' + self.name + ' values(' + ','.join([ '%s' for x in range(num) ]) +')'
