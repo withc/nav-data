@@ -10,8 +10,8 @@ class CLoader(object):
         self.tables  = []
 
     def run(self ):
-        self._make_table()
         self.logger.info( " ----------- start -------------" )
+        self._make_table()
         self._prepare()
         self._process()
         self._finish()

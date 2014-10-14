@@ -473,8 +473,7 @@ class Reader:
             # deleted record
             return None
         record = []
-        for (name, typ, size, deci), value in zip(self.fields,
-                                                                                                recordContents):
+        for (name, typ, size, deci), value in zip(self.fields, recordContents):
             if name == 'DeletionFlag':
                 continue
             elif not value.strip():

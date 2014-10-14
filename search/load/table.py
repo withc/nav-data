@@ -13,7 +13,9 @@ class CTable(object):
         self.vendor = vendor
         
     def input(self):
+        self.logger.info('begin load table %s' % self.name )
         self._do_all()
+        self.logger.info('end load table %s' % self.name )
         pass
     
     def _do_all(self):
@@ -53,21 +55,39 @@ class CTable(object):
         else:
             sqlcmd += ',\n'
         return sqlcmd
-    
+
     def _insert_sql(self, num ):
         sqlcmd = 'insert into ' + self.name + ' values(' + ','.join([ '%s' for x in range(num) ]) +')'
         return sqlcmd
-        
+    
+    def _geom_sql(self, geom ):
+        sqlcmd = 'geom '
+        if 1 == geom.shapeType:
+            sqlcmd += ' geometry(Point)\n'
+        elif 3 == geom.shapeType:
+            sqlcmd += ' geometry(LineString)\n'
+        elif 5 == geom.shapeType:
+            sqlcmd += ' geometry(POLYGON)\n'
+        else:
+            sqlcmd = ''
+            
+        return sqlcmd
+            
     def _shape_value(self, attr, geom ):
         if 1 == geom.shapeType:
-            geomstr = 'POINT(%s)' % ( ' '.join( [ str(x) for x in  geom.points[0] ] ) )
-        elif 3 == geom.shapType:
-            geomstr = 'LINE(%s)' % geom.points 
-        elif 5 == geom.shapType:
-            geomstr = 'POLY(%s)' % geom.points
+            geomstr = 'POINT(%s)' % ( self.__point_str( geom.points[0] ) )
+        elif 3 == geom.shapeType:
+            geomstr = 'LINESTRING(%s)' % ( ','.join ( self.__point_str(x) for x in geom.points ) )
+        elif 5 == geom.shapeType:
+            geomstr = 'POLYGON(%s)' % geom.points
         else:
             geomstr = ''
 
         item = [ str(x).strip()  for x in attr ]
         item.append( geomstr )
         return item
+
+    def __point_str(self, point ):
+        return ' '.join( [ str(x) for x in point ] )
+    
+    
