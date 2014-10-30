@@ -3,9 +3,10 @@ import common.logger
 import load.factory
 
 class CLoader(object):
-    def __init__(self, database, vendor ):
+    def __init__(self, database, vendor, path ):
         self.logger = common.logger.sub_log('load')
         self.vendor = vendor
+        self.path   = path
         self.db = database
         self.tables  = []
 
@@ -29,7 +30,7 @@ class CLoader(object):
     
     def _process(self):
         for t in self.tables:
-            t.input()
+            t.input( self.path )
             
     def _finish(self):
         pass

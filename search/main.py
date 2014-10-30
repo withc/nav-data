@@ -1,3 +1,4 @@
+#coding=utf-8
 #import os
 #import sys
 
@@ -13,6 +14,8 @@ import compiler.compile
 if __name__ == "__main__":
     cfg = config.config.Config.get_instance()
     
+    v = u'溇中路'
+    x = v.encode('utf-8')
     common.logger.init_log( cfg.getVendor() )
     logger = common.logger.sub_log()
     
@@ -22,7 +25,7 @@ if __name__ == "__main__":
     logger.info( cfg.getDBPath() )
     
     logger.info( " ---- start load  data ---- " )
-    loader = load.load_db.CLoader( db_instance, cfg.getVendor() )
+    loader = load.load_db.CLoader( db_instance, cfg.getVendor(), cfg.getDataPath() )
     loader.run()
     
     logger.info( " ---- start convert search data ---- " )

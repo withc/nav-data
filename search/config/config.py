@@ -1,11 +1,12 @@
 
 class Config( object ):
     __instance = None
-    _vendor  ='siwei'
-    _host    ='localhost'
-    _dbname  ='shanghai'
-    _user    ='postgres'
-    _password=''
+    _vendor   = 'siwei'
+    _dataPath = r"D:\my\shanghai\shanghai"
+    _host     = 'localhost'
+    _dbname   = 'shanghai'
+    _user     = 'postgres'
+    _password = ''
 
     @staticmethod
     def get_instance():
@@ -18,6 +19,9 @@ class Config( object ):
 
     def set_vendor(self, value):
         Config._vendor = value
+    def set_dataPath(self, value):
+        Config._dataPath = value
+        
     def set_host(self, value):
         Config._host = value
     def set_dbname(self, value):
@@ -29,6 +33,9 @@ class Config( object ):
         
     def getVendor(self):
         return Config._vendor
+    
+    def getDataPath(self):
+        return Config._dataPath
     
     def get_dbname(self):
         return Config._dbname

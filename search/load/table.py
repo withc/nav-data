@@ -12,13 +12,13 @@ class CTable(object):
         self.db = database
         self.vendor = vendor
         
-    def input(self):
+    def input(self, path):
         self.logger.info('begin load table %s' % self.name )
-        self._do_all()
+        self._do_all( path )
         self.logger.info('end load table %s' % self.name )
         pass
     
-    def _do_all(self):
+    def _do_all(self, path):
         pass
 
     def _field_sql(self, field, isEnd = False ):
@@ -83,8 +83,17 @@ class CTable(object):
         else:
             geomstr = ''
 
-        item = [ str(x).strip()  for x in attr ]
-        item.append( geomstr )
+        item = []
+        for v in attr:
+            if isinstance(v, str): 
+                v.decode('gb2312') #.encode('utf-8')
+            else:
+                v = str(v)
+            item.append( v.strip() )
+            
+        if geomstr != '':
+            item.append( geomstr )
+            
         return item
 
     def __point_str(self, point ):
