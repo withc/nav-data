@@ -1,70 +1,146 @@
-import common.shapefile
-import load.table
+import load.base.shp_table
 import attribute
 
-class CbrTable(load.table.CTable):
+#----------------------------------------------------------#   
+class CBrTable(load.base.shp_table.CTableOfShp):
     def __init__(self ):
-        load.table.CTable.__init__(self, 'R_Name')
+        load.base.shp_table.CTableOfShp.__init__(self, 'Br')
         self.sf = None
     
-    def _do_all(self, path):
-        self._open( attribute.MakeFileName(path, self.name) )
-        
-        self._create_table( )
-        self._read_file()
-        self._create_index()   
-          
-    def _open(self, filename ):
-        self.sf =  common.shapefile.Reader( filename )
-        
-    def _create_table(self):
-        self.db.dropTable( self.name )
-        sqlcmd = 'create table ' + self.name + '\n'
-        sqlcmd += '(\n'
-        
-        for f in self.sf.fields[1:-1]:
-            sqlcmd +=  self._field_sql( f )
-            
-        if self._have_geom():
-            sqlcmd +=  self._field_sql( self.sf.fields[-1], False )
-        else:
-            sqlcmd +=  self._field_sql( self.sf.fields[-1], True )
-            
-        sqlcmd += self._geom_sql( self.sf.shape(0) )
-        
-        sqlcmd += ');'
-
-        self.db.do_execute( sqlcmd )
-
-    def _read_file(self):
-
-        sqlcmd = self._insert_sql( self._get_field_num() )
-        idx = 0
-        count = self.sf.numRecords
-        while idx < count:
-            item = self.sf.shapeRecord(idx)
-            itemValue = self._shape_value( item.record, item.shape)
-            self.db.execute( sqlcmd, itemValue )
-            idx += 1
-            if ( 0 == idx % 10000 ):
-                self.db.commit()
-                self.logger.info( 'finish insert %d' % idx )
-
-        self.db.commit()
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
     
-    def _create_index(self):
-        self.db.createGist( self.name, 'geom' )
+#----------------------------------------------------------#        
+class CCNLTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'CNL')
+        self.sf = None
     
-    def _get_field_num(self):
-        num = len(self.sf.record(0))
-        if self._have_geom():
-            num += 1
-        return num
-   
-    def _have_geom(self):
-        return self.sf.shape(0).shapeType != 0
-        
-        
-        
-        
-        
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)        
+
+#----------------------------------------------------------#          
+class CCondTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'Cond')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)       
+
+#----------------------------------------------------------#          
+class CCRTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'CR')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)  
+    
+#----------------------------------------------------------#          
+class CCTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'C')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+
+#----------------------------------------------------------#          
+class CDmTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'Dm')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+    
+#----------------------------------------------------------#          
+class CDrTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'Dr')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+    
+#----------------------------------------------------------#          
+class CICTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'IC')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name) 
+
+#----------------------------------------------------------#          
+class CLnTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'Ln')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)  
+
+#----------------------------------------------------------#          
+class CNTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'N')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+
+#----------------------------------------------------------#          
+class CR_LNameTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'R_LName')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+
+#----------------------------------------------------------#          
+class CR_LZoneTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'R_LZone')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)   
+
+#----------------------------------------------------------#          
+class CR_NameTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'R_Name')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+
+#----------------------------------------------------------#          
+class CRTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'R')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+ 
+#----------------------------------------------------------#     
+class CTrfcSignTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'TrfcSign')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)
+
+#----------------------------------------------------------#     
+class CZ_LevelTable(load.base.shp_table.CTableOfShp):
+    def __init__(self ):
+        load.base.shp_table.CTableOfShp.__init__(self, 'Z_Level')
+        self.sf = None
+    
+    def _get_file(self, path):
+        return attribute.MakeFileName(path, self.name)

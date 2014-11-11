@@ -14,8 +14,6 @@ import compiler.compile
 if __name__ == "__main__":
     cfg = config.config.Config.get_instance()
     
-    v = u'溇中路'
-    x = v.encode('utf-8')
     common.logger.init_log( cfg.getVendor() )
     logger = common.logger.sub_log()
     

@@ -2,4 +2,5 @@ eclipse.preferences.version=1
 encoding//common/database.py=UTF8
 encoding//convert/globetech/category.txt=UTF-8
 encoding//convert/globetech/feat_place.py=UTF-8
+encoding//load/base/table.py=gb2312
 encoding/main.py=utf-8
