@@ -5,6 +5,7 @@ def tableFactory( name, loader ):
 
     if name == 'siwei':
         import load.siwei
+
         loader.add_table( load.siwei.table_road.CBrTable() )
         loader.add_table( load.siwei.table_road.CCNLTable() )
         loader.add_table( load.siwei.table_road.CCondTable() )
@@ -21,6 +22,19 @@ def tableFactory( name, loader ):
         loader.add_table( load.siwei.table_road.CRTable() )
         loader.add_table( load.siwei.table_road.CTrfcSignTable() )
         loader.add_table( load.siwei.table_road.CZ_LevelTable() )
+        
+        loader.add_table( load.siwei.table_back.CBLTable() )
+        loader.add_table( load.siwei.table_back.CBNTable() )
+        loader.add_table( load.siwei.table_back.CBPLTable() )
+        loader.add_table( load.siwei.table_back.CBPTable() )
+        loader.add_table( load.siwei.table_back.CBUPTable() )
+        loader.add_table( load.siwei.table_back.CDTable() )
+        
+        loader.add_table( load.siwei.table_land.CTTable() )
+        
+        loader.add_table( load.siwei.table_other.CAdminTable() )
+        loader.add_table( load.siwei.table_other.CFNameTable() )
+        
 
         pass
     else:

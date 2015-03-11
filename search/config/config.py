@@ -20,8 +20,9 @@ class Config( object ):
     def set_vendor(self, value):
         Config._vendor = value
     def set_dataPath(self, value):
-        Config._dataPath = value
-        
+        Config._dataPath.rstrip( '\\' )
+        Config._dataPath.rstrip( '/' )
+                    
     def set_host(self, value):
         Config._host = value
     def set_dbname(self, value):

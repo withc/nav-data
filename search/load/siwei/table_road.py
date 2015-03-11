@@ -1,6 +1,7 @@
 import load.base.shp_table
 import attribute
 
+module = 'road'
 #----------------------------------------------------------#   
 class CBrTable(load.base.shp_table.CTableOfShp):
     def __init__(self ):
@@ -8,7 +9,7 @@ class CBrTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
     
 #----------------------------------------------------------#        
 class CCNLTable(load.base.shp_table.CTableOfShp):
@@ -17,7 +18,7 @@ class CCNLTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)        
+        return attribute.MakeFileName(path, module, self.name)        
 
 #----------------------------------------------------------#          
 class CCondTable(load.base.shp_table.CTableOfShp):
@@ -26,7 +27,7 @@ class CCondTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)       
+        return attribute.MakeFileName(path, module, self.name)       
 
 #----------------------------------------------------------#          
 class CCRTable(load.base.shp_table.CTableOfShp):
@@ -35,7 +36,7 @@ class CCRTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)  
+        return attribute.MakeFileName(path, module, self.name)  
     
 #----------------------------------------------------------#          
 class CCTable(load.base.shp_table.CTableOfShp):
@@ -44,7 +45,7 @@ class CCTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
 
 #----------------------------------------------------------#          
 class CDmTable(load.base.shp_table.CTableOfShp):
@@ -53,7 +54,7 @@ class CDmTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
     
 #----------------------------------------------------------#          
 class CDrTable(load.base.shp_table.CTableOfShp):
@@ -62,7 +63,7 @@ class CDrTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
     
 #----------------------------------------------------------#          
 class CICTable(load.base.shp_table.CTableOfShp):
@@ -71,7 +72,7 @@ class CICTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name) 
+        return attribute.MakeFileName(path, module, self.name) 
 
 #----------------------------------------------------------#          
 class CLnTable(load.base.shp_table.CTableOfShp):
@@ -80,7 +81,7 @@ class CLnTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)  
+        return attribute.MakeFileName(path, module, self.name)  
 
 #----------------------------------------------------------#          
 class CNTable(load.base.shp_table.CTableOfShp):
@@ -89,7 +90,7 @@ class CNTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
 
 #----------------------------------------------------------#          
 class CR_LNameTable(load.base.shp_table.CTableOfShp):
@@ -98,7 +99,7 @@ class CR_LNameTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
 
 #----------------------------------------------------------#          
 class CR_LZoneTable(load.base.shp_table.CTableOfShp):
@@ -107,7 +108,7 @@ class CR_LZoneTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)   
+        return attribute.MakeFileName(path, module, self.name)   
 
 #----------------------------------------------------------#          
 class CR_NameTable(load.base.shp_table.CTableOfShp):
@@ -116,7 +117,7 @@ class CR_NameTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
 
 #----------------------------------------------------------#          
 class CRTable(load.base.shp_table.CTableOfShp):
@@ -125,7 +126,7 @@ class CRTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
  
 #----------------------------------------------------------#     
 class CTrfcSignTable(load.base.shp_table.CTableOfShp):
@@ -134,7 +135,7 @@ class CTrfcSignTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
 
 #----------------------------------------------------------#     
 class CZ_LevelTable(load.base.shp_table.CTableOfShp):
@@ -143,4 +144,4 @@ class CZ_LevelTable(load.base.shp_table.CTableOfShp):
         self.sf = None
     
     def _get_file(self, path):
-        return attribute.MakeFileName(path, self.name)
+        return attribute.MakeFileName(path, module, self.name)
