@@ -5,6 +5,7 @@ class CTableOfShp(table.CTable):
     def __init__(self, name='shape' ):
         table.CTable.__init__( self, name )
         self.sf = None
+        self.fieldTypeDict = {}
         
     def _do_all(self, path):
         self._open( self._get_file( path ) )
@@ -63,7 +64,10 @@ class CTableOfShp(table.CTable):
    
     def _have_geom(self):
         return self.sf.shape(0).shapeType != 0
-        
+    
+    def _doField_predefine (self, field ):
+        return '' 
+       
     def _field_sql(self, field, isEnd = False ):
         ''' 
         /************************************************************************/
@@ -77,22 +81,26 @@ class CTableOfShp(table.CTable):
         /*                           'M' (Memo: 10 digits .DBT block ptr)       */
         /************************************************************************/ 
         '''
-        sqlcmd = field[0].lower()
-        if 'C' == field[1]:
-            sqlcmd += '  varchar(%d)' % field[2]
-        elif 'L' == field[1]:
-            sqlcmd += '  bool'
-        elif 'D' == field[1]:
-            pass
-        elif 'N' == field[1]:
-            if field[3] > 0:
-                sqlcmd += '  int8'
-            else: 
+        sqlcmd = self._doField_predefine( field[0].lower() )
+        
+        if '' == sqlcmd:
+            sqlcmd = field[0].lower()
+            if 'C' == field[1]:
+                sqlcmd += '  varchar(%d)' % field[2]
+            elif 'L' == field[1]:
+                sqlcmd += '  bool'
+            elif 'D' == field[1]:
+                pass
+            elif 'N' == field[1]:
+                if field[3] > 0:
+                    sqlcmd += '  int8'
+                else: 
+                    sqlcmd += '  float8'
+            elif 'F' == field[1]:
                 sqlcmd += '  float8'
-        elif 'F' == field[1]:
-            sqlcmd += '  float8'
-        else:
-            pass
+            else:
+                pass
+        
         if  isEnd:
             sqlcmd += '\n'
         else:

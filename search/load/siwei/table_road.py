@@ -124,9 +124,25 @@ class CRTable(load.base.shp_table.CTableOfShp):
     def __init__(self ):
         load.base.shp_table.CTableOfShp.__init__(self, 'R')
         self.sf = None
+        self.fieldTypeDict['mapid']    = 'bigint'
+        self.fieldTypeDict['id']       = 'bigint'
+        self.fieldTypeDict['kind_num'] = 'smallint'
+        self.fieldTypeDict['width']    = 'smallint'
+        self.fieldTypeDict['direction'] = 'smallint'
+        self.fieldTypeDict['snodeid']   = 'bigint'
+        self.fieldTypeDict['enodeid']   = 'bigint'
+        self.fieldTypeDict['pathclass'] = 'smallint'
+        self.fieldTypeDict['length']    = 'float8'
+        self.fieldTypeDict['speedclass'] = 'smallint'
     
     def _get_file(self, path):
         return attribute.MakeFileName(path, module, self.name)
+    
+    def _doField_predefine (self, key ):
+        sql = ''
+        if key in self.fieldTypeDict:
+            sql = key + '  ' + self.fieldTypeDict[key]
+        return sql
  
 #----------------------------------------------------------#     
 class CTrfcSignTable(load.base.shp_table.CTableOfShp):
