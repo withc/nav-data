@@ -47,7 +47,7 @@ class CTableOfShp(table.CTable):
             idx += 1
             if ( 0 == idx % 10000 ):
                 self.db.commit()
-                self.logger.info( 'finish insert %d' % idx )
+                self.logger.info( '    finish insert %d' % idx )
 
         self.db.commit()
     
@@ -117,12 +117,13 @@ class CTableOfShp(table.CTable):
         return sqlcmd
             
     def _shape_value(self, attr, geom ):
+        test = geom.__geo_interface__
         if 1 == geom.shapeType:
             geomstr = 'POINT(%s)' % ( self.__point_str( geom.points[0] ) )
         elif 3 == geom.shapeType:
             geomstr = 'LINESTRING(%s)' % ( ','.join ( self.__point_str(x) for x in geom.points ) )
         elif 5 == geom.shapeType:
-            geomstr = 'POLYGON(%s)' % geom.points
+            geomstr = 'POLYGON((%s))' % ( ','.join ( self.__point_str(x) for x in geom.points ) )
         else:
             geomstr = ''
 
